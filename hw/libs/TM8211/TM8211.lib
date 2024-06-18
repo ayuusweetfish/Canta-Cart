@@ -1,0 +1,31 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#SamacSys ECAD Model TM8211
+#/13271885/1232119/2.50/8/4/Integrated Circuit
+DEF TM8211 IC 0 30 Y Y 1 F N
+F0 "IC" 850 300 50 H V L CNN
+F1 "TM8211" 850 200 50 H V L CNN
+F2 "SOIC127P600X196-8N" 850 100 50 H I L CNN
+F3 "https://datasheet.lcsc.com/szlcsc/Shenzhen-Titan-Micro-Elec-TM8211_C92003.pdf" 850 0 50 H I L CNN
+F4 "16 2 SOP-8_150mil Digital To Analog Converters (DACs) RoHS" 850 -100 50 H I L CNN "Description"
+F5 "1.96" 850 -200 50 H I L CNN "Height"
+F6 "TITAN MICRO ELECTRONICS" 850 -300 50 H I L CNN "Manufacturer_Name"
+F7 "TM8211" 850 -400 50 H I L CNN "Manufacturer_Part_Number"
+F8 "" 850 -500 50 H I L CNN "Mouser Part Number"
+F9 "" 850 -600 50 H I L CNN "Mouser Price/Stock"
+F10 "" 850 -700 50 H I L CNN "Arrow Part Number"
+F11 "" 850 -800 50 H I L CNN "Arrow Price/Stock"
+DRAW
+X BCK 1 0 0 200 R 50 50 0 0 P
+X WS 2 0 -100 200 R 50 50 0 0 P
+X DIN 3 0 -200 200 R 50 50 0 0 P
+X GND 4 0 -300 200 R 50 50 0 0 P
+X RCH 8 1000 0 200 L 50 50 0 0 P
+X NC 7 1000 -100 200 L 50 50 0 0 N
+X LCH 6 1000 -200 200 L 50 50 0 0 P
+X VDD 5 1000 -300 200 L 50 50 0 0 P
+P 5 0 1 6 200 100 800 100 800 -400 200 -400 200 100 N
+ENDDRAW
+ENDDEF
+#
+#End Library

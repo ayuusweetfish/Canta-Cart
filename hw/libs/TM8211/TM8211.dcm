@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP TM8211
+D 16 2 SOP-8_150mil Digital To Analog Converters (DACs) RoHS
+K
+F https://datasheet.lcsc.com/szlcsc/Shenzhen-Titan-Micro-Elec-TM8211_C92003.pdf
+$ENDCMP
+#
+#End Doc Library
