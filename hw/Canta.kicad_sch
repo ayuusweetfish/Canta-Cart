@@ -75,6 +75,10 @@
           (name "PA4" (effects (font (size 1.27 1.27))))
           (number "20" (effects (font (size 1.27 1.27))))
         )
+        (pin input line (at -13.335 -2.54 0) (length 2.54) hide
+          (name "PAD" (effects (font (size 1.27 1.27))))
+          (number "21" (effects (font (size 1.27 1.27))))
+        )
         (pin bidirectional line (at -13.335 0 0) (length 2.54)
           (name "PA7" (effects (font (size 1.27 1.27))))
           (number "3" (effects (font (size 1.27 1.27))))
@@ -2487,6 +2491,7 @@
     (pin "7" (uuid 9831a1ec-a27c-47d4-86b5-3b31354b5696))
     (pin "8" (uuid 5b3fae5e-49d8-49b2-b178-aeb21a447fcb))
     (pin "9" (uuid 41e11372-2273-48ae-9233-7d5b49ac29b5))
+    (pin "21" (uuid 7e80f27e-2753-44a0-936e-2f7adea95c9e))
     (instances
       (project "Canta"
         (path "/0da9ae68-938f-47fa-aa31-df1300665123"
