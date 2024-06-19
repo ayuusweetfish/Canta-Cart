@@ -2,4 +2,5 @@
   (version 7)
   (lib (name "Canta_symbols")(type "KiCad")(uri "${KIPRJMOD}/Canta_symbols.kicad_sym")(options "")(descr ""))
   (lib (name "TM8211")(type "KiCad")(uri "${KIPRJMOD}/libs/TM8211/TM8211.kicad_sym")(options "")(descr ""))
+  (lib (name "MD8002A")(type "KiCad")(uri "${KIPRJMOD}/libs/FM8002A/MD8002A.kicad_sym")(options "")(descr ""))
 )
