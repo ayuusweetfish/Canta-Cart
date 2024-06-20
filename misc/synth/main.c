@@ -1,12 +1,26 @@
-// gcc -DSOKOL_IMPL -DSOKOL_GLCORE -x objective-c sokol_app.h -x c sokol_gfx.h -x c sokol_audio.h -c
-
 // gcc -DSOKOL_IMPL -x objective-c libs.h -c -O2
 // gcc main.c -std=c99 libs.o -framework AppKit -framework OpenGL -framework AudioToolbox
 
 #include "libs.h"
 
+#include "canta_synth.h"
+
 #include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
+
+static void audio_cb(float *buffer, int num_frames, int num_channels)
+{
+  uint16_t ibuf[4096];
+  assert(num_frames <= sizeof ibuf / sizeof ibuf[0]);
+
+  synth_audio(ibuf, num_frames);
+  for (int i = 0; i < num_frames; i++) {
+    float sample = (float)ibuf[i] / 65536;
+    for (int j = 0; j < num_channels; j++)
+      buffer[i * num_channels + j] = sample;
+  }
+}
 
 static void init()
 {
@@ -17,7 +31,15 @@ static void init()
 
   sgp_setup(&(sgp_desc){ 0 });
   assert(sgp_is_valid());
+
+  saudio_setup(&(saudio_desc){
+    .stream_cb = audio_cb,
+    .buffer_frames = 1024,
+  });
+  assert(saudio_sample_rate() == SYNTH_SAMPLE_RATE);
 }
+
+static bool buttons[12] = { false };
 
 static void frame()
 {
@@ -47,12 +69,35 @@ static void cleanup()
 
 static void event(const sapp_event *ev)
 {
-  if (ev->type == SAPP_EVENTTYPE_KEY_DOWN) {
+  static const uint8_t keys[SAPP_MAX_KEYCODES] = {
+    [SAPP_KEYCODE_GRAVE_ACCENT] = 12 + 0,
+    [SAPP_KEYCODE_1] = 12 + 1,
+    [SAPP_KEYCODE_2] = 12 + 2,
+    [SAPP_KEYCODE_3] = 12 + 3,
+    [SAPP_KEYCODE_4] = 12 + 4,
+    [SAPP_KEYCODE_5] = 12 + 5,
+    [SAPP_KEYCODE_6] = 12 + 6,
+    [SAPP_KEYCODE_7] = 12 + 7,
+    [SAPP_KEYCODE_8] = 12 + 8,
+    [SAPP_KEYCODE_9] = 12 + 9,
+    [SAPP_KEYCODE_0] = 12 + 10,
+    [SAPP_KEYCODE_MINUS] = 12 + 11,
+  };
+
+  if (ev->type == SAPP_EVENTTYPE_KEY_DOWN && !ev->key_repeat) {
     if (ev->key_code == SAPP_KEYCODE_Q && (ev->modifiers & SAPP_MODIFIER_SUPER)) {
       sapp_quit();
       return;
     }
+    if (keys[ev->key_code] != 0) {
+      buttons[keys[ev->key_code] - 12] = true;
+      synth_buttons(buttons);
+    }
   } else if (ev->type == SAPP_EVENTTYPE_KEY_UP) {
+    if (keys[ev->key_code] != 0) {
+      buttons[keys[ev->key_code] - 12] = false;
+      synth_buttons(buttons);
+    }
   }
 }
 
