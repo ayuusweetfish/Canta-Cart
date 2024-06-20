@@ -2061,7 +2061,7 @@
     (property "Reference" "R3" (at 105.41 53.975 90)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Value" "7.5k" (at 105.41 56.515 90)
+    (property "Value" "10k" (at 105.41 56.515 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Footprint" "Resistor_SMD:R_0402_1005Metric" (at 105.41 61.468 90)
@@ -2110,7 +2110,7 @@
   (symbol (lib_id "Device:C") (at 88.9 120.015 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 09644b14-55d8-4c1b-9557-94896f3ad145)
-    (property "Reference" "C7" (at 92.075 118.745 0)
+    (property "Reference" "C5" (at 92.075 118.745 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "100n" (at 92.075 121.285 0)
@@ -2127,7 +2127,7 @@
     (instances
       (project "Canta"
         (path "/0da9ae68-938f-47fa-aa31-df1300665123"
-          (reference "C7") (unit 1)
+          (reference "C5") (unit 1)
         )
       )
     )
@@ -2136,7 +2136,7 @@
   (symbol (lib_id "Device:C") (at 76.835 120.015 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 0cbd31cb-95e4-4e18-b973-f133a684dab1)
-    (property "Reference" "C6" (at 80.01 118.745 0)
+    (property "Reference" "C4" (at 80.01 118.745 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "10u" (at 80.01 121.285 0)
@@ -2153,7 +2153,7 @@
     (instances
       (project "Canta"
         (path "/0da9ae68-938f-47fa-aa31-df1300665123"
-          (reference "C6") (unit 1)
+          (reference "C4") (unit 1)
         )
       )
     )
@@ -2264,7 +2264,7 @@
   (symbol (lib_id "Device:C") (at 175.26 108.585 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 1c0bf699-9f2b-4330-9755-618ffbc6b6b6)
-    (property "Reference" "C10" (at 172.72 112.395 90)
+    (property "Reference" "C8" (at 172.72 112.395 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "4.7u" (at 177.8 112.395 90)
@@ -2281,7 +2281,7 @@
     (instances
       (project "Canta"
         (path "/0da9ae68-938f-47fa-aa31-df1300665123"
-          (reference "C10") (unit 1)
+          (reference "C8") (unit 1)
         )
       )
     )
@@ -2518,7 +2518,7 @@
   (symbol (lib_id "Canta_symbols:PY32F003F18U6TR") (at 161.925 44.45 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 407b9648-8ca0-4a89-a4f8-d95c02bbb180)
-    (property "Reference" "U2" (at 140.97 30.48 0)
+    (property "Reference" "U1" (at 140.97 30.48 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "PY32F003F18U6" (at 140.97 33.02 0)
@@ -2554,7 +2554,7 @@
     (instances
       (project "Canta"
         (path "/0da9ae68-938f-47fa-aa31-df1300665123"
-          (reference "U2") (unit 1)
+          (reference "U1") (unit 1)
         )
       )
     )
@@ -3123,7 +3123,7 @@
   (symbol (lib_id "Device:C") (at 151.765 62.23 0) (mirror y) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid a8354b06-2486-4b4b-87bd-5e98cc423a0a)
-    (property "Reference" "C3" (at 148.59 60.96 0)
+    (property "Reference" "C1" (at 148.59 60.96 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "100n" (at 148.59 63.5 0)
@@ -3140,7 +3140,7 @@
     (instances
       (project "Canta"
         (path "/0da9ae68-938f-47fa-aa31-df1300665123"
-          (reference "C3") (unit 1)
+          (reference "C1") (unit 1)
         )
       )
     )
@@ -3225,7 +3225,7 @@
   (symbol (lib_id "Device:C") (at 127 106.045 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid bbda23a5-36c0-45f3-849d-437809ef9449)
-    (property "Reference" "C11" (at 127 99.695 90)
+    (property "Reference" "C9" (at 127 99.695 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "4.7u" (at 127 102.235 90)
@@ -3242,7 +3242,7 @@
     (instances
       (project "Canta"
         (path "/0da9ae68-938f-47fa-aa31-df1300665123"
-          (reference "C11") (unit 1)
+          (reference "C9") (unit 1)
         )
       )
     )
@@ -3278,7 +3278,7 @@
   (symbol (lib_id "Device:C") (at 83.82 105.41 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid c0ecb8ce-c75d-41b9-b44c-6978a61b6031)
-    (property "Reference" "C8" (at 86.995 104.14 0)
+    (property "Reference" "C6" (at 86.995 104.14 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "4.7n" (at 86.995 106.68 0)
@@ -3295,7 +3295,7 @@
     (instances
       (project "Canta"
         (path "/0da9ae68-938f-47fa-aa31-df1300665123"
-          (reference "C8") (unit 1)
+          (reference "C6") (unit 1)
         )
       )
     )
@@ -3304,7 +3304,7 @@
   (symbol (lib_id "Device:C") (at 212.725 46.99 90) (mirror x) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid c783b8ae-d504-4e75-981f-615a825b26e9)
-    (property "Reference" "C4" (at 210.185 50.8 90)
+    (property "Reference" "C2" (at 210.185 50.8 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "6.8p" (at 215.265 50.8 90)
@@ -3321,7 +3321,7 @@
     (instances
       (project "Canta"
         (path "/0da9ae68-938f-47fa-aa31-df1300665123"
-          (reference "C4") (unit 1)
+          (reference "C2") (unit 1)
         )
       )
     )
@@ -3456,7 +3456,7 @@
   (symbol (lib_id "Device:C") (at 212.725 38.1 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid d6a76b3d-1a61-4e5c-b7e8-7ff85bbc65db)
-    (property "Reference" "C5" (at 210.185 34.29 90)
+    (property "Reference" "C3" (at 210.185 34.29 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "6.8p" (at 215.265 34.29 90)
@@ -3473,16 +3473,16 @@
     (instances
       (project "Canta"
         (path "/0da9ae68-938f-47fa-aa31-df1300665123"
-          (reference "C5") (unit 1)
+          (reference "C3") (unit 1)
         )
       )
     )
   )
 
   (symbol (lib_id "TM8211:TM8211") (at 37.465 108.585 0) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
+    (in_bom yes) (on_board yes) (dnp no)
     (uuid ddf07b3b-d7a7-4427-8f41-24aab2f64acf)
-    (property "Reference" "U3" (at 50.165 100.965 0)
+    (property "Reference" "U2" (at 50.165 100.965 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "TM8211" (at 50.165 103.505 0)
@@ -3526,7 +3526,7 @@
     (instances
       (project "Canta"
         (path "/0da9ae68-938f-47fa-aa31-df1300665123"
-          (reference "U3") (unit 1)
+          (reference "U2") (unit 1)
         )
       )
     )
@@ -3560,7 +3560,7 @@
   (symbol (lib_id "Device:C") (at 93.98 100.965 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid e089ba4a-b9cf-4adc-b794-843ce4158fb7)
-    (property "Reference" "C9" (at 93.98 95.25 90)
+    (property "Reference" "C7" (at 93.98 95.25 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "470n" (at 93.98 97.79 90)
@@ -3577,7 +3577,7 @@
     (instances
       (project "Canta"
         (path "/0da9ae68-938f-47fa-aa31-df1300665123"
-          (reference "C9") (unit 1)
+          (reference "C7") (unit 1)
         )
       )
     )
@@ -3819,7 +3819,7 @@
   (symbol (lib_id "MD8002A:FM8002A") (at 133.985 103.505 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid f314883b-8c18-45e4-94ff-de211f5db41f)
-    (property "Reference" "U4" (at 146.685 96.52 0)
+    (property "Reference" "U3" (at 146.685 96.52 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "FM8002A" (at 146.685 99.06 0)
@@ -3863,7 +3863,7 @@
     (instances
       (project "Canta"
         (path "/0da9ae68-938f-47fa-aa31-df1300665123"
-          (reference "U4") (unit 1)
+          (reference "U3") (unit 1)
         )
       )
     )
