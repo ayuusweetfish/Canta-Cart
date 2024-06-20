@@ -1,2 +1,4 @@
 /hw/fp-info-cache
 /hw/**/*.bak
+/misc/synth/*.o
+/misc/synth/a.out
