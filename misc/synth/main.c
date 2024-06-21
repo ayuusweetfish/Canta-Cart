@@ -1,12 +1,13 @@
-// gcc -DSOKOL_IMPL -x objective-c libs.h -c -O2
+// gcc -DSOKOL_IMPL -DSTB_IMAGE_IMPLEMENTATION -x objective-c libs.h -c -O2
 // gcc main.c -std=c99 libs.o -framework AppKit -framework OpenGL -framework AudioToolbox
 
 #include "libs.h"
 
 #include "canta_synth.h"
+#include "silkscreen.png.h"
 
-#include <math.h>
 #include <assert.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -29,6 +30,25 @@ static void audio_cb(float *buffer, int num_frames, int num_channels)
   audio_rms = audio_rms * 0.5f + (energy / num_frames) * 0.5f;
 }
 
+static sg_image load_image(const uint8_t *content, int content_len)
+{
+  int w, h, n_ch;
+  uint8_t *data = stbi_load_from_memory(content, content_len, &w, &h, &n_ch, 4);
+  assert(data != NULL && n_ch == 4);
+  sg_image_desc image_desc = (sg_image_desc){
+    .width = w,
+    .height = h,
+    .data = {
+      .subimage = {{{ .ptr = data, .size = (size_t)(w * h * 4) }}},
+    },
+  };
+  sg_image img = sg_make_image(&image_desc);
+  stbi_image_free(data);
+  return img;
+}
+
+static sg_image img_silkscreen;
+
 static void init()
 {
   sg_setup(&(sg_desc){
@@ -44,6 +64,8 @@ static void init()
     .buffer_frames = 1024,
   });
   assert(saudio_sample_rate() == SYNTH_SAMPLE_RATE);
+
+  img_silkscreen = load_image(silkscreen_png, silkscreen_png_len);
 }
 
 static bool buttons[12] = { false };
@@ -116,6 +138,14 @@ static void frame()
   sgp_project(0, w, 0, h);
   sgp_set_color(0.12f, 0.12f, 0.12f, 1.0f);
   sgp_clear();
+
+  // Silkscreen
+  sgp_set_blend_mode(SGP_BLENDMODE_BLEND);
+  sgp_set_color(1.0, 0.98, 0.975, 1);
+  sgp_set_image(0, img_silkscreen);
+  sgp_draw_filled_rect(0, 0, w, h);
+  sgp_reset_image(0);
+  sgp_reset_blend_mode();
 
   // -4.5 dB: 0.5
   // -3 dB: 1

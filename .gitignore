@@ -2,3 +2,4 @@
 /hw/**/*.bak
 /misc/synth/*.o
 /misc/synth/a.out
+/misc/synth/silkscreen.png.h
