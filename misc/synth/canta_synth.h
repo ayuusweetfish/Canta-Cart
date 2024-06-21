@@ -45,27 +45,37 @@ static inline void synth_audio(int16_t *buf, uint32_t count)
 {
   memset(buf, 0, count * sizeof(int16_t));
   for (int i = 0; i < 10; i++) if (keys[i].state != 0) {
-    for (int j = 0; j < count; j++) {
-      keys[i].phase += keys[i].freq;  // Silent overflow
-      int16_t value = synth_table(keys[i].phase);
+    int j = 0;
+    while (j < count && keys[i].state != 0) {
       if (__builtin_expect(keys[i].state == 1, 0)) {
-        keys[i].time += SYNTH_ATTACK_INCR;
-        if (keys[i].time >= (1 << 15)) {
-          keys[i].state = 2;
-        } else {
-          value = ((int32_t)value * keys[i].time) >> 15;
+        for (; j < count; j++) {
+          int16_t value = synth_table(keys[i].phase += keys[i].freq);
+          keys[i].time += SYNTH_ATTACK_INCR;
+          if (__builtin_expect(keys[i].time >= (1 << 15), 0)) {
+            buf[j] += value;
+            keys[i].state = 2;
+            break;
+          } else {
+            buf[j] += ((int32_t)value * keys[i].time) >> 15;
+          }
         }
       } else if (__builtin_expect(keys[i].state == 3, 0)) {
-        keys[i].time += SYNTH_RELEASE_INCR;
-        if (keys[i].time >= (1 << 15)) {
-          keys[i].state = 0;
-          value = 0;
-          break;
-        } else {
-          value = ((int32_t)value * ((1 << 15) - keys[i].time)) >> 15;
+        for (; j < count; j++) {
+          int16_t value = synth_table(keys[i].phase += keys[i].freq);
+          keys[i].time += SYNTH_RELEASE_INCR;
+          if (__builtin_expect(keys[i].time >= (1 << 15), 0)) {
+            keys[i].state = 0;
+            break;
+          } else {
+            buf[j] += ((int32_t)value * ((1 << 15) - keys[i].time)) >> 15;
+          }
+        }
+      } else {
+        for (; j < count; j++) {
+          int16_t value = synth_table(keys[i].phase += keys[i].freq);
+          buf[j] += value;
         }
       }
-      buf[j] += value;
     }
   }
 }

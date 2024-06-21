@@ -78,18 +78,9 @@ static inline void circle_fill(float cx, float cy, float r)
 
 static inline void circle_key(float cx, float cy, float r, bool fill)
 {
-/*
-  float a = 0.7;
-  sgp_set_color(1 * a, 0.98 * a, 0.975 * a, 1);
-  if (fill) circle_fill(cx, cy, r);
-*/
   float a = (fill ? 1 : 0.2);
   sgp_set_color(0.12 + 0.88 * a, 0.12 + 0.86 * a, 0.12 + 0.855 * a, 1);
   circle_fill(cx, cy, r);
-/*
-  sgp_set_color(1, 0.98, 0.975, 1);
-  circle_line(cx, cy, r);
-*/
 }
 
 static inline void rrect_fill(float cx, float cy, float w, float h, float r)
@@ -189,8 +180,25 @@ static void event(const sapp_event *ev)
   }
 }
 
+#include <time.h>
+static inline void perf_test()
+{
+  bool btns[12] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+  synth_buttons(btns);
+  for (int it = 0; it < 10; it++) {
+    clock_t t0 = clock();
+    int16_t buf[512];
+    for (int i = 0; i < 100000; i++) {
+      synth_audio(buf, sizeof buf / sizeof(int16_t));
+    }
+    clock_t t1 = clock();
+    printf("time: %.4f\n", (float)(t1 - t0) / CLOCKS_PER_SEC);
+  }
+}
+
 sapp_desc sokol_main(int argc, char* argv[])
 {
+  // perf_test();
   return (sapp_desc) {
     .width = 856,
     .height = 540,
