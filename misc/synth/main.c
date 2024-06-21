@@ -5,9 +5,12 @@
 
 #include "canta_synth.h"
 
+#include <math.h>
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
+
+static float audio_rms = 0;
 
 static void audio_cb(float *buffer, int num_frames, int num_channels)
 {
@@ -15,11 +18,15 @@ static void audio_cb(float *buffer, int num_frames, int num_channels)
   assert(num_frames <= sizeof ibuf / sizeof ibuf[0]);
 
   synth_audio(ibuf, num_frames);
+
+  float energy = 0;
   for (int i = 0; i < num_frames; i++) {
     float sample = (float)ibuf[i] / 65536;
     for (int j = 0; j < num_channels; j++)
       buffer[i * num_channels + j] = sample;
+    energy += sample * sample;
   }
+  audio_rms = audio_rms * 0.5f + (energy / num_frames) * 0.5f;
 }
 
 static void init()
@@ -41,17 +48,98 @@ static void init()
 
 static bool buttons[12] = { false };
 
+static inline void circle_line(float cx, float cy, float r)
+{
+  sgp_point p[49];
+  int n = 48, ptr = 0;
+  for (int i = 0; i < n; i++) {
+    float th = (float)M_PI * 2 / n * i;
+    float x = cx + r * cosf(th);
+    float y = cy + r * sinf(th);
+    p[ptr++] = (sgp_point){ .x = x, .y = y };
+  }
+  p[ptr++] = (sgp_point){ .x = cx + r, .y = cy };
+  sgp_draw_lines_strip(p, ptr);
+}
+
+static inline void circle_fill(float cx, float cy, float r)
+{
+  sgp_point p[50];
+  int n = 48, ptr = 0;
+  for (int i = 0; i <= n / 2; i++) {
+    float th = (float)M_PI * 2 / n * i;
+    float dx = r * cosf(th);
+    float dy = r * sinf(th);
+    p[ptr++] = (sgp_point){ .x = cx + dx, .y = cy + dy };
+    p[ptr++] = (sgp_point){ .x = cx - dx, .y = cy - dy };
+  }
+  sgp_draw_filled_triangles_strip(p, ptr);
+}
+
+static inline void circle_key(float cx, float cy, float r, bool fill)
+{
+/*
+  float a = 0.7;
+  sgp_set_color(1 * a, 0.98 * a, 0.975 * a, 1);
+  if (fill) circle_fill(cx, cy, r);
+*/
+  float a = (fill ? 1 : 0.2);
+  sgp_set_color(0.12 + 0.88 * a, 0.12 + 0.86 * a, 0.12 + 0.855 * a, 1);
+  circle_fill(cx, cy, r);
+/*
+  sgp_set_color(1, 0.98, 0.975, 1);
+  circle_line(cx, cy, r);
+*/
+}
+
+static inline void rrect_fill(float cx, float cy, float w, float h, float r)
+{
+  sgp_point p[54];
+  int n = 48;
+  for (int i = 0; i <= n / 4; i++) {
+    float th = (float)M_PI * 2 / n * i;
+    float dx = r * cosf(th);
+    float dy = r * sinf(th);
+    p[i * 2 + 0] = (sgp_point){ .x = cx + (w/2 - r + dx), .y = cy + (h/2 - r + dy) };
+    p[i * 2 + 1] = (sgp_point){ .x = cx - (w/2 - r + dx), .y = cy - (h/2 - r + dy) };
+    p[n + 3 - (i * 2 + 0)] = (sgp_point){ .x = cx + (w/2 - r + dx), .y = cy - (h/2 - r + dy) };
+    p[n + 3 - (i * 2 + 1)] = (sgp_point){ .x = cx - (w/2 - r + dx), .y = cy + (h/2 - r + dy) };
+  }
+  p[n + 4] = p[1];
+  p[n + 5] = p[0];
+  sgp_draw_filled_triangles_strip(p, n + 6);
+}
+
+static inline void rrect_key(float cx, float cy, float w, float h, float r, bool fill)
+{
+  float a = (fill ? 1 : 0.2);
+  sgp_set_color(0.12 + 0.88 * a, 0.12 + 0.86 * a, 0.12 + 0.855 * a, 1);
+  rrect_fill(cx, cy, w, h, r);
+}
+
 static void frame()
 {
   int w = sapp_width(), h = sapp_height();
   sgp_begin(w, h);
   sgp_viewport(0, 0, w, h);
-  sgp_project(-(float)w / h, (float)w / h, -1.0f, 1.0f);
+  sgp_project(0, w, 0, h);
   sgp_set_color(0.12f, 0.12f, 0.12f, 1.0f);
   sgp_clear();
 
+  // -4.5 dB: 0.5
+  // -3 dB: 1
+  float a = log10f(audio_rms);
+  a = (a + 6) / 3;
+  if (a > 1) a = 1; else if (a < 0) a = 0;
+  sgp_set_color(0.12 + 0.88 * a, 0.12 + 0.86 * a, 0.12 + 0.855 * a, 1);
+  circle_fill(428, 207, 100);
   sgp_set_color(1, 0.98, 0.975, 1);
-  sgp_draw_line(-1, 0, 1, 0);
+  circle_line(428, 207, 100);
+
+  circle_key( 67.9, 250, 60, buttons[10]);
+  circle_key(788.1, 250, 60, buttons[11]);
+  for (int i = 0; i < 10; i++)
+    rrect_key(45.4 + 85 * i, 431.9, 75, 200, 22.5, buttons[i]);
 
   sg_begin_pass(&(sg_pass){ .swapchain = sglue_swapchain() });
   sgp_flush();
@@ -70,17 +158,17 @@ static void cleanup()
 static void event(const sapp_event *ev)
 {
   static const uint8_t keys[SAPP_MAX_KEYCODES] = {
-    [SAPP_KEYCODE_GRAVE_ACCENT] = 12 + 0,
-    [SAPP_KEYCODE_1] = 12 + 1,
-    [SAPP_KEYCODE_2] = 12 + 2,
-    [SAPP_KEYCODE_3] = 12 + 3,
-    [SAPP_KEYCODE_4] = 12 + 4,
-    [SAPP_KEYCODE_5] = 12 + 5,
-    [SAPP_KEYCODE_6] = 12 + 6,
-    [SAPP_KEYCODE_7] = 12 + 7,
-    [SAPP_KEYCODE_8] = 12 + 8,
-    [SAPP_KEYCODE_9] = 12 + 9,
-    [SAPP_KEYCODE_0] = 12 + 10,
+    [SAPP_KEYCODE_1] = 12 + 0,
+    [SAPP_KEYCODE_2] = 12 + 1,
+    [SAPP_KEYCODE_3] = 12 + 2,
+    [SAPP_KEYCODE_4] = 12 + 3,
+    [SAPP_KEYCODE_5] = 12 + 4,
+    [SAPP_KEYCODE_6] = 12 + 5,
+    [SAPP_KEYCODE_7] = 12 + 6,
+    [SAPP_KEYCODE_8] = 12 + 7,
+    [SAPP_KEYCODE_9] = 12 + 8,
+    [SAPP_KEYCODE_0] = 12 + 9,
+    [SAPP_KEYCODE_GRAVE_ACCENT] = 12 + 10,
     [SAPP_KEYCODE_MINUS] = 12 + 11,
   };
 
@@ -104,8 +192,8 @@ static void event(const sapp_event *ev)
 sapp_desc sokol_main(int argc, char* argv[])
 {
   return (sapp_desc) {
-    .width = 720,
-    .height = 480,
+    .width = 856,
+    .height = 540,
     .init_cb = init,
     .frame_cb = frame,
     .cleanup_cb = cleanup,
