@@ -36,8 +36,8 @@ static bool transp_used[2];
 static inline int16_t synth_table(uint32_t phase)
 {
   return (phase < (1u << 31) ?
-      (int32_t)-(1u << 31) + (int32_t)phase * 2 :
-      (int32_t)((1u << 31) - 1) - (int32_t)(phase - (1u << 31)) * 2
+      (int32_t)((1u << 31) + phase * 2) :
+      (int32_t)(((1u << 31) - 1) - (phase - (1u << 31)) * 2)
     ) >> 22;
 }
 

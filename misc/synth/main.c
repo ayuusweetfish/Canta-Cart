@@ -183,6 +183,9 @@ static void event(const sapp_event *ev)
 #include <time.h>
 static inline void perf_test()
 {
+  for (uint32_t phase = 0; phase < 16; phase++)
+    printf("%08x %d\n", phase << 28, (int)synth_table(phase << 28));
+
   bool btns[12] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
   synth_buttons(btns);
   for (int it = 0; it < 10; it++) {
