@@ -8,6 +8,9 @@
 
 #define SYNTH_SAMPLE_RATE 44100
 
+#define SYNTH_ATTACK_INCR   (int)((1 << 15) / (SYNTH_SAMPLE_RATE * 0.025))
+#define SYNTH_RELEASE_INCR  (int)((1 << 15) / (SYNTH_SAMPLE_RATE * 0.075))
+
 static int8_t base = 0;
 
 static inline double freq_for_note(int8_t n)
@@ -29,19 +32,39 @@ static struct {
 
 static bool last_btn[10] = { 0 };
 
+static inline int16_t synth_table(uint32_t phase)
+{
+  return (phase < (1u << 31) ?
+      (int32_t)-(1u << 31) + (int32_t)phase * 2 :
+      (int32_t)((1u << 31) - 1) - (int32_t)(phase - (1u << 31)) * 2
+    ) >> 22;
+}
+
 static inline void synth_audio(int16_t *buf, uint32_t count)
 {
   memset(buf, 0, count * sizeof(int16_t));
   for (int i = 0; i < 10; i++) if (keys[i].state != 0) {
     for (int j = 0; j < count; j++) {
       keys[i].phase += keys[i].freq;  // Silent overflow
-      int16_t value = (keys[i].phase < (1u << 31) ?
-          (int32_t)-(1u << 31) + (int32_t)keys[i].phase * 2 :
-          (int32_t)((1u << 31) - 1) - (int32_t)(keys[i].phase - (1u << 31)) * 2
-        ) >> 22;
+      int16_t value = synth_table(keys[i].phase);
+      if (__builtin_expect(keys[i].state == 1, 0)) {
+        keys[i].time += SYNTH_ATTACK_INCR;
+        if (keys[i].time >= (1 << 15)) {
+          keys[i].state = 2;
+        } else {
+          value = ((int32_t)value * keys[i].time) >> 15;
+        }
+      } else if (__builtin_expect(keys[i].state == 3, 0)) {
+        keys[i].time += SYNTH_RELEASE_INCR;
+        if (keys[i].time >= (1 << 15)) {
+          keys[i].state = 0;
+          value = 0;
+          break;
+        } else {
+          value = ((int32_t)value * ((1 << 15) - keys[i].time)) >> 15;
+        }
+      }
       buf[j] += value;
-    }
-    if (keys[i].state == 1) {
     }
   }
 }
@@ -63,7 +86,7 @@ static inline void synth_buttons(bool btn[12])
     } else if (!btn[i] && last_btn[i]) {
       // Release
       if (i < 10) {
-        keys[i].state = 0;  // 3;
+        keys[i].state = 3;
         keys[i].time = 0;
       }
     }
