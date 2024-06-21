@@ -13,12 +13,12 @@
 
 static int8_t base = 0;
 
-static inline double freq_for_note(int8_t n)
+static inline double freq_for_note(int8_t n, int8_t transpose)
 {
   int octave = (n < 0 ? (n - 6) / 7 : n / 7);
   int degree = n - octave * 7;
   static const uint8_t scale[7] = {0, 2, 4, 5, 7, 9, 11};
-  int midi_pitch = 71 + (octave * 12 + scale[degree]);
+  int midi_pitch = 71 + (octave * 12 + scale[degree]) + transpose;
   return 440.0 * pow(2, (midi_pitch - 69) / 12.0);
 }
 
@@ -30,7 +30,8 @@ static struct {
   uint16_t time;
 } keys[10];
 
-static bool last_btn[10] = { 0 };
+static bool last_btn[12] = { 0 };
+static bool transp_used[2];
 
 static inline int16_t synth_table(uint32_t phase)
 {
@@ -71,23 +72,36 @@ static inline void synth_audio(int16_t *buf, uint32_t count)
 
 static inline void synth_buttons(bool btn[12])
 {
-  for (int i = 0; i < 12; i++) {
+  for (int i = 11; i >= 0; i--) {
     if (btn[i] && !last_btn[i]) {
       // Press
       if (i < 10) {
-        double f = freq_for_note(base + i);
+        int transpose = 0;
+        if (btn[10]) { transpose -= 1; transp_used[0] = true; }
+        if (btn[11]) { transpose += 1; transp_used[1] = true; }
+        double f = freq_for_note(base + i, transpose);
         // Period = f_s/f samples = 2^32 in lookup table
         // Increment for each sample = 2^32 / (f_s/f)
         keys[i].freq = (uint32_t)(4294967296.0 * f / SYNTH_SAMPLE_RATE);
         keys[i].phase = 0;
         keys[i].state = 1;
         keys[i].time = 0;
+      } else {
+        transp_used[i - 10] = false;
       }
     } else if (!btn[i] && last_btn[i]) {
       // Release
       if (i < 10) {
         keys[i].state = 3;
         keys[i].time = 0;
+      } else {
+        // If no note has been pressed during the hold,
+        // carry out a global transposition
+        if (!transp_used[i - 10]) {
+          base += (i == 10 ? -1 : +1);
+          if (base < -18) base = -18;
+          if (base >  14) base =  14;
+        }
       }
     }
     last_btn[i] = btn[i];
