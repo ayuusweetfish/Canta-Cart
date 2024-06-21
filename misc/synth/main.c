@@ -14,7 +14,7 @@ static float audio_rms = 0;
 
 static void audio_cb(float *buffer, int num_frames, int num_channels)
 {
-  uint16_t ibuf[4096];
+  int16_t ibuf[4096];
   assert(num_frames <= sizeof ibuf / sizeof ibuf[0]);
 
   synth_audio(ibuf, num_frames);
