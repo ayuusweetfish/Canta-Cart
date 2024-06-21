@@ -57,6 +57,7 @@ static inline void synth_audio(int16_t *buf, uint32_t count)
           if (__builtin_expect(keys[i].time >= (1 << 15), 0)) {
             buf[j] += value;
             keys[i].state = 2;
+            j++;
             break;
           } else {
             buf[j] += ((int32_t)value * keys[i].time) >> 15;
@@ -68,6 +69,7 @@ static inline void synth_audio(int16_t *buf, uint32_t count)
           keys[i].time += SYNTH_RELEASE_INCR;
           if (__builtin_expect(keys[i].time >= (1 << 15), 0)) {
             keys[i].state = 0;
+            j++;
             break;
           } else {
             buf[j] += ((int32_t)value * ((1 << 15) - keys[i].time)) >> 15;
