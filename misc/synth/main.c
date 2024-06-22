@@ -45,6 +45,8 @@
 
 #ifndef ONLY_LIBS_IMPL
 
+#define SYNTH_SAMPLE_RATE 44100
+#define SYNTH_EXTRA_SHIFT 1
 #include "canta_synth.h"
 #include "silkscreen.png.h"
 
@@ -106,6 +108,7 @@ static void init()
   assert(sgp_is_valid());
 
   saudio_setup(&(saudio_desc){
+    .sample_rate = SYNTH_SAMPLE_RATE,
     .stream_cb = audio_cb,
     .buffer_frames = 1024,
   });
@@ -230,9 +233,9 @@ static void frame()
   sgp_reset_blend_mode();
 
   // -4.5 dB: 0.5
-  // -3 dB: 1
+  // -1.5 dB: 1
   float a = log10f(audio_rms);
-  a = (a + 6) / 3;
+  a = (a + 7.5) / 6;
   if (a > 1) a = 1; else if (a < 0) a = 0;
   sgp_set_color(0.12 + 0.88 * a, 0.12 + 0.86 * a, 0.12 + 0.855 * a, 1);
   circle_fill(428, 207, 100);

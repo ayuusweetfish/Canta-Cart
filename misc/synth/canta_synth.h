@@ -6,7 +6,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#define SYNTH_SAMPLE_RATE 44100
+#ifndef SYNTH_SAMPLE_RATE
+  #define SYNTH_SAMPLE_RATE 44100
+#endif
+#ifndef SYNTH_EXTRA_SHIFT
+  #define SYNTH_EXTRA_SHIFT 1
+#endif
 
 #define SYNTH_ATTACK_INCR   (int)((1 << 15) / (SYNTH_SAMPLE_RATE * 0.025))
 #define SYNTH_RELEASE_INCR  (int)((1 << 15) / (SYNTH_SAMPLE_RATE * 0.075))
@@ -41,7 +46,7 @@ static inline int16_t synth_table(uint32_t phase)
   return (phase < (1u << 31) ?
       (int32_t)((1u << 31) + phase * 2) :
       (int32_t)(((1u << 31) - 1) - (phase - (1u << 31)) * 2)
-    ) >> 22;
+    ) >> (16 /* Max. range */ + 4 /* Avoid clipping with polyphony 10 */ + SYNTH_EXTRA_SHIFT);
 }
 
 static inline void synth_audio(int16_t *buf, uint32_t count)
