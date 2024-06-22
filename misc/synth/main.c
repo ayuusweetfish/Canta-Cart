@@ -7,8 +7,10 @@
 // gcc -std=c99 -DSOKOL_IMPL -DSTB_IMAGE_IMPLEMENTATION -x objective-c libs.h -c -O2
 // gcc -std=c99 main.c libs.o -framework AppKit -framework OpenGL -framework AudioToolbox
 
-// Emscripten:
+// Emscripten (SDK version 2.0.0):
 // emcc -O2 -std=c99 -DSOKOL_IMPL -DSTB_IMAGE_IMPLEMENTATION main.c -sFULL_ES3 -o web/canta-cart.js
+// Touch-end event fix, ref. emscripten-core/emscripten#5012, SO /q/52265891
+// perl -pi -w -e 's/(var et=e.touches;for\(var i=0;i<et.length;\+\+i\)\{var touch=et\[i\];touches\[touch.identifier\]=touch)\}/$1;touch.isChanged=0}/' web/canta-cart.js
 
 #include "libs.h"
 
@@ -106,11 +108,9 @@ static inline bool pt_in_btn(int i, float x, float y)
 }
 static inline void pts_event(const struct pointer *pts, int n_pts)
 {
-/*
   printf("n=%d", n_pts);
   for (int i = 0; i < n_pts; i++) printf(" (%d %d)", (int)pts[i].x, (int)pts[i].y);
   putchar('\n');
-*/
   for (int j = 0; j < 12; j++) {
     buttons[j] = false;
     for (int i = 0; i < n_pts; i++)
