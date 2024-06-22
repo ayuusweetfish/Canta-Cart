@@ -83,6 +83,42 @@ static void init()
 
 static bool buttons[12] = { false };
 
+struct pointer {
+  uintptr_t id;
+  float x, y;
+};
+
+static inline bool pt_in_btn(int i, float x, float y)
+{
+  if (i < 10) {
+    float cx = 45.4 + 85 * i;
+    float cy = 431.9;
+    float w = 75;
+    float h = 200;
+    return x >= cx - w/2 && x <= cx + w/2 &&
+           y >= cy - h/2 && y <= cy + h/2;
+  } else {
+    float cx = (i == 10 ? 67.9 : 788.1);
+    float cy = 250;
+    float r = 60;
+    return (x - cx) * (x - cx) + (y - cy) * (y - cy) <= r * r;
+  }
+}
+static inline void pts_event(const struct pointer *pts, int n_pts)
+{
+/*
+  printf("n=%d", n_pts);
+  for (int i = 0; i < n_pts; i++) printf(" (%d %d)", (int)pts[i].x, (int)pts[i].y);
+  putchar('\n');
+*/
+  for (int j = 0; j < 12; j++) {
+    buttons[j] = false;
+    for (int i = 0; i < n_pts; i++)
+      if (pt_in_btn(j, pts[i].x, pts[i].y)) { buttons[j] = true; break; }
+  }
+  synth_buttons(buttons);
+}
+
 static inline void circle_line(float cx, float cy, float r)
 {
   sgp_point p[49];
@@ -220,9 +256,41 @@ static void event(const sapp_event *ev)
       buttons[keys[ev->key_code] - 12] = false;
       synth_buttons(buttons);
     }
-  } else if (ev->type == SAPP_EVENTTYPE_MOUSE_DOWN) {
-    printf("%.4f %.4f\n", ev->mouse_x, ev->mouse_y);
-  } else if (ev->type == SAPP_EVENTTYPE_MOUSE_UP) {
+  }
+
+  // Pointer events
+  struct pointer pts[SAPP_MAX_TOUCHPOINTS] = {{ 0 }};
+  static bool has_touch = false;
+  float sx = 856.0f / ev->window_width;
+  float sy = 540.0f / ev->window_height;
+  if (!has_touch &&
+      (ev->type == SAPP_EVENTTYPE_MOUSE_DOWN ||
+       (ev->type == SAPP_EVENTTYPE_MOUSE_MOVE && (ev->modifiers & SAPP_MODIFIER_LMB)))) {
+    pts[0] = (struct pointer){ .id = 0, .x = ev->mouse_x * sx, .y = ev->mouse_y * sy };
+    pts_event(pts, 1);
+  } else if (!has_touch && ev->type == SAPP_EVENTTYPE_MOUSE_UP) {
+    pts_event(pts, 0);
+  } else if (
+    ev->type == SAPP_EVENTTYPE_TOUCHES_BEGAN ||
+    ev->type == SAPP_EVENTTYPE_TOUCHES_MOVED ||
+    ev->type == SAPP_EVENTTYPE_TOUCHES_ENDED ||
+    ev->type == SAPP_EVENTTYPE_TOUCHES_CANCELLED
+  ) {
+    has_touch = true;
+    assert(ev->num_touches < SAPP_MAX_TOUCHPOINTS);
+    int n_pts = 0;
+    for (int i = 0; i < ev->num_touches; i++) {
+      if ((ev->type == SAPP_EVENTTYPE_TOUCHES_ENDED ||
+           ev->type == SAPP_EVENTTYPE_TOUCHES_CANCELLED) &&
+          ev->touches[i].changed)
+        continue;
+      pts[n_pts++] = (struct pointer){
+        .id = ev->touches[i].identifier,
+        .x = ev->touches[i].pos_x * sx,
+        .y = ev->touches[i].pos_y * sy,
+      };
+    }
+    pts_event(pts, n_pts);
   }
 }
 
