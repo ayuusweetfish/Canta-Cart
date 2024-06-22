@@ -1,5 +1,14 @@
-// gcc -DSOKOL_IMPL -DSTB_IMAGE_IMPLEMENTATION -x objective-c libs.h -c -O2
-// gcc main.c -std=c99 libs.o -framework AppKit -framework OpenGL -framework AudioToolbox
+// gcc -O2 -std=c99 -DSOKOL_IMPL -DSTB_IMAGE_IMPLEMENTATION main.c
+
+// On macOS:
+// gcc -O2 -std=c99 -DSOKOL_IMPL -DSTB_IMAGE_IMPLEMENTATION -x objective-c main.c -framework AppKit -framework OpenGL -framework AudioToolbox
+
+// During development:
+// gcc -std=c99 -DSOKOL_IMPL -DSTB_IMAGE_IMPLEMENTATION -x objective-c libs.h -c -O2
+// gcc -std=c99 main.c libs.o -framework AppKit -framework OpenGL -framework AudioToolbox
+
+// Emscripten:
+// emcc -O2 -std=c99 -DSOKOL_IMPL -DSTB_IMAGE_IMPLEMENTATION main.c -sFULL_ES3 -o web/canta-cart.js
 
 #include "libs.h"
 
@@ -10,6 +19,10 @@
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
+
+#ifndef M_PI
+#define M_PI 3.1415926535897932384
+#endif
 
 static float audio_rms = 0;
 
@@ -135,7 +148,7 @@ static void frame()
   int w = sapp_width(), h = sapp_height();
   sgp_begin(w, h);
   sgp_viewport(0, 0, w, h);
-  sgp_project(0, w, 0, h);
+  sgp_project(0, 856, 0, 540);
   sgp_set_color(0.12f, 0.12f, 0.12f, 1.0f);
   sgp_clear();
 
@@ -143,7 +156,7 @@ static void frame()
   sgp_set_blend_mode(SGP_BLENDMODE_BLEND);
   sgp_set_color(1.0, 0.98, 0.975, 1);
   sgp_set_image(0, img_silkscreen);
-  sgp_draw_filled_rect(0, 0, w, h);
+  sgp_draw_filled_rect(0, 0, 856, 540);
   sgp_reset_image(0);
   sgp_reset_blend_mode();
 
@@ -207,6 +220,9 @@ static void event(const sapp_event *ev)
       buttons[keys[ev->key_code] - 12] = false;
       synth_buttons(buttons);
     }
+  } else if (ev->type == SAPP_EVENTTYPE_MOUSE_DOWN) {
+    printf("%.4f %.4f\n", ev->mouse_x, ev->mouse_y);
+  } else if (ev->type == SAPP_EVENTTYPE_MOUSE_UP) {
   }
 }
 

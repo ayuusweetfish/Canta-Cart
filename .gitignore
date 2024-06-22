@@ -3,3 +3,5 @@
 /misc/synth/*.o
 /misc/synth/a.out
 /misc/synth/silkscreen.png.h
+/misc/synth/web/canta-cart.js
+/misc/synth/web/canta-cart.wasm

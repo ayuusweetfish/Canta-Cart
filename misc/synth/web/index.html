@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html><head>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <title>Canta-Cart Emulator</title>
+</head><body>
+  <canvas id='canvas' width='856' height='540'></canvas>
+  <button id='btn-fullscreen'>Full-screen</button>
+  <style>
+    body { margin: 0; padding: 0; background: #2f2f2f; }
+    canvas {
+      border: none; background: #1f1f1f;
+      width: 100vw; height: 63.084vw;
+      max-height: 100vh; max-width: 158.519vh;
+      position: absolute; margin: auto;
+      top: 0; bottom: 0; left: 0; right: 0;
+    }
+  </style>
+  <script>
+    const canvas = document.getElementById('canvas')
+    canvas.addEventListener('webglcontextlost', (e) => {
+      alert('WebGL context lost. You will need to reload the page.')
+      e.preventDefault()
+    }, false)
+
+    document.getElementById('btn-fullscreen').addEventListener('click', () => {
+      (canvas.requestFullScreen || canvas.webkitRequestFullScreen || canvas.mozRequestFullScreen).apply(canvas)
+    })
+
+    var Module = {
+      print: (...args) => console.log(...args),
+      printErr: (...args) => console.log(...args),
+      canvas: () => {
+        return canvas
+      },
+    }
+  </script>
+  <script async src='canta-cart.js'></script>
+</body></html>

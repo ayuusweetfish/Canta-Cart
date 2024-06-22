@@ -1,4 +1,8 @@
-#define SOKOL_GLCORE
+#ifdef __EMSCRIPTEN__
+  #define SOKOL_GLES3
+#else
+  #define SOKOL_GLCORE
+#endif
 
 #include "sokol_app.h"
 #include "sokol_audio.h"
