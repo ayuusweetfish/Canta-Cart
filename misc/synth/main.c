@@ -1,18 +1,49 @@
-// gcc -O2 -std=c99 -DSOKOL_IMPL -DSTB_IMAGE_IMPLEMENTATION main.c
+// gcc -O2 -std=c99 main.c
 
 // On macOS:
-// gcc -O2 -std=c99 -DSOKOL_IMPL -DSTB_IMAGE_IMPLEMENTATION -x objective-c main.c -framework AppKit -framework OpenGL -framework AudioToolbox
+// gcc -O2 -std=c99 -x objective-c main.c -framework AppKit -framework OpenGL -framework AudioToolbox
 
 // During development:
-// gcc -std=c99 -DSOKOL_IMPL -DSTB_IMAGE_IMPLEMENTATION -x objective-c libs.h -c -O2
-// gcc -std=c99 main.c libs.o -framework AppKit -framework OpenGL -framework AudioToolbox
+// gcc -std=c99 -DONLY_LIBS_IMPL -x objective-c main.c -c -O2 -o libs.o
+// gcc -std=c99 -DNO_LIBS_IMPL main.c libs.o -framework AppKit -framework OpenGL -framework AudioToolbox
 
 // Emscripten (SDK version 2.0.0):
-// emcc -O2 -std=c99 -DSOKOL_IMPL -DSTB_IMAGE_IMPLEMENTATION main.c -sFULL_ES3 -o web/canta-cart.js
+// emcc -O2 -std=c99 main.c -sFULL_ES3 -o web/canta-cart.js
 // Touch-end event fix, ref. emscripten-core/emscripten#5012, SO /q/52265891
 // perl -pi -w -e 's/(var et=e.touches;for\(var i=0;i<et.length;\+\+i\)\{var touch=et\[i\];touches\[touch.identifier\]=touch)\}/$1;touch.isChanged=0}/' web/canta-cart.js
 
-#include "libs.h"
+// Clean:
+// rm a.out libs.o web/canta-cart.{js,wasm}
+
+// ============ Libraries ============
+// Define NO_LIBS_IMPL for a statically linked (rather than amalgamated) build
+#ifndef NO_LIBS_IMPL
+  #define SOKOL_IMPL
+  #define STB_IMAGE_IMPLEMENTATION
+#endif
+
+#ifdef __EMSCRIPTEN__
+  #define SOKOL_GLES3
+#else
+  #define SOKOL_GLCORE
+#endif
+
+#include "sokol_app.h"
+#include "sokol_audio.h"
+#include "sokol_gfx.h"
+#include "sokol_glue.h"
+
+// Workaround for minor incompatibility (ref. edubart/sokol_gp#32)
+#define SG_BACKEND_GLCORE33 SG_BACKEND_GLCORE
+#include "sokol_gp.h"
+
+#define STBI_ONLY_PNG
+#define STBI_NO_STDIO
+#define STBI_NO_LINEAR
+#include "stb_image.h"
+// ===================================
+
+#ifndef ONLY_LIBS_IMPL
 
 #include "canta_synth.h"
 #include "silkscreen.png.h"
@@ -108,9 +139,11 @@ static inline bool pt_in_btn(int i, float x, float y)
 }
 static inline void pts_event(const struct pointer *pts, int n_pts)
 {
+/*
   printf("n=%d", n_pts);
   for (int i = 0; i < n_pts; i++) printf(" (%d %d)", (int)pts[i].x, (int)pts[i].y);
   putchar('\n');
+*/
   for (int j = 0; j < 12; j++) {
     buttons[j] = false;
     for (int i = 0; i < n_pts; i++)
@@ -325,3 +358,5 @@ sapp_desc sokol_main(int argc, char* argv[])
     .event_cb = event,
   };
 }
+
+#endif  // #ifndef ONLY_LIBS_IMPL
