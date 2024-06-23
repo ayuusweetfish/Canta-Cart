@@ -5,8 +5,12 @@
   <title>Canta-Cart Emulator</title>
 </head><body>
   <canvas id='canvas' width='856' height='540'></canvas>
-  <button id='btn-fullscreen'>Full-screen</button>
-  <!-- <p id='log' style='color: white'></p> -->
+  <button id='btn-fullscreen'>⤢</button><br><button id='btn-help'>?</button>
+  <div id='help' class='hidden'>
+    <p>Play with mouse/touchscreen/keyboard.</p>
+    <p>Number keys (1-9, 0): notes.<br>Grave (`) and minus (-): transpose.</p>
+    <p>Press a transpose button to move along the scale.<br>Hold a transpose button and play a note for an accidental.<br>Press a transpose button while holding the other for a key change.</p>
+  </div>
   <style>
     body { margin: 0; padding: 0; background: #2f2f2f; }
     canvas {
@@ -15,6 +19,28 @@
       max-height: 100vh; max-width: 158.519vh;
       position: absolute; margin: auto;
       top: 0; bottom: 0; left: 0; right: 0;
+    }
+    button, #help {
+      font-size: max(1.8vw, 2.5vh, 16px);
+    }
+    button {
+      width: 2em;
+      height: 2em;
+      line-height: 1;
+    }
+    #help {
+      color: white;
+      position: fixed;
+      background: rgba(47, 47, 47, 0.95);
+      border-radius: 1em;
+      padding: 0.5ex 1em;
+      line-height: 1.2;
+    }
+    #help.hidden {
+      display: none;
+    }
+    p {
+      margin: 1ex 0;
     }
   </style>
   <script>
@@ -28,14 +54,20 @@
       (canvas.requestFullScreen || canvas.webkitRequestFullScreen || canvas.mozRequestFullScreen).apply(canvas)
     })
 
+    document.getElementById('btn-help').addEventListener('click', (e) => {
+      document.getElementById('help').classList.toggle('hidden')
+      if (!document.getElementById('help').classList.contains('hidden')) {
+        const fn = () => {
+          document.getElementById('help').classList.add('hidden')
+          document.removeEventListener('click', fn)
+        }
+        document.addEventListener('click', fn)
+      }
+      e.stopPropagation()
+    })
+
     var Module = {
       print: (...args) => console.log(...args),
-      /* print: (...args) => {
-        const logs = (window._logs = (window._logs || []))
-        logs.push(args[0].toString())
-        if (logs.length > 5) logs.shift()
-        document.getElementById('log').innerText = logs.join('\n')
-      }, */
       printErr: (...args) => console.log(...args),
       canvas: () => {
         return canvas
