@@ -53,10 +53,11 @@ int main(void)
   };
   HAL_GPIO_Init(GPIOA, &gpio_init);
 
+  int i = 0;
   while (1) {
     HAL_Delay(1000);
     HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
-    swv_printf("Hello!\n");
+    swv_printf("Hello! %d\n", ++i);
   }
 }
 

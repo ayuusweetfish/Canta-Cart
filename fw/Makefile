@@ -213,5 +213,5 @@ endif
 
 debug:
 ifeq ($(FLASH_PROGRM),pyocd)
-	$(PYOCD_EXE) gdb --elf $(BDIR)/$(PROJECT).elf -t py32f003x8 --config $(TOP)/debug/pyocd.yaml
+	$(PYOCD_EXE) gdb --elf $(BDIR)/$(PROJECT).elf -t py32f003x8 --config $(TOP)/debug/pyocd.yaml --persist
 endif
