@@ -1290,7 +1290,7 @@
       (net 17 "BTN_05") (pinfunction "PA4") (pintype "bidirectional") (tstamp 073138b4-2bb4-49fc-b69c-f2c61f4110b3))
     (pad "21" smd rect (at 0 0 180) (size 1.65 1.65) (layers "F.Cu" "F.Mask")
       (net 1 "GND") (pinfunction "PAD") (pintype "input") (tstamp 435f34d1-51e1-481e-a630-830e4e303876))
-    (model "${KICAD6_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/QFN-20-1EP_3x3mm_P0.4mm_EP1.65x1.65mm.wrl"
+    (model "${KICAD7_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/QFN-20-1EP_3x3mm_P0.45mm_EP1.6x1.6mm.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1803,7 +1803,7 @@
       (net 1 "GND") (pinfunction "GND") (pintype "passive") (tstamp 05da1929-c353-4eab-b732-4723fb3af943))
     (pad "8" smd roundrect (at 2.625 -1.905 270) (size 1.65 0.6) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.25)
       (net 25 "Net-(U3-VO2)") (pinfunction "VO2") (pintype "passive") (tstamp 928275d4-213f-4ebc-bd2c-42ed89a5afc4))
-    (model "${KICAD6_3DMODEL_DIR}/Package_SO.3dshapes/SOP-8_3.9x4.9mm_P1.27mm.wrl"
+    (model "${KICAD7_3DMODEL_DIR}/Package_SO.3dshapes/SSOP-8_3.9x5.05mm_P1.27mm.wrl"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2488,10 +2488,10 @@
     (pad "2" smd rect (at 1.45 0 90) (size 1.5 1.6) (layers "F.Cu" "F.Paste" "F.Mask")
       (net 28 "Net-(U3--IN)") (pintype "passive") (tstamp 833688dc-cef7-4270-983b-30147f0dec71))
     (pad "3" smd rect (at -1.8 1 90) (size 1.2 1.2) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp bb1bbe52-d8b8-45f7-8127-762819f67dd8))
-    (model "${KICAD6_3DMODEL_DIR}/Potentiometer_SMD.3dshapes/Potentiometer_Bourns_TC33X_Vertical.wrl"
+    (model "${KIPRJMOD}/libs/VG039NCHXTB503/VG039NCHXTB503.stp"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 0 0 90))
     )
   )
 
