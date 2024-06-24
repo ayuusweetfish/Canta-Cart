@@ -151,7 +151,7 @@ endif
 TGT_INCFLAGS := $(addprefix -I $(TOP)/, $(INCLUDES))
 
 
-.PHONY: all clean flash echo
+.PHONY: all clean flash echo debug
 
 all: $(BDIR)/$(PROJECT).elf $(BDIR)/$(PROJECT).bin $(BDIR)/$(PROJECT).hex
 
@@ -209,4 +209,9 @@ else ifeq ($(FLASH_PROGRM),pyocd)
 	$(PYOCD_EXE) load $(BDIR)/$(PROJECT).hex -t $(PYOCD_DEVICE) --config $(TOP)/debug/pyocd.yaml
 else
 	@echo "FLASH_PROGRM is invalid\n"
+endif
+
+debug:
+ifeq ($(FLASH_PROGRM),pyocd)
+	$(PYOCD_EXE) gdb --elf $(BDIR)/$(PROJECT).elf -t py32f003x8 --config $(TOP)/debug/pyocd.yaml
 endif
