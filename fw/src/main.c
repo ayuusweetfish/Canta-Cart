@@ -5,6 +5,9 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define min(_a, _b) ((_a) < (_b) ? (_a) : (_b))
+#define max(_a, _b) ((_a) > (_b) ? (_a) : (_b))
+
 #ifndef RELEASE
 static uint8_t swv_buf[256];
 static size_t swv_buf_ptr = 0;
@@ -43,39 +46,90 @@ static void swv_printf(const char *restrict fmt, ...)
 #pragma GCC optimize("O3")
 static inline void cap_sense()
 {
-/*
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, 1);
-  uint32_t a[100];
-  for (int i = 0; i < 100; i++) {
-    a[i] = GPIOA->IDR & 0x10fd;
-  }
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, 0);
-  for (int i = 0; i < 100; i++)
-    if (i == 0 || i + 1 == 100 || a[i] != a[i - 1])
-      swv_printf("%3d %08lx\n", i, a[i]);
-*/
-
   struct record_t {
     uint16_t t;
     uint16_t v;
   } record[16];
-  int n_records = 0;
 
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, 1);
+  uint16_t cap[12] = { 0 };
+  uint16_t cap_sum[12] = { 0 };
 
-  uint16_t last_v = 0;
-  for (int i = 0; i < 200; i++) {
-    uint32_t a = GPIOA->IDR;
-    uint32_t f = GPIOF->IDR;
-    uint16_t cur_v = (a & 0x10fd) | (f << 6) | last_v;
-    record[n_records] = (struct record_t){.t = i, .v = cur_v};
-    if (last_v != cur_v) n_records++;
-    last_v = cur_v;
+  static const uint16_t MASK[12] = {
+    1 <<  8,
+    1 <<  0,
+    1 <<  2,
+    1 <<  3,
+    1 <<  4,
+    1 <<  5,
+    1 <<  6,
+    1 <<  7,
+    1 << 12,
+    1 << 13,
+    1 << 10,
+    1 << 14,
+  };
+
+  for (int its = 0; its < 5; its++) {
+    int n_records;
+    uint16_t last_v;
+
+    n_records = 0;
+    last_v = ~0x15fd;
+    record[n_records] = (struct record_t){.t = (uint16_t)-1, .v = last_v};
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, 1);
+    for (int i = 0; i < 200; i++) {
+      uint32_t a = GPIOA->IDR;
+      uint32_t f = GPIOF->IDR;
+      uint16_t cur_v = (a | (f << 6)) | last_v;
+      if (last_v != cur_v) n_records++;
+      record[n_records] = (struct record_t){.t = i, .v = cur_v};
+      last_v = cur_v;
+    }
+  /*
+    for (int i = 0; i <= n_records; i++)
+      swv_printf("%3d %08x\n", (int)(int16_t)record[i].t, record[i].v);
+  */
+    for (int j = 0; j < 12; j++) cap[j] = 0xffff;
+    for (int i = 1; i <= n_records; i++) {
+      uint16_t t = record[i - 1].t + 1;
+      uint16_t diff = record[i - 1].v ^ record[i].v;
+      // swv_printf("%3d %04x\n", t, diff);
+      for (int j = 0; j < 12; j++)
+        if (diff & MASK[j]) cap[j] = t;
+    }
+    for (int j = 0; j < 12; j++)
+      if (cap_sum[j] == 0xffff || cap[j] == 0xffff) cap_sum[j] = 0xffff;
+      else cap_sum[j] += cap[j];
+    for (volatile int j = 0; j < 2000; j++) { }
+
+    // XXX: DRY?
+    n_records = 0;
+    last_v = 0x15fd;
+    record[n_records] = (struct record_t){.t = (uint16_t)-1, .v = last_v};
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, 0);
+    for (int i = 0; i < 200; i++) {
+      uint32_t a = GPIOA->IDR;
+      uint32_t f = GPIOF->IDR;
+      uint16_t cur_v = (a | (f << 6)) & last_v;
+      if (last_v != cur_v) n_records++;
+      record[n_records] = (struct record_t){.t = i, .v = cur_v};
+      last_v = cur_v;
+    }
+    for (int j = 0; j < 12; j++) cap[j] = 0xffff;
+    for (int i = 1; i <= n_records; i++) {
+      uint16_t t = record[i - 1].t + 1;
+      uint16_t diff = record[i - 1].v ^ record[i].v;
+      // swv_printf("%3d %04x\n", t, diff);
+      for (int j = 0; j < 12; j++)
+        if (diff & MASK[j]) cap[j] = t;
+    }
+    for (int j = 0; j < 12; j++)
+      if (cap_sum[j] == 0xffff || cap[j] == 0xffff) cap_sum[j] = 0xffff;
+      else cap_sum[j] += cap[j];
+    for (volatile int j = 0; j < 2000; j++) { }
   }
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, 0);
 
-  for (int i = 0; i < n_records; i++)
-    swv_printf("%3d %08x\n", record[i].t, record[i].v);
+  for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
 }
 
 int main(void)
@@ -100,6 +154,19 @@ int main(void)
   HAL_RCC_ClockConfig(&clk_init, FLASH_LATENCY_1);
 
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+
+  // Option byte
+  FLASH_OBProgramInitTypeDef ob_prog;
+  HAL_FLASH_OBGetConfig(&ob_prog);
+  if (!(ob_prog.USERConfig & FLASH_OPTR_NRST_MODE)) {
+    ob_prog.USERConfig |= FLASH_OPTR_NRST_MODE;
+    HAL_FLASH_Unlock();
+    HAL_FLASH_OB_Unlock();
+    HAL_FLASH_OBProgram(&ob_prog);
+    HAL_FLASH_OB_Lock();
+    HAL_FLASH_OB_Launch();  // System reset
+  }
+  // FLASH->OPTR |= FLASH_OPTR_NRST_MODE;
 
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -130,9 +197,10 @@ int main(void)
 
   int i = 0;
   while (1) {
-    HAL_Delay(1000);
-    swv_printf("Hello! %d\n", ++i);
-    swv_printf("sys clock = %u\n", HAL_RCC_GetSysClockFreq());
+    HAL_Delay(100);
+    // swv_printf("Hello! %d\n", ++i);
+    // swv_printf("sys clock = %u\n", HAL_RCC_GetSysClockFreq());
+    // swv_printf("FLASH_OPTR = %08x FLASH_OPTR_NRST_MODE = %08x\n", FLASH->OPTR, FLASH_OPTR_NRST_MODE);
     cap_sense();
   }
 }
