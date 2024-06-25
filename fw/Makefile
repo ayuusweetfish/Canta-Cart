@@ -201,7 +201,7 @@ $(BDIR)/$(PROJECT).elf: $(OBJS) $(TOP)/$(LDSCRIPT)
 clean:
 	rm -rf $(BDIR)/*
 
-flash:
+flash: all
 ifeq ($(FLASH_PROGRM),jlink)
 	# $(JLINKEXE) -device $(JLINK_DEVICE) -if swd -speed 4000 -JLinkScriptFile $(TOP)/Misc/jlink-script -CommanderScript $(TOP)/Misc/jlink-command
 else ifeq ($(FLASH_PROGRM),pyocd)

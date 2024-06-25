@@ -44,6 +44,25 @@ int main(void)
 {
   HAL_Init();
 
+  // ======== Clocks ========
+  RCC_OscInitTypeDef osc_init = { 0 };
+  osc_init.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  osc_init.HSEState = RCC_HSE_ON;
+  osc_init.HSEFreq = RCC_HSE_16_32MHz;
+  HAL_RCC_OscConfig(&osc_init);
+
+  RCC_ClkInitTypeDef clk_init = { 0 };
+  clk_init.ClockType =
+    RCC_CLOCKTYPE_SYSCLK |
+    RCC_CLOCKTYPE_HCLK |
+    RCC_CLOCKTYPE_PCLK1;
+  clk_init.SYSCLKSource = RCC_SYSCLKSOURCE_HSE; // 32 MHz
+  clk_init.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  clk_init.APB1CLKDivider = RCC_HCLK_DIV1;
+  HAL_RCC_ClockConfig(&clk_init, FLASH_LATENCY_1);
+
+  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+
   __HAL_RCC_GPIOA_CLK_ENABLE();
   GPIO_InitTypeDef gpio_init = {
     .Pin = GPIO_PIN_0,
@@ -58,6 +77,7 @@ int main(void)
     HAL_Delay(1000);
     HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
     swv_printf("Hello! %d\n", ++i);
+    swv_printf("sys clock = %u\n", HAL_RCC_GetSysClockFreq());
   }
 }
 
