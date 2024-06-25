@@ -43,6 +43,9 @@ static void swv_printf(const char *restrict fmt, ...)
 #define swv_printf(...)
 #endif
 
+SPI_HandleTypeDef spi1;
+TIM_HandleTypeDef tim1;
+
 #pragma GCC optimize("O3")
 static inline void cap_sense()
 {
@@ -85,15 +88,10 @@ static inline void cap_sense()
       record[n_records] = (struct record_t){.t = i, .v = cur_v};
       last_v = cur_v;
     }
-  /*
-    for (int i = 0; i <= n_records; i++)
-      swv_printf("%3d %08x\n", (int)(int16_t)record[i].t, record[i].v);
-  */
     for (int j = 0; j < 12; j++) cap[j] = 0xffff;
     for (int i = 1; i <= n_records; i++) {
       uint16_t t = record[i - 1].t + 1;
       uint16_t diff = record[i - 1].v ^ record[i].v;
-      // swv_printf("%3d %04x\n", t, diff);
       for (int j = 0; j < 12; j++)
         if (diff & MASK[j]) cap[j] = t;
     }
@@ -119,7 +117,6 @@ static inline void cap_sense()
     for (int i = 1; i <= n_records; i++) {
       uint16_t t = record[i - 1].t + 1;
       uint16_t diff = record[i - 1].v ^ record[i].v;
-      // swv_printf("%3d %04x\n", t, diff);
       for (int j = 0; j < 12; j++)
         if (diff & MASK[j]) cap[j] = t;
     }
@@ -155,7 +152,7 @@ int main(void)
 
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 
-  // Option byte
+  // ======== Option byte ========
   FLASH_OBProgramInitTypeDef ob_prog;
   HAL_FLASH_OBGetConfig(&ob_prog);
   if (!(ob_prog.USERConfig & FLASH_OPTR_NRST_MODE)) {
@@ -166,13 +163,14 @@ int main(void)
     HAL_FLASH_OB_Lock();
     HAL_FLASH_OB_Launch();  // System reset
   }
-  // FLASH->OPTR |= FLASH_OPTR_NRST_MODE;
+  // FLASH->OPTR |= FLASH_OPTR_NRST_MODE;  // Cannot be modified after POR?
 
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOF_CLK_ENABLE();
   GPIO_InitTypeDef gpio_init;
 
+  // ======== Capacitive touch sensing electrodes ========
   // BTN_OUT
   gpio_init = (GPIO_InitTypeDef){
     .Pin = GPIO_PIN_7,
@@ -195,12 +193,89 @@ int main(void)
   gpio_init.Pin = GPIO_PIN_2 | GPIO_PIN_4;
   HAL_GPIO_Init(GPIOF, &gpio_init);
 
+  // ======== SPI ========
+  gpio_init = (GPIO_InitTypeDef){
+    .Mode = GPIO_MODE_AF_PP,
+    .Pull = GPIO_NOPULL,
+    .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
+    .Alternate = GPIO_AF0_SPI1,
+  };
+  gpio_init.Pin = GPIO_PIN_1; HAL_GPIO_Init(GPIOA, &gpio_init);
+  gpio_init.Pin = GPIO_PIN_5; HAL_GPIO_Init(GPIOF, &gpio_init);
+
+  __HAL_RCC_SPI1_CLK_ENABLE();
+  spi1 = (SPI_HandleTypeDef){
+    .Instance = SPI1,
+    .Init = {
+      .Mode = SPI_MODE_MASTER,
+      .Direction = SPI_DIRECTION_2LINES,
+      .DataSize = SPI_DATASIZE_16BIT,
+      .CLKPolarity = SPI_POLARITY_LOW,  // CPOL = 0
+      .CLKPhase = SPI_PHASE_1EDGE,      // CPHA = 0
+      .NSS = SPI_NSS_SOFT,
+      .BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32,
+        // 1 MHz bitrate = 31.25 kHz @ 16b stereo
+      .FirstBit = SPI_FIRSTBIT_MSB,
+    },
+  };
+  HAL_SPI_Init(&spi1);
+
+  // ======== Timer ========
+  gpio_init = (GPIO_InitTypeDef){
+    .Pin = GPIO_PIN_6,
+    .Mode = GPIO_MODE_AF_PP,
+    .Pull = GPIO_NOPULL,
+    .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
+    .Alternate = GPIO_AF1_TIM1,
+  };
+  HAL_GPIO_Init(GPIOB, &gpio_init);
+
+  __HAL_RCC_TIM1_CLK_ENABLE();
+  tim1 = (TIM_HandleTypeDef){
+    .Instance = TIM1,
+    .Init = {
+      .Prescaler = 31,  // Synchronise with SPI bit clock
+      .CounterMode = TIM_COUNTERMODE_DOWN,
+      .Period = 31,
+      .ClockDivision = TIM_CLOCKDIVISION_DIV1,
+    },
+  };
+  HAL_TIM_PWM_Init(&tim1);
+  HAL_TIM_PWM_ConfigChannel(&tim1, &(TIM_OC_InitTypeDef){
+    .OCMode = TIM_OCMODE_PWM1,
+    .Pulse = 15,
+    .OCPolarity = TIM_OCPOLARITY_HIGH,
+    .OCNPolarity = TIM_OCNPOLARITY_HIGH,
+    .OCFastMode = TIM_OCFAST_DISABLE,
+    .OCIdleState = TIM_OCIDLESTATE_RESET,
+    .OCNIdleState = TIM_OCNIDLESTATE_RESET,
+  }, TIM_CHANNEL_3);
+  // HAL_TIM_PWM_Start(&tim1, TIM_CHANNEL_3);
+  __HAL_TIM_MOE_ENABLE(&tim1);
+  __HAL_TIM_ENABLE(&tim1);
+  // TIM1->CCER |= (TIM_CCx_ENABLE << TIM_CHANNEL_3);
+
+  uint16_t buf[512];
+#define abs(_i) ((_i) > 0 ? (_i) : (_i))
+  for (int i = 0; i < 512; i++) buf[i] = abs(i % 128 - 64) * 10; // 488 Hz
+  while (1) {
+    // HAL_SPI_Transmit(&spi1, (uint8_t *)buf, sizeof buf / sizeof buf[0], 1000);
+    int p = 0;
+    __HAL_SPI_ENABLE(&spi1);
+    TIM1->CCER |= (TIM_CCx_ENABLE << TIM_CHANNEL_3);
+    TIM1->CNT = 3;
+    SPI1->DR = buf[p++];
+    while (1) {
+      while ((SPI1->SR & SPI_FLAG_TXE) == 0) { }
+      SPI1->DR = buf[p];
+      p = (p + 1) % 512;
+    }
+    __HAL_SPI_CLEAR_OVRFLAG(&spi1);
+  }
+
   int i = 0;
   while (1) {
     HAL_Delay(100);
-    // swv_printf("Hello! %d\n", ++i);
-    // swv_printf("sys clock = %u\n", HAL_RCC_GetSysClockFreq());
-    // swv_printf("FLASH_OPTR = %08x FLASH_OPTR_NRST_MODE = %08x\n", FLASH->OPTR, FLASH_OPTR_NRST_MODE);
     cap_sense();
   }
 }
