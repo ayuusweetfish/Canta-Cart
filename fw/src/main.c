@@ -82,6 +82,7 @@ static inline void cap_sense()
     n_records = 0;
     last_v = ~0x15fd;
     record[n_records] = (struct record_t){.t = (uint16_t)-1, .v = last_v};
+    __disable_irq();
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, 1);
     for (int i = 0; i < 200; i++) {
       uint32_t a = GPIOA->IDR;
@@ -91,6 +92,7 @@ static inline void cap_sense()
       record[n_records] = (struct record_t){.t = i, .v = cur_v};
       last_v = cur_v;
     }
+    __enable_irq();
     for (int j = 0; j < 12; j++) cap[j] = 0xffff;
     for (int i = 1; i <= n_records; i++) {
       uint16_t t = record[i - 1].t + 1;
@@ -107,6 +109,7 @@ static inline void cap_sense()
     n_records = 0;
     last_v = 0x15fd;
     record[n_records] = (struct record_t){.t = (uint16_t)-1, .v = last_v};
+    __disable_irq();
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, 0);
     for (int i = 0; i < 200; i++) {
       uint32_t a = GPIOA->IDR;
@@ -116,6 +119,7 @@ static inline void cap_sense()
       record[n_records] = (struct record_t){.t = i, .v = cur_v};
       last_v = cur_v;
     }
+    __enable_irq();
     for (int j = 0; j < 12; j++) cap[j] = 0xffff;
     for (int i = 1; i <= n_records; i++) {
       uint16_t t = record[i - 1].t + 1;
@@ -130,8 +134,10 @@ static inline void cap_sense()
   }
 
   for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
+  __disable_irq();
   touch_active = false;
   for (int j = 0; j < 8; j++) if (cap_sum[j] > 200) touch_active = true;
+  __enable_irq();
 }
 
 uint16_t audio_buf[256] = { 0 };
