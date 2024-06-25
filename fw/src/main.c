@@ -44,6 +44,7 @@ static void swv_printf(const char *restrict fmt, ...)
 #endif
 
 SPI_HandleTypeDef spi1;
+DMA_HandleTypeDef dma1_ch1;
 TIM_HandleTypeDef tim1;
 
 #pragma GCC optimize("O3")
@@ -220,6 +221,30 @@ int main(void)
   };
   HAL_SPI_Init(&spi1);
 
+  // ======== DMA ========
+  __HAL_RCC_DMA_CLK_ENABLE();
+  dma1_ch1 = (DMA_HandleTypeDef){
+    .Instance = DMA1_Channel1,
+    .Init = {
+      .Direction = DMA_MEMORY_TO_PERIPH,
+      .PeriphInc = DMA_PINC_DISABLE,
+      .MemInc = DMA_MINC_ENABLE,
+      .PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD,
+      .MemDataAlignment = DMA_MDATAALIGN_HALFWORD,
+      .Mode = DMA_CIRCULAR,
+      .Priority = DMA_PRIORITY_MEDIUM,
+    },
+  };
+  HAL_DMA_Init(&dma1_ch1);
+  // HAL_SYSCFG_DMA_Req(DMA_CHANNEL_MAP_SPI1_TX);
+  HAL_DMA_ChannelMap(&dma1_ch1, DMA_CHANNEL_MAP_SPI1_TX);
+  __HAL_LINKDMA(&spi1, hdmatx, dma1_ch1);
+
+  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 15, 1);
+  HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
+  HAL_NVIC_SetPriority(SPI1_IRQn, 15, 2);
+  HAL_NVIC_EnableIRQ(SPI1_IRQn);
+
   // ======== Timer ========
   gpio_init = (GPIO_InitTypeDef){
     .Pin = GPIO_PIN_6,
@@ -263,21 +288,39 @@ int main(void)
   uint16_t buf[256] = {
     // python3 -c "from math import sin, pi; print(', '.join('%d' % round(32767.0 * 0.01 * sin(i / 64.0 * pi * 2)) for i in range(256)))"
     0, 32, 64, 95, 125, 154, 182, 208, 232, 253, 272, 289, 303, 314, 321, 326, 328, 326, 321, 314, 303, 289, 272, 253, 232, 208, 182, 154, 125, 95, 64, 32, 0, -32, -64, -95, -125, -154, -182, -208, -232, -253, -272, -289, -303, -314, -321, -326, -328, -326, -321, -314, -303, -289, -272, -253, -232, -208, -182, -154, -125, -95, -64, -32, 0, 32, 64, 95, 125, 154, 182, 208, 232, 253, 272, 289, 303, 314, 321, 326, 328, 326, 321, 314, 303, 289, 272, 253, 232, 208, 182, 154, 125, 95, 64, 32, 0, -32, -64, -95, -125, -154, -182, -208, -232, -253, -272, -289, -303, -314, -321, -326, -328, -326, -321, -314, -303, -289, -272, -253, -232, -208, -182, -154, -125, -95, -64, -32, 0, 32, 64, 95, 125, 154, 182, 208, 232, 253, 272, 289, 303, 314, 321, 326, 328, 326, 321, 314, 303, 289, 272, 253, 232, 208, 182, 154, 125, 95, 64, 32, 0, -32, -64, -95, -125, -154, -182, -208, -232, -253, -272, -289, -303, -314, -321, -326, -328, -326, -321, -314, -303, -289, -272, -253, -232, -208, -182, -154, -125, -95, -64, -32, 0, 32, 64, 95, 125, 154, 182, 208, 232, 253, 272, 289, 303, 314, 321, 326, 328, 326, 321, 314, 303, 289, 272, 253, 232, 208, 182, 154, 125, 95, 64, 32, 0, -32, -64, -95, -125, -154, -182, -208, -232, -253, -272, -289, -303, -314, -321, -326, -328, -326, -321, -314, -303, -289, -272, -253, -232, -208, -182, -154, -125, -95, -64, -32
+    // 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    // 0,
   };
   while (1) {
     // HAL_SPI_Transmit(&spi1, (uint8_t *)buf, sizeof buf / sizeof buf[0], 1000);
-    int p = 0;
+    int p = 0, q = 0;
     __HAL_SPI_ENABLE(&spi1);
     TIM1->CCER |= (TIM_CCx_ENABLE << TIM_CHANNEL_3);
     TIM1->CNT = 5;
+  /*
     SPI1->DR = buf[0];
     p++;
     while (1) {
       while ((SPI1->SR & SPI_FLAG_TXE) == 0) { }
       SPI1->DR = buf[p / 2];  // Stereo
       p = (p + 1) % 512;
+      if (++q == 31250 * 2) {
+        // __HAL_TIM_DISABLE(&tim1);
+        while (1) { }
+      }
     }
     __HAL_SPI_CLEAR_OVRFLAG(&spi1);
+  */
+
+    // HAL_DMA_Start_IT(&dma1_ch1, (uint32_t)buf, (uint32_t)&SPI1->DR, 
+    // XXX: This is number of transfers that gets written to DMA_CNDTRx,
+    // but reference manual says CNDTR (NDT) is number of bytes?
+    // Is datasheet copied from STM32F103 but PY32 actually follows STM32G0x0?
+    HAL_SPI_Transmit_DMA(&spi1, (uint8_t *)buf, sizeof buf / sizeof buf[0]);
+
+    HAL_Delay(500);
+    __HAL_TIM_DISABLE(&tim1);
+    while (1) { }
   }
 
   int i = 0;
@@ -294,4 +337,21 @@ void PendSV_Handler() { while (1) { } }
 void SysTick_Handler()
 {
   HAL_IncTick();
+}
+void DMA1_Channel1_IRQHandler()
+{
+  HAL_DMA_IRQHandler(&dma1_ch1);
+}
+
+void SPI1_IRQHandler()
+{
+  HAL_SPI_IRQHandler(&spi1);
+}
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *_spi)
+{
+  static int count = 0;
+  if (++count == 31250 * 2 / 256) {
+    swv_printf("!\n");
+    count = 0;
+  }
 }
