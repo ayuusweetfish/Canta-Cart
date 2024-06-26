@@ -7,6 +7,7 @@
 
 #define SYNTH_SAMPLE_RATE 31250
 #define SYNTH_EXTRA_SHIFT (-1)
+#define SYNTH_STEREO
 #include "../../misc/synth/canta_synth.h"
 
 #define min(_a, _b) ((_a) < (_b) ? (_a) : (_b))
@@ -318,7 +319,7 @@ int main(void)
   SPI1->CR2 = cr2;
 
   while (1) {
-    HAL_Delay(20);
+    HAL_Delay(10);
     cap_sense();
   }
 }
@@ -340,7 +341,7 @@ static inline void refill_buffer(uint16_t *buf)
 {
   // for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++)
   //   buf[i] = (last_btn[0] && i % 128 < 64) ? 0x01 : 0;
-  synth_audio((int16_t *)buf, AUDIO_BUF_HALF_SIZE);
+  synth_audio((int16_t *)(buf + 1), AUDIO_BUF_HALF_SIZE - 1);
 }
 void dma_tx_half_cplt()
 {

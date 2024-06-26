@@ -164,7 +164,6 @@ static inline uint32_t freq_for_note(int8_t n, int8_t key_base, int8_t transpose
   int degree = n - octave * 7;
   static const uint8_t scale[7] = {0, 2, 4, 5, 7, 9, 11};
   int midi_pitch = 71 + key_base + (octave * 12 + scale[degree]) + transpose;
-  printf("%d\n", midi_pitch);
   return note_freq[midi_pitch];
 }
 
@@ -189,6 +188,11 @@ static inline int16_t synth_table(uint32_t phase)
     ) >> (16 /* Max. range */ + 4 /* Avoid clipping with polyphony 10 */ + SYNTH_EXTRA_SHIFT);
 }
 
+#ifdef SYNTH_STEREO
+  #define N_CH 2
+#else
+  #define N_CH 1
+#endif
 static inline void synth_audio(int16_t *buf, uint32_t count)
 {
   memset(buf, 0, count * sizeof(int16_t));
@@ -196,32 +200,32 @@ static inline void synth_audio(int16_t *buf, uint32_t count)
     int j = 0;
     while (j < count && keys[i].state != 0) {
       if (__builtin_expect(keys[i].state == 1, 0)) {
-        for (; j < count; j++) {
+        for (; j < count; j += N_CH) {
           int16_t value = synth_table(keys[i].phase += keys[i].freq);
           keys[i].time += SYNTH_ATTACK_INCR;
           if (__builtin_expect(keys[i].time >= (1 << 15), 0)) {
             buf[j] += value;
             keys[i].state = 2;
-            j++;
+            j += N_CH;
             break;
           } else {
             buf[j] += ((int32_t)value * keys[i].time) >> 15;
           }
         }
       } else if (__builtin_expect(keys[i].state == 3, 0)) {
-        for (; j < count; j++) {
+        for (; j < count; j += N_CH) {
           int16_t value = synth_table(keys[i].phase += keys[i].freq);
           keys[i].time += SYNTH_RELEASE_INCR;
           if (__builtin_expect(keys[i].time >= (1 << 15), 0)) {
             keys[i].state = 0;
-            j++;
+            j += N_CH;
             break;
           } else {
             buf[j] += ((int32_t)value * ((1 << 15) - keys[i].time)) >> 15;
           }
         }
       } else {
-        for (; j < count; j++) {
+        for (; j < count; j += N_CH) {
           int16_t value = synth_table(keys[i].phase += keys[i].freq);
           buf[j] += value;
         }
@@ -229,6 +233,7 @@ static inline void synth_audio(int16_t *buf, uint32_t count)
     }
   }
 }
+#undef N_CH
 
 static inline void synth_buttons(bool btn[12])
 {
