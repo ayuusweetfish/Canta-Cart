@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #define SYNTH_SAMPLE_RATE 31250
-#define SYNTH_EXTRA_SHIFT (-2)
+#define SYNTH_EXTRA_SHIFT (-1)
 #include "../../misc/synth/canta_synth.h"
 
 #define min(_a, _b) ((_a) < (_b) ? (_a) : (_b))
@@ -51,7 +51,8 @@ SPI_HandleTypeDef spi1;
 DMA_HandleTypeDef dma1_ch1;
 TIM_HandleTypeDef tim1;
 
-bool touch_active = false;
+void dma_tx_half_cplt();
+void dma_tx_cplt();
 
 #pragma GCC optimize("O3")
 static inline void cap_sense()
@@ -138,12 +139,10 @@ static inline void cap_sense()
   }
 
   // for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
-  __disable_irq();
-  touch_active = false;
-  for (int j = 0; j < 8; j++) if (cap_sum[j] > 200) touch_active = true;
   bool btns[12] = { false };
   for (int j = 0; j < 12; j++) btns[j] = (cap_sum[j] > 200);
   btns[9] = btns[11] = false;
+  __disable_irq();
   synth_buttons(btns);
   __enable_irq();
   // for (int j = 0; j < 12; j++) swv_printf("%d%c", (int)btns[j], j == 11 ? '\n' : ' ');
@@ -151,47 +150,6 @@ static inline void cap_sense()
 
 uint16_t audio_buf[256] = { 0 };
 #define AUDIO_BUF_HALF_SIZE ((sizeof audio_buf / sizeof audio_buf[0]) / 2)
-static const uint16_t sine_table[256] = {
-  // python3 -c "from math import sin, pi; print(', '.join('%d' % round(32767.0 * 0.01 * sin(i / 64.0 * pi * 2)) for i in range(256)))"
-  0, 32, 64, 95, 125, 154, 182, 208, 232, 253, 272, 289, 303, 314, 321, 326, 328, 326, 321, 314, 303, 289, 272, 253, 232, 208, 182, 154, 125, 95, 64, 32, 0, -32, -64, -95, -125, -154, -182, -208, -232, -253, -272, -289, -303, -314, -321, -326, -328, -326, -321, -314, -303, -289, -272, -253, -232, -208, -182, -154, -125, -95, -64, -32, 0, 32, 64, 95, 125, 154, 182, 208, 232, 253, 272, 289, 303, 314, 321, 326, 328, 326, 321, 314, 303, 289, 272, 253, 232, 208, 182, 154, 125, 95, 64, 32, 0, -32, -64, -95, -125, -154, -182, -208, -232, -253, -272, -289, -303, -314, -321, -326, -328, -326, -321, -314, -303, -289, -272, -253, -232, -208, -182, -154, -125, -95, -64, -32, 0, 32, 64, 95, 125, 154, 182, 208, 232, 253, 272, 289, 303, 314, 321, 326, 328, 326, 321, 314, 303, 289, 272, 253, 232, 208, 182, 154, 125, 95, 64, 32, 0, -32, -64, -95, -125, -154, -182, -208, -232, -253, -272, -289, -303, -314, -321, -326, -328, -326, -321, -314, -303, -289, -272, -253, -232, -208, -182, -154, -125, -95, -64, -32, 0, 32, 64, 95, 125, 154, 182, 208, 232, 253, 272, 289, 303, 314, 321, 326, 328, 326, 321, 314, 303, 289, 272, 253, 232, 208, 182, 154, 125, 95, 64, 32, 0, -32, -64, -95, -125, -154, -182, -208, -232, -253, -272, -289, -303, -314, -321, -326, -328, -326, -321, -314, -303, -289, -272, -253, -232, -208, -182, -154, -125, -95, -64, -32
-  // 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  // 0,
-};
-
-// XXX: Simply this!
-void my_HAL_SPI_Transmit_DMA()
-{
-  void *data = audio_buf;
-  uint32_t n_xfers = sizeof audio_buf / sizeof audio_buf[0];
-
-/*
-  spi1.State       = HAL_SPI_STATE_BUSY_TX;
-  spi1.ErrorCode   = HAL_SPI_ERROR_NONE;
-  spi1.pTxBuffPtr  = data;
-  spi1.TxXferSize  = n_xfers;
-  spi1.TxXferCount = n_xfers;
-
-  spi1.pRxBuffPtr  = NULL;
-  spi1.TxISR       = NULL;
-  spi1.RxISR       = NULL;
-  spi1.RxXferSize  = 0U;
-  spi1.RxXferCount = 0U;
-*/
-
-  dma1_ch1.XferHalfCpltCallback = HAL_SPI_TxHalfCpltCallback;
-  dma1_ch1.XferCpltCallback = HAL_SPI_TxCpltCallback;
-  dma1_ch1.XferErrorCallback = NULL;
-  dma1_ch1.XferAbortCallback = NULL;
-
-  CLEAR_BIT(SPI1->CR2, SPI_CR2_LDMA_TX);
-
-  // NOTE: This is number of transfers that gets written to DMA_CNDTRx,
-  // but reference manual says CNDTR (NDT) is number of bytes?
-  // Is datasheet copied from STM32F103 but PY32 actually follows STM32G0x0?
-  HAL_DMA_Start_IT(&dma1_ch1, (uint32_t)data, (uint32_t)&SPI1->DR, n_xfers);
-  __HAL_SPI_ENABLE(&spi1);
-  __HAL_SPI_ENABLE_IT(&spi1, SPI_IT_ERR);
-}
 
 int main(void)
 {
@@ -304,8 +262,6 @@ int main(void)
 
   HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 15, 1);
   HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
-  // HAL_NVIC_SetPriority(SPI1_IRQn, 15, 2);
-  // HAL_NVIC_EnableIRQ(SPI1_IRQn);
 
   // ======== Timer ========
   gpio_init = (GPIO_InitTypeDef){
@@ -337,23 +293,30 @@ int main(void)
     .OCIdleState = TIM_OCIDLESTATE_RESET,
     .OCNIdleState = TIM_OCNIDLESTATE_RESET,
   }, TIM_CHANNEL_3);
-  // HAL_TIM_PWM_Start(&tim1, TIM_CHANNEL_3);
   __HAL_TIM_MOE_ENABLE(&tim1);
   __HAL_TIM_ENABLE(&tim1);
-  // TIM1->CCER |= (TIM_CCx_ENABLE << TIM_CHANNEL_3);
 
-#define abs(_i) ((_i) > 0 ? (_i) : (_i))
+  // Enable SPI and DMA channel
+  dma1_ch1.XferHalfCpltCallback = dma_tx_half_cplt;
+  dma1_ch1.XferCpltCallback = dma_tx_cplt;
+  dma1_ch1.XferErrorCallback = NULL;
+  dma1_ch1.XferAbortCallback = NULL;
+
+  // NOTE: This is number of transfers that gets written to DMA_CNDTRx,
+  // but reference manual says CNDTR (NDT) is number of bytes?
+  // Is datasheet copied from STM32F103 but PY32 actually follows STM32G0x0?
+  HAL_DMA_Start_IT(&dma1_ch1, (uint32_t)audio_buf, (uint32_t)&SPI1->DR,
+    sizeof audio_buf / sizeof audio_buf[0]);
   __HAL_SPI_ENABLE(&spi1);
+
+  // Enable timer PWM output
   TIM1->CCER |= (TIM_CCx_ENABLE << TIM_CHANNEL_3);
 
-  my_HAL_SPI_Transmit_DMA();
-
+  // Enable SPI DMA transmit request, synchronised with timer
   uint32_t cr2 = SPI1->CR2 | SPI_CR2_TXDMAEN;
-  TIM1->CNT = 0;
-  /* Enable Tx DMA Request */
+  TIM1->CNT = 1;
   SPI1->CR2 = cr2;
 
-  int i = 0;
   while (1) {
     HAL_Delay(20);
     cap_sense();
@@ -373,21 +336,17 @@ void DMA1_Channel1_IRQHandler()
   HAL_DMA_IRQHandler(&dma1_ch1);
 }
 
-void SPI1_IRQHandler()
-{
-  // HAL_SPI_IRQHandler(&spi1);
-}
 static inline void refill_buffer(uint16_t *buf)
 {
   // for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++)
   //   buf[i] = (last_btn[0] && i % 128 < 64) ? 0x01 : 0;
   synth_audio((int16_t *)buf, AUDIO_BUF_HALF_SIZE);
 }
-void HAL_SPI_TxHalfCpltCallback(SPI_HandleTypeDef *_spi)
+void dma_tx_half_cplt()
 {
   refill_buffer(audio_buf);
 }
-void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *_spi)
+void dma_tx_cplt()
 {
   refill_buffer(audio_buf + AUDIO_BUF_HALF_SIZE);
 }
