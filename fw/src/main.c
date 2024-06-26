@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #define SYNTH_SAMPLE_RATE 31250
-#define SYNTH_EXTRA_SHIFT 2
+#define SYNTH_EXTRA_SHIFT (-2)
 #include "../../misc/synth/canta_synth.h"
 
 #define min(_a, _b) ((_a) < (_b) ? (_a) : (_b))
@@ -159,111 +159,38 @@ static const uint16_t sine_table[256] = {
 };
 
 // XXX: Simply this!
-HAL_StatusTypeDef my_HAL_SPI_Transmit_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size)
+void my_HAL_SPI_Transmit_DMA()
 {
-  HAL_StatusTypeDef errorcode = HAL_OK;
+  void *data = audio_buf;
+  uint32_t n_xfers = sizeof audio_buf / sizeof audio_buf[0];
 
-  /* Check tx dma handle */
-  assert_param(IS_SPI_DMA_HANDLE(hspi->hdmatx));
+/*
+  spi1.State       = HAL_SPI_STATE_BUSY_TX;
+  spi1.ErrorCode   = HAL_SPI_ERROR_NONE;
+  spi1.pTxBuffPtr  = data;
+  spi1.TxXferSize  = n_xfers;
+  spi1.TxXferCount = n_xfers;
 
-  /* Check Direction parameter */
-  assert_param(IS_SPI_DIRECTION_2LINES_OR_1LINE(hspi->Init.Direction));
+  spi1.pRxBuffPtr  = NULL;
+  spi1.TxISR       = NULL;
+  spi1.RxISR       = NULL;
+  spi1.RxXferSize  = 0U;
+  spi1.RxXferCount = 0U;
+*/
 
-  /* Process Locked */
-  __HAL_LOCK(hspi);
+  dma1_ch1.XferHalfCpltCallback = HAL_SPI_TxHalfCpltCallback;
+  dma1_ch1.XferCpltCallback = HAL_SPI_TxCpltCallback;
+  dma1_ch1.XferErrorCallback = NULL;
+  dma1_ch1.XferAbortCallback = NULL;
 
-  if (hspi->State != HAL_SPI_STATE_READY)
-  {
-    errorcode = HAL_BUSY;
-    goto error;
-  }
+  CLEAR_BIT(SPI1->CR2, SPI_CR2_LDMA_TX);
 
-  if ((pData == NULL) || (Size == 0U))
-  {
-    errorcode = HAL_ERROR;
-    goto error;
-  }
-
-  /* Disable SPI peripheral */
-  __HAL_SPI_DISABLE(hspi);
-
-  /* Set the transaction information */
-  hspi->State       = HAL_SPI_STATE_BUSY_TX;
-  hspi->ErrorCode   = HAL_SPI_ERROR_NONE;
-  hspi->pTxBuffPtr  = (uint8_t *)pData;
-  hspi->TxXferSize  = Size;
-  hspi->TxXferCount = Size;
-
-  /* Init field not used in handle to zero */
-  hspi->pRxBuffPtr  = (uint8_t *)NULL;
-  hspi->TxISR       = NULL;
-  hspi->RxISR       = NULL;
-  hspi->RxXferSize  = 0U;
-  hspi->RxXferCount = 0U;
-
-  /* Configure communication direction : 1Line */
-  if (hspi->Init.Direction == SPI_DIRECTION_1LINE)
-  {
-    SPI_1LINE_TX(hspi);
-  }
-
-  /* Set the SPI TxDMA Half transfer complete callback */
-  hspi->hdmatx->XferHalfCpltCallback = HAL_SPI_TxHalfCpltCallback;
-
-  /* Set the SPI TxDMA transfer complete callback */
-  hspi->hdmatx->XferCpltCallback = HAL_SPI_TxCpltCallback;
-
-  /* Set the DMA error callback */
-  hspi->hdmatx->XferErrorCallback = NULL; /* XXX: Modified */
-
-  /* Set the DMA AbortCpltCallback */
-  hspi->hdmatx->XferAbortCallback = NULL;
-
-  CLEAR_BIT(hspi->Instance->CR2, SPI_CR2_LDMA_TX);
-  /* Packing mode is enabled only if the DMA setting is HALWORD */
-  if ((hspi->Init.DataSize <= SPI_DATASIZE_8BIT) && (hspi->hdmatx->Init.MemDataAlignment == DMA_MDATAALIGN_HALFWORD))
-  {
-    /* Check the even/odd of the data size if enabled */
-    if ((hspi->TxXferCount & 0x1U) == 0U)
-    {
-      CLEAR_BIT(hspi->Instance->CR2, SPI_CR2_LDMA_TX);
-      hspi->TxXferCount = (hspi->TxXferCount >> 1U);
-    }
-    else
-    {
-      SET_BIT(hspi->Instance->CR2, SPI_CR2_LDMA_TX);
-      hspi->TxXferCount = (hspi->TxXferCount >> 1U) + 1U;
-    }
-  }
-
-  /* Enable the Tx DMA Stream/Channel */
-  if (HAL_OK != HAL_DMA_Start_IT(hspi->hdmatx, (uint32_t)hspi->pTxBuffPtr, (uint32_t)&hspi->Instance->DR,
-                                 hspi->TxXferCount))
-  {
-    /* Update SPI error code */
-    SET_BIT(hspi->ErrorCode, HAL_SPI_ERROR_DMA);
-    errorcode = HAL_ERROR;
-
-    hspi->State = HAL_SPI_STATE_READY;
-    goto error;
-  }
-
-  /* Check if the SPI is already enabled */
-  if ((hspi->Instance->CR1 & SPI_CR1_SPE) != SPI_CR1_SPE)
-  {
-    /* Enable SPI peripheral */
-    __HAL_SPI_ENABLE(hspi);
-  }
-
-  /* Enable the SPI Error Interrupt Bit */
-  __HAL_SPI_ENABLE_IT(hspi, (SPI_IT_ERR));
-
-  /* XXX: Modified */
-
-error :
-  /* Process Unlocked */
-  __HAL_UNLOCK(hspi);
-  return errorcode;
+  // NOTE: This is number of transfers that gets written to DMA_CNDTRx,
+  // but reference manual says CNDTR (NDT) is number of bytes?
+  // Is datasheet copied from STM32F103 but PY32 actually follows STM32G0x0?
+  HAL_DMA_Start_IT(&dma1_ch1, (uint32_t)data, (uint32_t)&SPI1->DR, n_xfers);
+  __HAL_SPI_ENABLE(&spi1);
+  __HAL_SPI_ENABLE_IT(&spi1, SPI_IT_ERR);
 }
 
 int main(void)
@@ -377,8 +304,8 @@ int main(void)
 
   HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 15, 1);
   HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
-  HAL_NVIC_SetPriority(SPI1_IRQn, 15, 2);
-  HAL_NVIC_EnableIRQ(SPI1_IRQn);
+  // HAL_NVIC_SetPriority(SPI1_IRQn, 15, 2);
+  // HAL_NVIC_EnableIRQ(SPI1_IRQn);
 
   // ======== Timer ========
   gpio_init = (GPIO_InitTypeDef){
@@ -419,13 +346,10 @@ int main(void)
   __HAL_SPI_ENABLE(&spi1);
   TIM1->CCER |= (TIM_CCx_ENABLE << TIM_CHANNEL_3);
 
-  // NOTE: This is number of transfers that gets written to DMA_CNDTRx,
-  // but reference manual says CNDTR (NDT) is number of bytes?
-  // Is datasheet copied from STM32F103 but PY32 actually follows STM32G0x0?
-  my_HAL_SPI_Transmit_DMA(&spi1, (uint8_t *)audio_buf, sizeof audio_buf / sizeof audio_buf[0]);
+  my_HAL_SPI_Transmit_DMA();
 
   uint32_t cr2 = SPI1->CR2 | SPI_CR2_TXDMAEN;
-  TIM1->CNT = 2;
+  TIM1->CNT = 0;
   /* Enable Tx DMA Request */
   SPI1->CR2 = cr2;
 
@@ -451,16 +375,12 @@ void DMA1_Channel1_IRQHandler()
 
 void SPI1_IRQHandler()
 {
-  HAL_SPI_IRQHandler(&spi1);
+  // HAL_SPI_IRQHandler(&spi1);
 }
 static inline void refill_buffer(uint16_t *buf)
 {
-/*
-  if (touch_active)
-    for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++) buf[i] = sine_table[i];
-  else
-    for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++) buf[i] = 0;
-*/
+  // for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++)
+  //   buf[i] = (last_btn[0] && i % 128 < 64) ? 0x01 : 0;
   synth_audio((int16_t *)buf, AUDIO_BUF_HALF_SIZE);
 }
 void HAL_SPI_TxHalfCpltCallback(SPI_HandleTypeDef *_spi)
