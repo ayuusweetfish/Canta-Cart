@@ -5,6 +5,10 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define SYNTH_SAMPLE_RATE 31250
+#define SYNTH_EXTRA_SHIFT 2
+#include "../../misc/synth/canta_synth.h"
+
 #define min(_a, _b) ((_a) < (_b) ? (_a) : (_b))
 #define max(_a, _b) ((_a) > (_b) ? (_a) : (_b))
 
