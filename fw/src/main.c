@@ -137,14 +137,20 @@ static inline void cap_sense()
     for (volatile int j = 0; j < 2000; j++) { }
   }
 
-  for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
+  // for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
   __disable_irq();
   touch_active = false;
   for (int j = 0; j < 8; j++) if (cap_sum[j] > 200) touch_active = true;
+  bool btns[12] = { false };
+  for (int j = 0; j < 12; j++) btns[j] = (cap_sum[j] > 200);
+  btns[9] = btns[11] = false;
+  synth_buttons(btns);
   __enable_irq();
+  // for (int j = 0; j < 12; j++) swv_printf("%d%c", (int)btns[j], j == 11 ? '\n' : ' ');
 }
 
 uint16_t audio_buf[256] = { 0 };
+#define AUDIO_BUF_HALF_SIZE ((sizeof audio_buf / sizeof audio_buf[0]) / 2)
 static const uint16_t sine_table[256] = {
   // python3 -c "from math import sin, pi; print(', '.join('%d' % round(32767.0 * 0.01 * sin(i / 64.0 * pi * 2)) for i in range(256)))"
   0, 32, 64, 95, 125, 154, 182, 208, 232, 253, 272, 289, 303, 314, 321, 326, 328, 326, 321, 314, 303, 289, 272, 253, 232, 208, 182, 154, 125, 95, 64, 32, 0, -32, -64, -95, -125, -154, -182, -208, -232, -253, -272, -289, -303, -314, -321, -326, -328, -326, -321, -314, -303, -289, -272, -253, -232, -208, -182, -154, -125, -95, -64, -32, 0, 32, 64, 95, 125, 154, 182, 208, 232, 253, 272, 289, 303, 314, 321, 326, 328, 326, 321, 314, 303, 289, 272, 253, 232, 208, 182, 154, 125, 95, 64, 32, 0, -32, -64, -95, -125, -154, -182, -208, -232, -253, -272, -289, -303, -314, -321, -326, -328, -326, -321, -314, -303, -289, -272, -253, -232, -208, -182, -154, -125, -95, -64, -32, 0, 32, 64, 95, 125, 154, 182, 208, 232, 253, 272, 289, 303, 314, 321, 326, 328, 326, 321, 314, 303, 289, 272, 253, 232, 208, 182, 154, 125, 95, 64, 32, 0, -32, -64, -95, -125, -154, -182, -208, -232, -253, -272, -289, -303, -314, -321, -326, -328, -326, -321, -314, -303, -289, -272, -253, -232, -208, -182, -154, -125, -95, -64, -32, 0, 32, 64, 95, 125, 154, 182, 208, 232, 253, 272, 289, 303, 314, 321, 326, 328, 326, 321, 314, 303, 289, 272, 253, 232, 208, 182, 154, 125, 95, 64, 32, 0, -32, -64, -95, -125, -154, -182, -208, -232, -253, -272, -289, -303, -314, -321, -326, -328, -326, -321, -314, -303, -289, -272, -253, -232, -208, -182, -154, -125, -95, -64, -32
@@ -304,7 +310,7 @@ int main(void)
 #define abs(_i) ((_i) > 0 ? (_i) : (_i))
   __HAL_SPI_ENABLE(&spi1);
   TIM1->CCER |= (TIM_CCx_ENABLE << TIM_CHANNEL_3);
-  TIM1->CNT = 5;
+  TIM1->CNT = 4;
 
   // NOTE: This is number of transfers that gets written to DMA_CNDTRx,
   // but reference manual says CNDTR (NDT) is number of bytes?
@@ -335,17 +341,21 @@ void SPI1_IRQHandler()
 {
   HAL_SPI_IRQHandler(&spi1);
 }
+static inline void refill_buffer(uint16_t *buf)
+{
+/*
+  if (touch_active)
+    for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++) buf[i] = sine_table[i];
+  else
+    for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++) buf[i] = 0;
+*/
+  synth_audio((int16_t *)buf, AUDIO_BUF_HALF_SIZE);
+}
 void HAL_SPI_TxHalfCpltCallback(SPI_HandleTypeDef *_spi)
 {
-  if (touch_active)
-    for (int i = 0; i < 128; i++) audio_buf[i] = sine_table[i];
-  else
-    for (int i = 0; i < 128; i++) audio_buf[i] = 0;
+  refill_buffer(audio_buf);
 }
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *_spi)
 {
-  if (touch_active)
-    for (int i = 128; i < 256; i++) audio_buf[i] = sine_table[i];
-  else
-    for (int i = 128; i < 256; i++) audio_buf[i] = 0;
+  refill_buffer(audio_buf + AUDIO_BUF_HALF_SIZE);
 }
