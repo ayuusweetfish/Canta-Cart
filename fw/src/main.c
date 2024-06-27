@@ -13,6 +13,8 @@
 #define min(_a, _b) ((_a) < (_b) ? (_a) : (_b))
 #define max(_a, _b) ((_a) > (_b) ? (_a) : (_b))
 
+#define RELEASE
+
 #ifndef RELEASE
 static uint8_t swv_buf[256];
 static size_t swv_buf_ptr = 0;
@@ -86,7 +88,7 @@ static inline void cap_sense()
     uint16_t last_v;
 
     n_records = 0;
-    last_v = ~0x15fd;
+    last_v = ~0x75fd;
     record[n_records] = (struct record_t){.t = (uint16_t)-1, .v = last_v};
     __disable_irq();
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, 1);
@@ -113,7 +115,7 @@ static inline void cap_sense()
 
     // XXX: DRY?
     n_records = 0;
-    last_v = 0x15fd;
+    last_v = 0x75fd;
     record[n_records] = (struct record_t){.t = (uint16_t)-1, .v = last_v};
     __disable_irq();
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, 0);
@@ -142,7 +144,9 @@ static inline void cap_sense()
   // for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
   bool btns[12] = { false };
   for (int j = 0; j < 12; j++) btns[j] = (cap_sum[j] > 200);
+#ifndef RELEASE
   btns[9] = btns[11] = false;
+#endif
   __disable_irq();
   synth_buttons(btns);
   __enable_irq();
@@ -211,7 +215,11 @@ int main(void)
     .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
   };
   gpio_init.Pin = GPIO_PIN_0 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 |
-                  GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_12;
+                  GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_12
+#ifdef RELEASE
+                | GPIO_PIN_13 | GPIO_PIN_14
+#endif
+                ;
   HAL_GPIO_Init(GPIOA, &gpio_init);
   gpio_init.Pin = GPIO_PIN_2 | GPIO_PIN_4;
   HAL_GPIO_Init(GPIOF, &gpio_init);
