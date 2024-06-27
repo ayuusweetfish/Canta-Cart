@@ -13,7 +13,7 @@
 #define min(_a, _b) ((_a) < (_b) ? (_a) : (_b))
 #define max(_a, _b) ((_a) > (_b) ? (_a) : (_b))
 
-#define RELEASE
+// #define RELEASE
 
 #ifndef RELEASE
 static uint8_t swv_buf[256];
@@ -142,8 +142,10 @@ static inline void cap_sense()
   }
 
   // for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
-  bool btns[12] = { false };
-  for (int j = 0; j < 12; j++) btns[j] = (cap_sum[j] > 200);
+  static bool btns[12] = { false };
+  for (int j = 0; j < 12; j++)
+    if (!btns[j] && cap_sum[j] > 500) btns[j] = true;
+    else if (btns[j] && cap_sum[j] < 200) btns[j] = false;
 #ifndef RELEASE
   btns[9] = btns[11] = false;
 #endif
