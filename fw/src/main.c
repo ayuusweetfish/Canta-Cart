@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #define SYNTH_SAMPLE_RATE 31250
-#define SYNTH_EXTRA_SHIFT (-1)
+#define SYNTH_EXTRA_SHIFT (-2)
 #define SYNTH_STEREO
 #include "../../misc/synth/canta_synth.h"
 
@@ -295,7 +295,8 @@ int main(void)
     .OCNIdleState = TIM_OCNIDLESTATE_RESET,
   }, TIM_CHANNEL_3);
   __HAL_TIM_MOE_ENABLE(&tim1);
-  __HAL_TIM_ENABLE(&tim1);
+  // Enable timer PWM output
+  TIM1->CCER |= (TIM_CCx_ENABLE << TIM_CHANNEL_3);
 
   // Enable SPI and DMA channel
   dma1_ch1.XferHalfCpltCallback = dma_tx_half_cplt;
@@ -308,15 +309,20 @@ int main(void)
   // Is datasheet copied from STM32F103 but PY32 actually follows STM32G0x0?
   HAL_DMA_Start_IT(&dma1_ch1, (uint32_t)audio_buf, (uint32_t)&SPI1->DR,
     sizeof audio_buf / sizeof audio_buf[0]);
-  __HAL_SPI_ENABLE(&spi1);
 
-  // Enable timer PWM output
-  TIM1->CCER |= (TIM_CCx_ENABLE << TIM_CHANNEL_3);
+  // Enable SPI DMA transmit request
+  uint32_t spi1_cr2 = SPI1->CR2 | SPI_CR2_TXDMAEN;
+  // Enable SPI
+  uint32_t spi1_cr1 = SPI1->CR1 | SPI_CR1_SPE;
+  // Enable timer
+  uint32_t tim1_cr1 = TIM1->CR1 | TIM_CR1_CEN;
 
-  // Enable SPI DMA transmit request, synchronised with timer
-  uint32_t cr2 = SPI1->CR2 | SPI_CR2_TXDMAEN;
-  TIM1->CNT = 1;
-  SPI1->CR2 = cr2;
+  TIM1->CNT = 0;
+  SPI1->CR2 = spi1_cr2;
+  TIM1->CR1 = tim1_cr1;
+  __asm__ volatile ("nop");
+  __asm__ volatile ("nop");
+  SPI1->CR1 = spi1_cr1;
 
   while (1) {
     HAL_Delay(10);
