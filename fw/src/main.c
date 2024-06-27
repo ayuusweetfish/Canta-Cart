@@ -13,7 +13,15 @@
 #define min(_a, _b) ((_a) < (_b) ? (_a) : (_b))
 #define max(_a, _b) ((_a) > (_b) ? (_a) : (_b))
 
-// #define RELEASE
+#define RELEASE
+
+#ifdef R_470K
+#define TOUCH_ON_THR  250
+#define TOUCH_OFF_THR 100
+#else
+#define TOUCH_ON_THR  500
+#define TOUCH_OFF_THR 200
+#endif
 
 #ifndef RELEASE
 static uint8_t swv_buf[256];
@@ -144,8 +152,8 @@ static inline void cap_sense()
   // for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
   static bool btns[12] = { false };
   for (int j = 0; j < 12; j++)
-    if (!btns[j] && cap_sum[j] > 500) btns[j] = true;
-    else if (btns[j] && cap_sum[j] < 200) btns[j] = false;
+    if (!btns[j] && cap_sum[j] > TOUCH_ON_THR) btns[j] = true;
+    else if (btns[j] && cap_sum[j] < TOUCH_OFF_THR) btns[j] = false;
 #ifndef RELEASE
   btns[9] = btns[11] = false;
 #endif
