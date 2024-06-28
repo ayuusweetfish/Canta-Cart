@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #define SYNTH_SAMPLE_RATE 31250
-#define SYNTH_EXTRA_SHIFT (-1)
+#define SYNTH_EXTRA_SHIFT (-2)
 #define SYNTH_STEREO
 #include "../../misc/synth/canta_synth.h"
 
