@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #define SYNTH_SAMPLE_RATE 31250
-#define SYNTH_EXTRA_SHIFT (-2)
+#define SYNTH_EXTRA_SHIFT 0
 #define SYNTH_STEREO
 #include "../../misc/synth/canta_synth.h"
 
@@ -15,9 +15,10 @@
 
 #define RELEASE
 
+#define R_470K
 #ifdef R_470K
-#define TOUCH_ON_THR  250
-#define TOUCH_OFF_THR 100
+#define TOUCH_ON_THR  180
+#define TOUCH_OFF_THR  80
 #else
 #define TOUCH_ON_THR  500
 #define TOUCH_OFF_THR 200
@@ -330,20 +331,58 @@ int main(void)
 
   // Enable SPI DMA transmit request
   uint32_t spi1_cr2 = SPI1->CR2 | SPI_CR2_TXDMAEN;
+  SPI1->CR2 = spi1_cr2;
+
   // Enable SPI
   uint32_t spi1_cr1 = SPI1->CR1 | SPI_CR1_SPE;
   // Enable timer
   uint32_t tim1_cr1 = TIM1->CR1 | TIM_CR1_CEN;
 
-  TIM1->CNT = 0;
-  SPI1->CR2 = spi1_cr2;
-  TIM1->CR1 = tim1_cr1;
-  __asm__ volatile ("nop");
-  __asm__ volatile ("nop");
-  SPI1->CR1 = spi1_cr1;
+  uint32_t addr_scratch;
+  __asm__ volatile (
+    "ldr %0, =%1\n"
+    "str %2, [%0, #0]\n"  // TIM1->CNT = 0;
+    "ldr %0, =%3\n"
+    "str %4, [%0, #0]\n"  // TIM1->CR1 = tim1_cr1;
+    "ldr %0, =%5\n"
+    "str %6, [%0, #0]\n"  // SPI1->CR1 = spi1_cr1;
+    "nop\n" // 28 cycles, as timer prescaler is 32
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    : "=&l" (addr_scratch)
+    : "i" (&TIM1->CNT), "l" (0),
+      "i" (&TIM1->CR1), "l" (tim1_cr1),
+      "i" (&SPI1->CR1), "l" (spi1_cr1)
+    : "memory"
+  );
 
   while (1) {
-    HAL_Delay(10);
+    HAL_Delay(1);
     cap_sense();
   }
 }
