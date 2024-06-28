@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #define SYNTH_SAMPLE_RATE 31250
-#define SYNTH_EXTRA_SHIFT 0
+#define SYNTH_EXTRA_SHIFT (-1)
 #define SYNTH_STEREO
 #include "../../misc/synth/canta_synth.h"
 
@@ -15,7 +15,7 @@
 
 #define RELEASE
 
-#define R_470K
+// #define R_470K
 #ifdef R_470K
 #define TOUCH_ON_THR  180
 #define TOUCH_OFF_THR  80
@@ -340,42 +340,44 @@ int main(void)
 
   uint32_t addr_scratch;
   __asm__ volatile (
-    "ldr %0, =%1\n"
-    "str %2, [%0, #0]\n"  // TIM1->CNT = 0;
     "ldr %0, =%3\n"
     "str %4, [%0, #0]\n"  // TIM1->CR1 = tim1_cr1;
+    "ldr %0, =%1\n"
+    "str %2, [%0, #0]\n"  // TIM1->CNT = 0;
+    "nop\n" // 30 cycles, as timer prescaler is 32
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
+    "nop\n"
     "ldr %0, =%5\n"
     "str %6, [%0, #0]\n"  // SPI1->CR1 = spi1_cr1;
-    "nop\n" // 28 cycles, as timer prescaler is 32
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
     : "=&l" (addr_scratch)
-    : "i" (&TIM1->CNT), "l" (0),
+    : "i" (&TIM1->CNT), "l" (1),
       "i" (&TIM1->CR1), "l" (tim1_cr1),
       "i" (&SPI1->CR1), "l" (spi1_cr1)
     : "memory"
