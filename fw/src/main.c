@@ -14,8 +14,9 @@
 #define max(_a, _b) ((_a) > (_b) ? (_a) : (_b))
 
 #define RELEASE
-
 // #define R_470K
+// #define IGNORE_BTN_6
+
 #ifdef R_470K
 #define TOUCH_ON_THR  180
 #define TOUCH_OFF_THR  80
@@ -157,6 +158,9 @@ static inline void cap_sense()
     else if (btns[j] && cap_sum[j] < TOUCH_OFF_THR) btns[j] = false;
 #ifndef RELEASE
   btns[9] = btns[11] = false;
+#endif
+#ifdef IGNORE_BTN_6
+  btns[6] = false;
 #endif
   __disable_irq();
   synth_buttons(btns);
