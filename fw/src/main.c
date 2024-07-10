@@ -13,7 +13,7 @@
 #define min(_a, _b) ((_a) < (_b) ? (_a) : (_b))
 #define max(_a, _b) ((_a) > (_b) ? (_a) : (_b))
 
-#define RELEASE
+// #define RELEASE
 // #define R_470K
 // #define IGNORE_BTN_6
 
@@ -24,6 +24,9 @@
 #define TOUCH_ON_THR  500
 #define TOUCH_OFF_THR 200
 #endif
+
+#define BTN_OUT_PORT GPIOF
+#define BTN_OUT_PIN  GPIO_PIN_4
 
 #ifndef RELEASE
 static uint8_t swv_buf[256];
@@ -79,8 +82,8 @@ static inline void cap_sense()
   uint16_t cap_sum[12] = { 0 };
 
   static const uint16_t MASK[12] = {
-    1 <<  8,
     1 <<  0,
+    1 <<  1,
     1 <<  2,
     1 <<  3,
     1 <<  4,
@@ -101,7 +104,7 @@ static inline void cap_sense()
     last_v = ~0x75fd;
     record[n_records] = (struct record_t){.t = (uint16_t)-1, .v = last_v};
     __disable_irq();
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, 1);
+    HAL_GPIO_WritePin(BTN_OUT_PORT, BTN_OUT_PIN, 1);
     for (int i = 0; i < 200; i++) {
       uint32_t a = GPIOA->IDR;
       uint32_t f = GPIOF->IDR;
@@ -128,7 +131,7 @@ static inline void cap_sense()
     last_v = 0x75fd;
     record[n_records] = (struct record_t){.t = (uint16_t)-1, .v = last_v};
     __disable_irq();
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, 0);
+    HAL_GPIO_WritePin(BTN_OUT_PORT, BTN_OUT_PIN, 0);
     for (int i = 0; i < 200; i++) {
       uint32_t a = GPIOA->IDR;
       uint32_t f = GPIOF->IDR;
@@ -151,7 +154,7 @@ static inline void cap_sense()
     for (volatile int j = 0; j < 2000; j++) { }
   }
 
-  // for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
+  for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
   static bool btns[12] = { false };
   for (int j = 0; j < 12; j++)
     if (!btns[j] && cap_sum[j] > TOUCH_ON_THR) btns[j] = true;
@@ -215,13 +218,13 @@ int main(void)
   // ======== Capacitive touch sensing electrodes ========
   // BTN_OUT
   gpio_init = (GPIO_InitTypeDef){
-    .Pin = GPIO_PIN_7,
+    .Pin = BTN_OUT_PIN,
     .Mode = GPIO_MODE_OUTPUT_PP,
     .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
   };
-  HAL_GPIO_Init(GPIOB, &gpio_init);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, 0);
+  HAL_GPIO_Init(BTN_OUT_PORT, &gpio_init);
+  HAL_GPIO_WritePin(BTN_OUT_PORT, BTN_OUT_PIN, 0);
 
   // BTN_xx (xx = 01, .., 12)
   gpio_init = (GPIO_InitTypeDef){
@@ -229,24 +232,25 @@ int main(void)
     .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
   };
-  gpio_init.Pin = GPIO_PIN_0 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 |
+  gpio_init.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 |
                   GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_12
 #ifdef RELEASE
                 | GPIO_PIN_13 | GPIO_PIN_14
 #endif
                 ;
   HAL_GPIO_Init(GPIOA, &gpio_init);
-  gpio_init.Pin = GPIO_PIN_2 | GPIO_PIN_4;
+  gpio_init.Pin = GPIO_PIN_2;
   HAL_GPIO_Init(GPIOF, &gpio_init);
 
   // ======== SPI ========
+  // PB5 AF0 SPI1_MOSI
   gpio_init = (GPIO_InitTypeDef){
     .Mode = GPIO_MODE_AF_PP,
     .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
     .Alternate = GPIO_AF0_SPI1,
   };
-  gpio_init.Pin = GPIO_PIN_1; HAL_GPIO_Init(GPIOA, &gpio_init);
+  // gpio_init.Pin = GPIO_PIN_1; HAL_GPIO_Init(GPIOA, &gpio_init);
   gpio_init.Pin = GPIO_PIN_5; HAL_GPIO_Init(GPIOB, &gpio_init);
 
   __HAL_RCC_SPI1_CLK_ENABLE();
@@ -288,6 +292,7 @@ int main(void)
   HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
 
   // ======== Timer ========
+  // PB6 AF1 TIM1_CH3
   gpio_init = (GPIO_InitTypeDef){
     .Pin = GPIO_PIN_6,
     .Mode = GPIO_MODE_AF_PP,
