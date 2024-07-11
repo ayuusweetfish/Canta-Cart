@@ -16,6 +16,7 @@
 // #define RELEASE
 // #define R_470K
 // #define IGNORE_BTN_6
+#define PD_BTN_1
 
 #ifdef R_470K
 #define TOUCH_ON_THR  180
@@ -65,7 +66,7 @@ static void swv_printf(const char *restrict fmt, ...)
 
 SPI_HandleTypeDef spi1;
 DMA_HandleTypeDef dma1_ch1;
-TIM_HandleTypeDef tim1;
+TIM_HandleTypeDef tim1, tim17;
 
 void dma_tx_half_cplt();
 void dma_tx_cplt();
@@ -143,6 +144,11 @@ static inline void cap_sense()
 #ifdef IGNORE_BTN_6
   btns[6] = false;
 #endif
+#ifdef PD_BTN_1
+  btns[0] = false;
+  for (int i = 0; i < 12; i++) btns[i] = false;
+  btns[0] = true;
+#endif
   __disable_irq();
   synth_buttons(btns);
   __enable_irq();
@@ -216,9 +222,23 @@ int main(void)
                 | GPIO_PIN_13 | GPIO_PIN_14
 #endif
                 ;
+#ifdef PD_BTN_1
+  gpio_init.Pin &= ~GPIO_PIN_0;
+#endif
   HAL_GPIO_Init(GPIOA, &gpio_init);
   gpio_init.Pin = GPIO_PIN_2;
   HAL_GPIO_Init(GPIOF, &gpio_init);
+
+#ifdef PD_BTN_1
+  gpio_init = (GPIO_InitTypeDef){
+    .Pin = GPIO_PIN_0,
+    .Mode = GPIO_MODE_OUTPUT_PP,
+    .Pull = GPIO_PULLDOWN,
+    .Speed = GPIO_SPEED_FREQ_LOW,
+  };
+  HAL_GPIO_Init(GPIOA, &gpio_init);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, 0);
+#endif
 
   // ======== SPI ========
   // PB5 AF0 SPI1_MOSI
@@ -302,7 +322,42 @@ int main(void)
   }, TIM_CHANNEL_3);
   __HAL_TIM_MOE_ENABLE(&tim1);
   // Enable timer PWM output
-  TIM1->CCER |= (TIM_CCx_ENABLE << TIM_CHANNEL_3);
+  TIM1->CCER |= TIM_CCER_CC3E;
+
+  // PB7 AF2 TIM17_CH1N
+  gpio_init = (GPIO_InitTypeDef){
+    .Pin = GPIO_PIN_7,
+    .Mode = GPIO_MODE_AF_PP,
+    .Pull = GPIO_NOPULL,
+    .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
+    .Alternate = GPIO_AF2_TIM17,
+  };
+  HAL_GPIO_Init(GPIOB, &gpio_init);
+
+  __HAL_RCC_TIM17_CLK_ENABLE();
+  tim17 = (TIM_HandleTypeDef){
+    .Instance = TIM17,
+    .Init = {
+      .Prescaler = 0,
+      .CounterMode = TIM_COUNTERMODE_DOWN,
+      .Period = 31,
+      .ClockDivision = TIM_CLOCKDIVISION_DIV1,
+    },
+  };
+  HAL_TIM_PWM_Init(&tim17);
+  HAL_TIM_PWM_ConfigChannel(&tim17, &(TIM_OC_InitTypeDef){
+    .OCMode = TIM_OCMODE_PWM1,
+    .Pulse = 15,
+    .OCPolarity = TIM_OCPOLARITY_HIGH,
+    .OCNPolarity = TIM_OCNPOLARITY_HIGH,
+    .OCFastMode = TIM_OCFAST_DISABLE,
+    .OCIdleState = TIM_OCIDLESTATE_RESET,
+    .OCNIdleState = TIM_OCNIDLESTATE_RESET,
+  }, TIM_CHANNEL_1);
+  __HAL_TIM_MOE_ENABLE(&tim17);
+  // Enable timer PWM output
+  TIM17->CCER |= TIM_CCER_CC1NE;
+  // TIM17->CR1 |= TIM_CR1_CEN;
 
   // Enable SPI and DMA channel
   dma1_ch1.XferHalfCpltCallback = dma_tx_half_cplt;
@@ -322,16 +377,17 @@ int main(void)
 
   // Enable SPI
   uint32_t spi1_cr1 = SPI1->CR1 | SPI_CR1_SPE;
-  // Enable timer
+  // Enable timers
   uint32_t tim1_cr1 = TIM1->CR1 | TIM_CR1_CEN;
+  uint32_t tim17_cr1 = TIM17->CR1 | TIM_CR1_CEN;
 
   uint32_t addr_scratch;
   __asm__ volatile (
     "ldr %0, =%3\n"
     "str %4, [%0, #0]\n"  // TIM1->CR1 = tim1_cr1;
     "ldr %0, =%1\n"
-    "str %2, [%0, #0]\n"  // TIM1->CNT = 0;
-    "nop\n" // 30 cycles, as timer prescaler is 32
+    "str %2, [%0, #0]\n"  // TIM1->CNT = 1;
+    "nop\n" // 26 cycles, as timer prescaler is 32
     "nop\n"
     "nop\n"
     "nop\n"
@@ -357,15 +413,17 @@ int main(void)
     "nop\n"
     "nop\n"
     "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
+    "ldr %0, =%7\n"
+    "str %8, [%0, #0]\n"  // TIM17->CR1 = tim17_cr1;
     "ldr %0, =%5\n"
-    "str %6, [%0, #0]\n"  // SPI1->CR1 = spi1_cr1;
+    "str %6, [%0, #0]\n"  // TIM17->CNT = 28;
+    "ldr %0, =%9\n"
+    "str %10, [%0, #0]\n"  // SPI1->CR1 = spi1_cr1;
     : "=&l" (addr_scratch)
     : "i" (&TIM1->CNT), "l" (1),
       "i" (&TIM1->CR1), "l" (tim1_cr1),
+      "i" (&TIM17->CNT), "l" (18),
+      "i" (&TIM17->CR1), "l" (tim17_cr1),
       "i" (&SPI1->CR1), "l" (spi1_cr1)
     : "memory"
   );
@@ -394,6 +452,8 @@ static inline void refill_buffer(uint16_t *buf)
   // for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++)
   //   buf[i] = (last_btn[0] && i % 128 < 64) ? 0x01 : 0;
   synth_audio((int16_t *)(buf + 1), AUDIO_BUF_HALF_SIZE - 1);
+  // for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++) buf[i] += 0x0;
+  // for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++) buf[i] = 0x6000;
 }
 void dma_tx_half_cplt()
 {
