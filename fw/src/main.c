@@ -92,16 +92,19 @@ static inline void cap_sense()
     1 <<  7,
     1 << 12,
     1 << 13,
-    1 << 10,
+    1 <<  8,
     1 << 14,
   };
+  static const uint16_t FULL_MASK =
+    MASK[ 0] | MASK[ 1] | MASK[ 2] | MASK[ 3] | MASK[ 4] | MASK[ 5] |
+    MASK[ 6] | MASK[ 7] | MASK[ 8] | MASK[ 9] | MASK[10] | MASK[11];
 
   for (int its = 0; its < 5; its++) {
     int n_records;
     uint16_t last_v;
 
     n_records = 0;
-    last_v = ~0x75fd;
+    last_v = ~FULL_MASK;
     record[n_records] = (struct record_t){.t = (uint16_t)-1, .v = last_v};
     __disable_irq();
     HAL_GPIO_WritePin(BTN_OUT_PORT, BTN_OUT_PIN, 1);
@@ -128,7 +131,7 @@ static inline void cap_sense()
 
     // XXX: DRY?
     n_records = 0;
-    last_v = 0x75fd;
+    last_v = FULL_MASK;
     record[n_records] = (struct record_t){.t = (uint16_t)-1, .v = last_v};
     __disable_irq();
     HAL_GPIO_WritePin(BTN_OUT_PORT, BTN_OUT_PIN, 0);
