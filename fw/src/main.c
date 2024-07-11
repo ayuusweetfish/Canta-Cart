@@ -14,17 +14,10 @@
 #define max(_a, _b) ((_a) > (_b) ? (_a) : (_b))
 
 // #define RELEASE
-// #define R_470K
-// #define IGNORE_BTN_6
-#define PD_BTN_1
+// #define PD_BTN_1
 
-#ifdef R_470K
-#define TOUCH_ON_THR  180
-#define TOUCH_OFF_THR  80
-#else
 #define TOUCH_ON_THR  500
 #define TOUCH_OFF_THR 200
-#endif
 
 #define BTN_OUT_PORT GPIOF
 #define BTN_OUT_PIN  GPIO_PIN_4
@@ -140,9 +133,6 @@ static inline void cap_sense()
     else if (btns[j] && cap_sum[j] < TOUCH_OFF_THR) btns[j] = false;
 #ifndef RELEASE
   btns[9] = btns[11] = false;
-#endif
-#ifdef IGNORE_BTN_6
-  btns[6] = false;
 #endif
 #ifdef PD_BTN_1
   btns[0] = false;
@@ -416,13 +406,13 @@ int main(void)
     "ldr %0, =%7\n"
     "str %8, [%0, #0]\n"  // TIM17->CR1 = tim17_cr1;
     "ldr %0, =%5\n"
-    "str %6, [%0, #0]\n"  // TIM17->CNT = 28;
+    "str %6, [%0, #0]\n"  // TIM17->CNT = 10;
     "ldr %0, =%9\n"
     "str %10, [%0, #0]\n"  // SPI1->CR1 = spi1_cr1;
     : "=&l" (addr_scratch)
     : "i" (&TIM1->CNT), "l" (1),
       "i" (&TIM1->CR1), "l" (tim1_cr1),
-      "i" (&TIM17->CNT), "l" (18),
+      "i" (&TIM17->CNT), "l" (10),
       "i" (&TIM17->CR1), "l" (tim17_cr1),
       "i" (&SPI1->CR1), "l" (spi1_cr1)
     : "memory"
@@ -452,7 +442,6 @@ static inline void refill_buffer(uint16_t *buf)
   // for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++)
   //   buf[i] = (last_btn[0] && i % 128 < 64) ? 0x01 : 0;
   synth_audio((int16_t *)(buf + 1), AUDIO_BUF_HALF_SIZE - 1);
-  // for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++) buf[i] += 0x0;
   // for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++) buf[i] = 0x6000;
 }
 void dma_tx_half_cplt()
