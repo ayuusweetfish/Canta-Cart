@@ -99,46 +99,17 @@ static inline void cap_sense()
     MASK[ 0] | MASK[ 1] | MASK[ 2] | MASK[ 3] | MASK[ 4] | MASK[ 5] |
     MASK[ 6] | MASK[ 7] | MASK[ 8] | MASK[ 9] | MASK[10] | MASK[11];
 
-  for (int its = 0; its < 5; its++) {
-    int n_records;
-    uint16_t last_v;
-
-    n_records = 0;
-    last_v = ~FULL_MASK;
+  inline void toggle(const bool level) {
+    int n_records = 0;
+    uint16_t last_v = (level == 1 ? ~FULL_MASK : FULL_MASK);
     record[n_records] = (struct record_t){.t = (uint16_t)-1, .v = last_v};
     __disable_irq();
-    HAL_GPIO_WritePin(BTN_OUT_PORT, BTN_OUT_PIN, 1);
+    HAL_GPIO_WritePin(BTN_OUT_PORT, BTN_OUT_PIN, level);
     for (int i = 0; i < 200; i++) {
       uint32_t a = GPIOA->IDR;
       uint32_t f = GPIOF->IDR;
-      uint16_t cur_v = (a | (f << 6)) | last_v;
-      if (last_v != cur_v) n_records++;
-      record[n_records] = (struct record_t){.t = i, .v = cur_v};
-      last_v = cur_v;
-    }
-    __enable_irq();
-    for (int j = 0; j < 12; j++) cap[j] = 0xffff;
-    for (int i = 1; i <= n_records; i++) {
-      uint16_t t = record[i - 1].t + 1;
-      uint16_t diff = record[i - 1].v ^ record[i].v;
-      for (int j = 0; j < 12; j++)
-        if (diff & MASK[j]) cap[j] = t;
-    }
-    for (int j = 0; j < 12; j++)
-      if (cap_sum[j] == 0xffff || cap[j] == 0xffff) cap_sum[j] = 0xffff;
-      else cap_sum[j] += cap[j];
-    for (volatile int j = 0; j < 2000; j++) { }
-
-    // XXX: DRY?
-    n_records = 0;
-    last_v = FULL_MASK;
-    record[n_records] = (struct record_t){.t = (uint16_t)-1, .v = last_v};
-    __disable_irq();
-    HAL_GPIO_WritePin(BTN_OUT_PORT, BTN_OUT_PIN, 0);
-    for (int i = 0; i < 200; i++) {
-      uint32_t a = GPIOA->IDR;
-      uint32_t f = GPIOF->IDR;
-      uint16_t cur_v = (a | (f << 6)) & last_v;
+      uint16_t combined_v = a | (f << 6);
+      uint16_t cur_v = (level == 1 ? (combined_v | last_v) : (combined_v & last_v));
       if (last_v != cur_v) n_records++;
       record[n_records] = (struct record_t){.t = i, .v = cur_v};
       last_v = cur_v;
@@ -156,8 +127,12 @@ static inline void cap_sense()
       else cap_sum[j] += cap[j];
     for (volatile int j = 0; j < 2000; j++) { }
   }
+  for (int its = 0; its < 5; its++) {
+    toggle(1);
+    toggle(0);
+  }
 
-  for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
+  // for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
   static bool btns[12] = { false };
   for (int j = 0; j < 12; j++)
     if (!btns[j] && cap_sum[j] > TOUCH_ON_THR) btns[j] = true;
