@@ -6,15 +6,17 @@
 #include <stdio.h>
 
 #define SYNTH_SAMPLE_RATE 31250
-#define SYNTH_EXTRA_SHIFT (-2)
+#define SYNTH_EXTRA_SHIFT (-1)
 #define SYNTH_STEREO
 #include "../../misc/synth/canta_synth.h"
 
 #define min(_a, _b) ((_a) < (_b) ? (_a) : (_b))
 #define max(_a, _b) ((_a) > (_b) ? (_a) : (_b))
 
-// #define RELEASE
-// #define PD_BTN_1
+// To re-flash after a release build, pull PA0 (button 1) high before power-on
+#define RELEASE
+// #define PD_BTN_1     // Pull down button 1 to provide a ground probe clip
+// #define INSPECT_ONLY // Output sensed values to debugger, disable sound output
 
 #define TOUCH_ON_THR  500
 #define TOUCH_OFF_THR 200
@@ -126,7 +128,9 @@ static inline void cap_sense()
     toggle(0);
   }
 
-  // for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
+#ifdef INSPECT_ONLY
+  for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
+#endif
   static bool btns[12] = { false };
   for (int j = 0; j < 12; j++)
     if (!btns[j] && cap_sum[j] > TOUCH_ON_THR) btns[j] = true;
@@ -135,9 +139,11 @@ static inline void cap_sense()
   btns[9] = btns[11] = false;
 #endif
 #ifdef PD_BTN_1
-  btns[0] = false;
   for (int i = 0; i < 12; i++) btns[i] = false;
   btns[0] = true;
+#endif
+#ifdef INSPECT_ONLY
+  for (int j = 0; j < 12; j++) btns[i] = false;
 #endif
   __disable_irq();
   synth_buttons(btns);
