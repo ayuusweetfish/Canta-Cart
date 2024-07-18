@@ -371,19 +371,18 @@ int main(void)
   uint32_t spi1_cr2 = SPI1->CR2 | SPI_CR2_TXDMAEN;
   SPI1->CR2 = spi1_cr2;
 
-  // Enable SPI
-  uint32_t spi1_cr1 = SPI1->CR1 | SPI_CR1_SPE;
-  // Enable timers
-  uint32_t tim1_cr1 = TIM1->CR1 | TIM_CR1_CEN;
-  uint32_t tim17_cr1 = TIM17->CR1 | TIM_CR1_CEN;
-
-  uint32_t addr_scratch;
+  uint32_t addr_scratch, val_scratch, opnd_scratch;
   __asm__ volatile (
-    "ldr %0, =%3\n"
-    "str %4, [%0, #0]\n"  // TIM1->CR1 = tim1_cr1;
-    "ldr %0, =%1\n"
-    "str %2, [%0, #0]\n"  // TIM1->CNT = 1;
-    "nop\n" // 26 cycles, as timer prescaler is 32
+    // TIM1->CR1 |= TIM_CR1_CEN;
+    "ldr %[addr], =%[tim1_cr1]\n"
+    "ldr %[val], [%[addr], #0]\n"
+    "ldr %[opnd], =%[tim_cr1_cen]\n"
+    "orr %[val], %[opnd]\n"
+    "str %[val], [%[addr], #0]\n"
+    // TIM1->CNT = <tim1_cnt_val>;
+    "ldr %[addr], =%[tim1_cnt]\n"
+    "ldr %[val], =%[tim1_cnt_val]\n"
+    "str %[val], [%[addr], #0]\n"
     "nop\n"
     "nop\n"
     "nop\n"
@@ -405,20 +404,30 @@ int main(void)
     "nop\n"
     "nop\n"
     "nop\n"
-    "nop\n"
-    "nop\n"
-    "ldr %0, =%7\n"
-    "str %8, [%0, #0]\n"  // TIM17->CR1 = tim17_cr1;
-    "ldr %0, =%5\n"
-    "str %6, [%0, #0]\n"  // TIM17->CNT = 11;
-    "ldr %0, =%9\n"
-    "str %10, [%0, #0]\n"  // SPI1->CR1 = spi1_cr1;
-    : "=&l" (addr_scratch)
-    : "i" (&TIM1->CNT), "l" (1),
-      "i" (&TIM1->CR1), "l" (tim1_cr1),
-      "i" (&TIM17->CNT), "l" (11),
-      "i" (&TIM17->CR1), "l" (tim17_cr1),
-      "i" (&SPI1->CR1), "l" (spi1_cr1)
+    // TIM17->CR1 |= TIM_CR1_CEN;
+    "ldr %[addr], =%[tim17_cr1]\n"
+    "ldr %[val], [%[addr], #0]\n"
+    "ldr %[opnd], =%[tim_cr1_cen]\n"
+    "orr %[val], %[opnd]\n"
+    "str %[val], [%[addr], #0]\n"
+    // TIM17->CNT = <tim17_cnt_val>;
+    "ldr %[addr], =%[tim17_cnt]\n"
+    "ldr %[val], =%[tim17_cnt_val]\n"
+    "str %[val], [%[addr], #0]\n"
+    // SPI1->CR1 |= SPI_CR1_SPE;
+    "ldr %[addr], =%[spi1_cr1]\n"
+    "ldr %[val], [%[addr], #0]\n"
+    "ldr %[opnd], =%[spi_cr1_spe]\n"
+    "orr %[val], %[opnd]\n"
+    "str %[val], [%[addr], #0]\n"
+    : [addr] "=&l" (addr_scratch),
+      [val] "=&l" (val_scratch),
+      [opnd] "=&l" (opnd_scratch)
+    : [tim1_cnt] "i" (&TIM1->CNT), [tim1_cnt_val] "i" (2),
+      [tim1_cr1] "i" (&TIM1->CR1), [tim_cr1_cen] "i" (TIM_CR1_CEN),
+      [tim17_cnt] "i" (&TIM17->CNT), [tim17_cnt_val] "i" (27),
+      [tim17_cr1] "i" (&TIM17->CR1),
+      [spi1_cr1] "i" (&SPI1->CR1), [spi_cr1_spe] "i" (SPI_CR1_SPE)
     : "memory"
   );
 
@@ -445,8 +454,8 @@ static inline void refill_buffer(uint16_t *buf)
 {
   // for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++)
   //   buf[i] = (last_btn[0] && i % 128 < 64) ? 0x01 : 0;
-  synth_audio((int16_t *)(buf + 1), AUDIO_BUF_HALF_SIZE - 1);
-  // for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++) buf[i] = 0x6000;
+  // synth_audio((int16_t *)(buf + 1), AUDIO_BUF_HALF_SIZE - 1);
+  for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++) buf[i] = 0x1;
 }
 void dma_tx_half_cplt()
 {
