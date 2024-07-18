@@ -13,13 +13,14 @@
 #define min(_a, _b) ((_a) < (_b) ? (_a) : (_b))
 #define max(_a, _b) ((_a) > (_b) ? (_a) : (_b))
 
-// To re-flash after a release build, pull PA0 (button 1) high before power-on
-// #define RELEASE
+// To re-flash after a release build, pull PF4 (BTN_OUT) high before power-on
+#define RELEASE
 // #define PD_BTN_1     // Pull down button 1 to provide a ground probe clip
 // #define INSPECT_ONLY // Output sensed values to debugger, disable sound output
 
-#define TOUCH_ON_THR  500
-#define TOUCH_OFF_THR 200
+#define TOUCH_HARD_ON_THR 500
+#define TOUCH_SOFT_ON_THR 150
+#define TOUCH_OFF_THR     150
 
 #define BTN_OUT_PORT GPIOF
 #define BTN_OUT_PIN  GPIO_PIN_4
@@ -128,13 +129,24 @@ static inline void cap_sense()
     toggle(0);
   }
 
-#ifdef INSPECT_ONLY
-  for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
-#endif
+  // A button is considered turned-on, if its sensed value exceeds `TOUCH_HARD_ON_THR`
+  // or exceeds the larger of the nearby buttons' by `TOUCH_SOFT_ON_THR`
+
   static bool btns[12] = { false };
   for (int j = 0; j < 12; j++)
-    if (!btns[j] && cap_sum[j] > TOUCH_ON_THR) btns[j] = true;
-    else if (btns[j] && cap_sum[j] < TOUCH_OFF_THR) btns[j] = false;
+    if (!btns[j]) {
+      if (cap_sum[j] > TOUCH_HARD_ON_THR) btns[j] = true;
+      else if (j < 10 && cap_sum[j] > TOUCH_SOFT_ON_THR) {
+        uint16_t nearby = 0;
+        if (j > 0) nearby = cap_sum[j - 1];
+        if (j < 9 && nearby < cap_sum[j + 1]) nearby = cap_sum[j + 1];
+        if (cap_sum[j] > nearby + TOUCH_SOFT_ON_THR)
+          btns[j] = true;
+      }
+    } else {
+      if (cap_sum[j] < TOUCH_OFF_THR) btns[j] = false;
+    }
+
 #ifndef RELEASE
   btns[9] = btns[11] = false;
 #endif
@@ -143,8 +155,10 @@ static inline void cap_sense()
   // btns[0] = true;
 #endif
 #ifdef INSPECT_ONLY
+  for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
   for (int j = 0; j < 12; j++) btns[i] = false;
 #endif
+
   __disable_irq();
   synth_buttons(btns);
   __enable_irq();
