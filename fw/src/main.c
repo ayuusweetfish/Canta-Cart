@@ -385,65 +385,70 @@ int main(void)
   uint32_t spi1_cr2 = SPI1->CR2 | SPI_CR2_TXDMAEN;
   SPI1->CR2 = spi1_cr2;
 
-  uint32_t addr_scratch, val_scratch, opnd_scratch;
-  __asm__ volatile (
-    // TIM1->CR1 |= TIM_CR1_CEN;
-    "ldr %[addr], =%[tim1_cr1]\n"
-    "ldr %[val], [%[addr], #0]\n"
-    "ldr %[opnd], =%[tim_cr1_cen]\n"
-    "orr %[val], %[opnd]\n"
-    "str %[val], [%[addr], #0]\n"
-    // TIM1->CNT = <tim1_cnt_val>;
-    "ldr %[addr], =%[tim1_cnt]\n"
-    "ldr %[val], =%[tim1_cnt_val]\n"
-    "str %[val], [%[addr], #0]\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    "nop\n"
-    // TIM17->CR1 |= TIM_CR1_CEN;
-    "ldr %[addr], =%[tim17_cr1]\n"
-    "ldr %[val], [%[addr], #0]\n"
-    "ldr %[opnd], =%[tim_cr1_cen]\n"
-    "orr %[val], %[opnd]\n"
-    "str %[val], [%[addr], #0]\n"
-    // TIM17->CNT = <tim17_cnt_val>;
-    "ldr %[addr], =%[tim17_cnt]\n"
-    "ldr %[val], =%[tim17_cnt_val]\n"
-    "str %[val], [%[addr], #0]\n"
-    // SPI1->CR1 |= SPI_CR1_SPE;
-    "ldr %[addr], =%[spi1_cr1]\n"
-    "ldr %[val], [%[addr], #0]\n"
-    "ldr %[opnd], =%[spi_cr1_spe]\n"
-    "orr %[val], %[opnd]\n"
-    "str %[val], [%[addr], #0]\n"
-    : [addr] "=&l" (addr_scratch),
-      [val] "=&l" (val_scratch),
-      [opnd] "=&l" (opnd_scratch)
-    : [tim1_cnt] "i" (&TIM1->CNT), [tim1_cnt_val] "i" (2),
-      [tim1_cr1] "i" (&TIM1->CR1), [tim_cr1_cen] "i" (TIM_CR1_CEN),
-      [tim17_cnt] "i" (&TIM17->CNT), [tim17_cnt_val] "i" (27),
-      [tim17_cr1] "i" (&TIM17->CR1),
-      [spi1_cr1] "i" (&SPI1->CR1), [spi_cr1_spe] "i" (SPI_CR1_SPE)
-    : "memory"
-  );
+  // Separate into a function so that distance to the literal pool does not get too large
+  __attribute__((noinline))
+  void synchronised_start() {
+    uint32_t addr_scratch, val_scratch, opnd_scratch;
+    __asm__ volatile (
+      // TIM1->CR1 |= TIM_CR1_CEN;
+      "ldr %[addr], =%[tim1_cr1]\n"
+      "ldr %[val], [%[addr], #0]\n"
+      "ldr %[opnd], =%[tim_cr1_cen]\n"
+      "orr %[val], %[opnd]\n"
+      "str %[val], [%[addr], #0]\n"
+      // TIM1->CNT = <tim1_cnt_val>;
+      "ldr %[addr], =%[tim1_cnt]\n"
+      "ldr %[val], =%[tim1_cnt_val]\n"
+      "str %[val], [%[addr], #0]\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      "nop\n"
+      // TIM17->CR1 |= TIM_CR1_CEN;
+      "ldr %[addr], =%[tim17_cr1]\n"
+      "ldr %[val], [%[addr], #0]\n"
+      "ldr %[opnd], =%[tim_cr1_cen]\n"
+      "orr %[val], %[opnd]\n"
+      "str %[val], [%[addr], #0]\n"
+      // TIM17->CNT = <tim17_cnt_val>;
+      "ldr %[addr], =%[tim17_cnt]\n"
+      "ldr %[val], =%[tim17_cnt_val]\n"
+      "str %[val], [%[addr], #0]\n"
+      // SPI1->CR1 |= SPI_CR1_SPE;
+      "ldr %[addr], =%[spi1_cr1]\n"
+      "ldr %[val], [%[addr], #0]\n"
+      "ldr %[opnd], =%[spi_cr1_spe]\n"
+      "orr %[val], %[opnd]\n"
+      "str %[val], [%[addr], #0]\n"
+      : [addr] "=&l" (addr_scratch),
+        [val] "=&l" (val_scratch),
+        [opnd] "=&l" (opnd_scratch)
+      : [tim1_cnt] "i" (&TIM1->CNT), [tim1_cnt_val] "i" (2),
+        [tim1_cr1] "i" (&TIM1->CR1), [tim_cr1_cen] "i" (TIM_CR1_CEN),
+        [tim17_cnt] "i" (&TIM17->CNT), [tim17_cnt_val] "i" (27),
+        [tim17_cr1] "i" (&TIM17->CR1),
+        [spi1_cr1] "i" (&SPI1->CR1), [spi_cr1_spe] "i" (SPI_CR1_SPE)
+      : "memory"
+    );
+  }
+  synchronised_start();
 
   while (1) {
     HAL_Delay(1);

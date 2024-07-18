@@ -2,6 +2,8 @@
 # https://github.com/IOsetting/py32f0-template/blob/72cbc93/Makefile
 # https://github.com/IOsetting/py32f0-template/blob/72cbc93/rules.mk
 
+# make flash OPT=-O3
+
 ##### Project #####
 
 PROJECT			?= app
