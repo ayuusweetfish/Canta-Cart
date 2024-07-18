@@ -14,8 +14,8 @@
 #define max(_a, _b) ((_a) > (_b) ? (_a) : (_b))
 
 // To re-flash after a release build, pull PA0 (button 1) high before power-on
-#define RELEASE
-// #define PD_BTN_1     // Pull down button 1 to provide a ground probe clip
+// #define RELEASE
+#define PD_BTN_1     // Pull down button 1 to provide a ground probe clip
 // #define INSPECT_ONLY // Output sensed values to debugger, disable sound output
 
 #define TOUCH_ON_THR  500
@@ -139,8 +139,8 @@ static inline void cap_sense()
   btns[9] = btns[11] = false;
 #endif
 #ifdef PD_BTN_1
-  for (int i = 0; i < 12; i++) btns[i] = false;
-  btns[0] = true;
+  for (int i = 0; i < 12; i++) if (i != 7) btns[i] = false;
+  // btns[0] = true;
 #endif
 #ifdef INSPECT_ONLY
   for (int j = 0; j < 12; j++) btns[i] = false;
@@ -407,18 +407,16 @@ int main(void)
     "nop\n"
     "nop\n"
     "nop\n"
-    "nop\n"
-    "nop\n"
     "ldr %0, =%7\n"
     "str %8, [%0, #0]\n"  // TIM17->CR1 = tim17_cr1;
     "ldr %0, =%5\n"
-    "str %6, [%0, #0]\n"  // TIM17->CNT = 10;
+    "str %6, [%0, #0]\n"  // TIM17->CNT = 11;
     "ldr %0, =%9\n"
     "str %10, [%0, #0]\n"  // SPI1->CR1 = spi1_cr1;
     : "=&l" (addr_scratch)
     : "i" (&TIM1->CNT), "l" (1),
       "i" (&TIM1->CR1), "l" (tim1_cr1),
-      "i" (&TIM17->CNT), "l" (10),
+      "i" (&TIM17->CNT), "l" (11),
       "i" (&TIM17->CR1), "l" (tim17_cr1),
       "i" (&SPI1->CR1), "l" (spi1_cr1)
     : "memory"
