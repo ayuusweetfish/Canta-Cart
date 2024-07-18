@@ -15,7 +15,7 @@
 
 // To re-flash after a release build, pull PA0 (button 1) high before power-on
 // #define RELEASE
-#define PD_BTN_1     // Pull down button 1 to provide a ground probe clip
+// #define PD_BTN_1     // Pull down button 1 to provide a ground probe clip
 // #define INSPECT_ONLY // Output sensed values to debugger, disable sound output
 
 #define TOUCH_ON_THR  500
@@ -454,8 +454,8 @@ static inline void refill_buffer(uint16_t *buf)
 {
   // for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++)
   //   buf[i] = (last_btn[0] && i % 128 < 64) ? 0x01 : 0;
-  // synth_audio((int16_t *)(buf + 1), AUDIO_BUF_HALF_SIZE - 1);
-  for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++) buf[i] = 0x1;
+  synth_audio((int16_t *)(buf + 1), AUDIO_BUF_HALF_SIZE - 1);
+  // for (int i = 0; i < AUDIO_BUF_HALF_SIZE; i++) buf[i] = 0x1;
 }
 void dma_tx_half_cplt()
 {
