@@ -17,6 +17,7 @@
 #define RELEASE
 // #define PD_BTN_1     // Pull down button 1 to provide a ground probe clip
 // #define INSPECT_ONLY // Output sensed values to debugger, disable sound output
+// #define INSPECT
 
 #define TOUCH_HARD_ON_THR 500
 #define TOUCH_SOFT_ON_THR 150
@@ -154,9 +155,11 @@ static inline void cap_sense()
   for (int i = 0; i < 12; i++) if (i != 7) btns[i] = false;
   // btns[0] = true;
 #endif
-#ifdef INSPECT_ONLY
+#if defined(INSPECT_ONLY) || defined(INSPECT)
   for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
+  #if defined(INSPECT_ONLY)
   for (int j = 0; j < 12; j++) btns[i] = false;
+  #endif
 #endif
 
   __disable_irq();
