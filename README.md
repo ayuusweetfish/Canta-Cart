@@ -4,16 +4,16 @@ Canta-Cart is a touch-operated musical instrument/synthesiser that takes the dim
 
 Additionally, the total BOM cost of CN¥5 / US$0.7 makes it an ideal greeting giveaway.
 
-![A stack of card-sized electronic devices](misc/Cover.jpg)
-
 🎥 Videos:
 - ["Merry Go Round of Life"](https://vimeo.com/989413177)
 - ["A Short Hike"](https://vimeo.com/980840986)
 - ["Pigeons and a Boy"](https://vimeo.com/970898009)
 
 🕹️ [**Try in the browser**](https://ayuusweetfish.github.io/Canta-Cart/synth/)  
-🌟 [Personal wiki page](https://ayu.land/canta-cart)
+🌟 [Personal wiki page](https://ayu.land/canta-cart)  
 ⚙️ [Hackaday project page](https://hackaday.io/project/196643-canta-cart)
+
+![A stack of card-sized electronic devices](misc/Cover.jpg)
 
 ## Directory Structure
 - `hw/`: Circuit board design in KiCad
@@ -32,4 +32,4 @@ Additionally, the total BOM cost of CN¥5 / US$0.7 makes it an ideal greeting gi
 - `releases/`: Gerber files submitted to fabrication houses and firmware binaries at pinned revisions
 
 ## Licence
-All content in this repository is distributed under CERN-OHL-S (CERN Open Hardware Licence Version 2, Strongly Reciprocal). See full text at `COPYING.txt` or [website](https://ohwr.org/cern_ohl_s_v2.txt).
+All content in this repository is distributed under CERN-OHL-S (CERN Open Hardware Licence Version 2, Strongly Reciprocal). See full text at `COPYING.txt` or [online](https://ohwr.org/cern_ohl_s_v2.txt).
