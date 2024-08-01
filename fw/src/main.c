@@ -75,6 +75,44 @@ TIM_HandleTypeDef tim1, tim17;
 void dma_tx_half_cplt();
 void dma_tx_cplt();
 
+// mode == -1: input
+// mode == 0 or 1: output, write low/high
+static inline void cap_elecrodes_setup(int mode)
+{
+  // BTN_xx (xx = 01, .., 12)
+  GPIO_InitTypeDef gpio_init = (GPIO_InitTypeDef){
+    .Mode = (mode == -1 ? GPIO_MODE_INPUT : GPIO_MODE_OUTPUT_PP),
+    .Pull = GPIO_NOPULL,
+    .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
+  };
+  gpio_init.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 |
+                  GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_12
+#ifdef RELEASE
+                | GPIO_PIN_13 | GPIO_PIN_14
+#endif
+                ;
+#ifdef PD_BTN_1
+  gpio_init.Pin &= ~GPIO_PIN_0;
+#endif
+  HAL_GPIO_Init(GPIOA, &gpio_init);
+  if (mode != -1) HAL_GPIO_WritePin(GPIOA, gpio_init.Pin, mode);
+
+  gpio_init.Pin = GPIO_PIN_2;
+  HAL_GPIO_Init(GPIOF, &gpio_init);
+  if (mode != -1) HAL_GPIO_WritePin(GPIOF, gpio_init.Pin, mode);
+
+#ifdef PD_BTN_1
+  gpio_init = (GPIO_InitTypeDef){
+    .Pin = GPIO_PIN_0,
+    .Mode = GPIO_MODE_OUTPUT_PP,
+    .Pull = GPIO_PULLDOWN,
+    .Speed = GPIO_SPEED_FREQ_LOW,
+  };
+  HAL_GPIO_Init(GPIOA, &gpio_init);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, 0);
+#endif
+}
+
 #pragma GCC optimize("O3")
 static inline void cap_sense()
 {
@@ -105,6 +143,8 @@ static inline void cap_sense()
     MASK[ 6] | MASK[ 7] | MASK[ 8] | MASK[ 9] | MASK[10] | MASK[11];
 
   inline void toggle(const bool level) {
+    cap_elecrodes_setup(1 - level); // Pull to the opposite level
+    cap_elecrodes_setup(-1);        // Set as input
     int n_records = 0;
     uint16_t last_v = (level == 1 ? ~FULL_MASK : FULL_MASK);
     record[n_records] = (struct record_t){.t = (uint16_t)-1, .v = last_v};
@@ -130,7 +170,6 @@ static inline void cap_sense()
     for (int j = 0; j < 12; j++)
       if (cap_sum[j] == 0xffff || cap[j] == 0xffff) cap_sum[j] = 0xffff;
       else cap_sum[j] += cap[j];
-    for (volatile int j = 0; j < 2000; j++) { }
   }
   for (int its = 0; its < 5; its++) {
     toggle(1);
@@ -238,7 +277,7 @@ int main(void)
   __HAL_RCC_GPIOF_CLK_ENABLE();
   GPIO_InitTypeDef gpio_init;
 
-  // ======== Capacitive touch sensing electrodes ========
+  // ======== Capacitive touch sensing ========
   // BTN_OUT
   gpio_init = (GPIO_InitTypeDef){
     .Pin = BTN_OUT_PIN,
@@ -249,35 +288,7 @@ int main(void)
   HAL_GPIO_Init(BTN_OUT_PORT, &gpio_init);
   HAL_GPIO_WritePin(BTN_OUT_PORT, BTN_OUT_PIN, 0);
 
-  // BTN_xx (xx = 01, .., 12)
-  gpio_init = (GPIO_InitTypeDef){
-    .Mode = GPIO_MODE_INPUT,
-    .Pull = GPIO_NOPULL,
-    .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
-  };
-  gpio_init.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 |
-                  GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_12
-#ifdef RELEASE
-                | GPIO_PIN_13 | GPIO_PIN_14
-#endif
-                ;
-#ifdef PD_BTN_1
-  gpio_init.Pin &= ~GPIO_PIN_0;
-#endif
-  HAL_GPIO_Init(GPIOA, &gpio_init);
-  gpio_init.Pin = GPIO_PIN_2;
-  HAL_GPIO_Init(GPIOF, &gpio_init);
-
-#ifdef PD_BTN_1
-  gpio_init = (GPIO_InitTypeDef){
-    .Pin = GPIO_PIN_0,
-    .Mode = GPIO_MODE_OUTPUT_PP,
-    .Pull = GPIO_PULLDOWN,
-    .Speed = GPIO_SPEED_FREQ_LOW,
-  };
-  HAL_GPIO_Init(GPIOA, &gpio_init);
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, 0);
-#endif
+  // For the electrodes, refer to `cap_elecrodes_setup()`
 
   // ======== SPI ========
   // PB5 AF0 SPI1_MOSI
@@ -479,12 +490,11 @@ int main(void)
 
   uint32_t last_tick = HAL_GetTick();
   while (1) {
-  /*
     uint32_t cur_tick;
     while ((cur_tick = HAL_GetTick()) - last_tick < 1) { }
     last_tick = cur_tick;
-  */
     cap_sense();
+    // swv_printf("%lu\n", HAL_GetTick() - cur_tick);
   }
 }
 
