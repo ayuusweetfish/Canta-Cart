@@ -137,15 +137,12 @@ static inline void cap_sense()
     toggle(0);
   }
 
-  // Sanity guard
-  for (int j = 0; j < 12; j++) if (cap_sum[j] == 0) cap_sum[j] = 1;
-
   // Maintain a base value for each of the buttons
   // (all calculations assuming iteration interval is 1 ms)
 
   static const uint32_t BASE_MULT = 1024; // Increases by 1 every second
-  static uint32_t base[12] = { 0 };
-  if (base[0] == 0) {
+  static uint32_t base[12] = { UINT32_MAX };
+  if (base[0] == UINT32_MAX) {
     for (int j = 0; j < 12; j++) base[j] = cap_sum[j] * BASE_MULT;
   } else {
     for (int j = 0; j < 12; j++) {
@@ -163,35 +160,18 @@ static inline void cap_sense()
   // with 4x tolerance, i.e. a fast double-tap is allowed
 
   static bool btns[12] = { false };
-/*
-  static uint8_t btns_cooldown[12] = { 0 };
-  static const uint8_t COOLDOWN_LIMIT = 200;
-  static const uint8_t COOLDOWN_INCR = 50;
-*/
-
   for (int j = 0; j < 12; j++) {
-    /* if (btns_cooldown[j] > 0) {
-      if (--btns_cooldown[j] > COOLDOWN_LIMIT) continue;
-    } */
     if (!btns[j]) {
-      if (cap_sum[j] > TOUCH_HARD_ON_THR) {
-        btns[j] = true;
-        // btns_cooldown[j] += COOLDOWN_INCR;
-      }
+      if (cap_sum[j] > TOUCH_HARD_ON_THR) btns[j] = true;
       else if (j < 10 && cap_sum[j] > TOUCH_SOFT_ON_THR) {
         uint16_t nearby = 0;
         if (j > 0) nearby = cap_sum[j - 1];
         if (j < 9 && nearby < cap_sum[j + 1]) nearby = cap_sum[j + 1];
-        if (cap_sum[j] > nearby + TOUCH_SOFT_ON_THR) {
+        if (cap_sum[j] > nearby + TOUCH_SOFT_ON_THR)
           btns[j] = true;
-          // btns_cooldown[j] += COOLDOWN_INCR;
-        }
       }
     } else {
-      if (cap_sum[j] < TOUCH_OFF_THR) {
-        btns[j] = false;
-        // btns_cooldown[j] += COOLDOWN_INCR;
-      }
+      if (cap_sum[j] < TOUCH_OFF_THR) btns[j] = false;
     }
   }
 
@@ -200,7 +180,6 @@ static inline void cap_sense()
 #endif
 #ifdef PD_BTN_1
   for (int i = 0; i < 12; i++) if (i != 7) btns[i] = false;
-  // btns[0] = true;
 #endif
 #if defined(INSPECT_ONLY) || defined(INSPECT)
   for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
@@ -242,6 +221,7 @@ int main(void)
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 
   // ======== Option byte ========
+  // FLASH->OPTR |= FLASH_OPTR_NRST_MODE;  // Cannot be modified after POR
   FLASH_OBProgramInitTypeDef ob_prog;
   HAL_FLASH_OBGetConfig(&ob_prog);
   if (!(ob_prog.USERConfig & FLASH_OPTR_NRST_MODE)) {
@@ -252,7 +232,6 @@ int main(void)
     HAL_FLASH_OB_Lock();
     HAL_FLASH_OB_Launch();  // System reset
   }
-  // FLASH->OPTR |= FLASH_OPTR_NRST_MODE;  // Cannot be modified after POR?
 
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -417,7 +396,6 @@ int main(void)
   __HAL_TIM_MOE_ENABLE(&tim17);
   // Enable timer PWM output
   TIM17->CCER |= TIM_CCER_CC1NE;
-  // TIM17->CR1 |= TIM_CR1_CEN;
 
   // Enable SPI and DMA channel
   dma1_ch1.XferHalfCpltCallback = dma_tx_half_cplt;
@@ -432,8 +410,7 @@ int main(void)
     sizeof audio_buf / sizeof audio_buf[0]);
 
   // Enable SPI DMA transmit request
-  uint32_t spi1_cr2 = SPI1->CR2 | SPI_CR2_TXDMAEN;
-  SPI1->CR2 = spi1_cr2;
+  SPI1->CR2 |= SPI_CR2_TXDMAEN;
 
   // Separate into a function so that distance to the literal pool does not get too large
   __attribute__((noinline))
@@ -500,8 +477,13 @@ int main(void)
   }
   synchronised_start();
 
+  uint32_t last_tick = HAL_GetTick();
   while (1) {
-    HAL_Delay(1);
+  /*
+    uint32_t cur_tick;
+    while ((cur_tick = HAL_GetTick()) - last_tick < 1) { }
+    last_tick = cur_tick;
+  */
     cap_sense();
   }
 }
