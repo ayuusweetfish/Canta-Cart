@@ -14,14 +14,21 @@
 #define max(_a, _b) ((_a) > (_b) ? (_a) : (_b))
 
 // To re-flash after a release build, pull PF4 (BTN_OUT) high before power-on
-#define RELEASE
+// #define RELEASE
 // #define PD_BTN_1     // Pull down button 1 to provide a ground probe clip
 // #define INSPECT_ONLY // Output sensed values to debugger, disable sound output
-// #define INSPECT
+// #define INSPECT      // Output sensed values to debugger
+#define CONFORMAL_COATING
 
-#define TOUCH_HARD_ON_THR 500
+#ifdef CONFORMAL_COATING
+#define TOUCH_HARD_ON_THR 120
+#define TOUCH_SOFT_ON_THR  50
+#define TOUCH_OFF_THR      30
+#else
+#define TOUCH_HARD_ON_THR 400
 #define TOUCH_SOFT_ON_THR 150
-#define TOUCH_OFF_THR     150
+#define TOUCH_OFF_THR     100
+#endif
 
 #define BTN_OUT_PORT GPIOF
 #define BTN_OUT_PIN  GPIO_PIN_4
@@ -130,23 +137,63 @@ static inline void cap_sense()
     toggle(0);
   }
 
+  // Sanity guard
+  for (int j = 0; j < 12; j++) if (cap_sum[j] == 0) cap_sum[j] = 1;
+
+  // Maintain a base value for each of the buttons
+  // (all calculations assuming iteration interval is 1 ms)
+
+  static const uint32_t BASE_MULT = 1024; // Increases by 1 every second
+  static uint32_t base[12] = { 0 };
+  if (base[0] == 0) {
+    for (int j = 0; j < 12; j++) base[j] = cap_sum[j] * BASE_MULT;
+  } else {
+    for (int j = 0; j < 12; j++) {
+      base[j] += 1;
+      if (base[j] > cap_sum[j] * BASE_MULT)
+        base[j] = cap_sum[j] * BASE_MULT;
+    }
+  }
+  for (int j = 0; j < 12; j++) cap_sum[j] -= base[j] / BASE_MULT;
+
   // A button is considered turned-on, if its sensed value exceeds `TOUCH_HARD_ON_THR`
   // or exceeds the larger of the nearby buttons' by `TOUCH_SOFT_ON_THR`
 
+  // Furthermore, each button state change should be followed by a cooldown of 50 ms
+  // with 4x tolerance, i.e. a fast double-tap is allowed
+
   static bool btns[12] = { false };
-  for (int j = 0; j < 12; j++)
+/*
+  static uint8_t btns_cooldown[12] = { 0 };
+  static const uint8_t COOLDOWN_LIMIT = 200;
+  static const uint8_t COOLDOWN_INCR = 50;
+*/
+
+  for (int j = 0; j < 12; j++) {
+    /* if (btns_cooldown[j] > 0) {
+      if (--btns_cooldown[j] > COOLDOWN_LIMIT) continue;
+    } */
     if (!btns[j]) {
-      if (cap_sum[j] > TOUCH_HARD_ON_THR) btns[j] = true;
+      if (cap_sum[j] > TOUCH_HARD_ON_THR) {
+        btns[j] = true;
+        // btns_cooldown[j] += COOLDOWN_INCR;
+      }
       else if (j < 10 && cap_sum[j] > TOUCH_SOFT_ON_THR) {
         uint16_t nearby = 0;
         if (j > 0) nearby = cap_sum[j - 1];
         if (j < 9 && nearby < cap_sum[j + 1]) nearby = cap_sum[j + 1];
-        if (cap_sum[j] > nearby + TOUCH_SOFT_ON_THR)
+        if (cap_sum[j] > nearby + TOUCH_SOFT_ON_THR) {
           btns[j] = true;
+          // btns_cooldown[j] += COOLDOWN_INCR;
+        }
       }
     } else {
-      if (cap_sum[j] < TOUCH_OFF_THR) btns[j] = false;
+      if (cap_sum[j] < TOUCH_OFF_THR) {
+        btns[j] = false;
+        // btns_cooldown[j] += COOLDOWN_INCR;
+      }
     }
+  }
 
 #ifndef RELEASE
   btns[9] = btns[11] = false;
@@ -158,7 +205,7 @@ static inline void cap_sense()
 #if defined(INSPECT_ONLY) || defined(INSPECT)
   for (int j = 0; j < 12; j++) swv_printf("%3d%c", min(999, cap_sum[j]), j == 11 ? '\n' : ' ');
   #if defined(INSPECT_ONLY)
-  for (int j = 0; j < 12; j++) btns[i] = false;
+  for (int j = 0; j < 12; j++) btns[j] = false;
   #endif
 #endif
 
