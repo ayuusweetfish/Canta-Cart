@@ -75,34 +75,38 @@ TIM_HandleTypeDef tim1, tim17;
 void dma_tx_half_cplt();
 void dma_tx_cplt();
 
-// mode == -1: input
-// mode == 0 or 1: output, write low/high
-static inline void cap_elecrodes_setup(int mode)
+// Pull a set of pins to a given level and set them as input
+static inline void pull_electrodes_port(GPIO_TypeDef *port, uint32_t pins, bool level)
 {
-  // BTN_xx (xx = 01, .., 12)
   GPIO_InitTypeDef gpio_init = (GPIO_InitTypeDef){
-    .Mode = (mode == -1 ? GPIO_MODE_INPUT : GPIO_MODE_OUTPUT_PP),
+    .Mode = GPIO_MODE_OUTPUT_PP,
+    .Pin = pins,
     .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
   };
-  gpio_init.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 |
-                  GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_12
-#ifdef RELEASE
-                | GPIO_PIN_13 | GPIO_PIN_14
-#endif
-                ;
-#ifdef PD_BTN_1
-  gpio_init.Pin &= ~GPIO_PIN_0;
-#endif
-  HAL_GPIO_Init(GPIOA, &gpio_init);
-  if (mode != -1) HAL_GPIO_WritePin(GPIOA, gpio_init.Pin, mode);
+  HAL_GPIO_Init(port, &gpio_init);
+  HAL_GPIO_WritePin(port, pins, level);
+  gpio_init.Mode = GPIO_MODE_INPUT;
+  HAL_GPIO_Init(port, &gpio_init);
+}
 
-  gpio_init.Pin = GPIO_PIN_2;
-  HAL_GPIO_Init(GPIOF, &gpio_init);
-  if (mode != -1) HAL_GPIO_WritePin(GPIOF, gpio_init.Pin, mode);
+static inline void pull_electrodes(bool level)
+{
+  pull_electrodes_port(GPIOA,
+  #ifndef PD_BTN_1
+    GPIO_PIN_0 |
+  #endif
+    GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 |
+    GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_12 |
+  #ifdef RELEASE
+    GPIO_PIN_13 | GPIO_PIN_14 |
+  #endif
+    0, level);
+
+  pull_electrodes_port(GPIOF, GPIO_PIN_2, level);
 
 #ifdef PD_BTN_1
-  gpio_init = (GPIO_InitTypeDef){
+  GPIO_InitTypeDef gpio_init = (GPIO_InitTypeDef){
     .Pin = GPIO_PIN_0,
     .Mode = GPIO_MODE_OUTPUT_PP,
     .Pull = GPIO_PULLDOWN,
@@ -143,8 +147,7 @@ static inline void cap_sense()
     MASK[ 6] | MASK[ 7] | MASK[ 8] | MASK[ 9] | MASK[10] | MASK[11];
 
   inline void toggle(const bool level) {
-    cap_elecrodes_setup(1 - level); // Pull to the opposite level
-    cap_elecrodes_setup(-1);        // Set as input
+    pull_electrodes(1 - level); // Pull to the opposite level before reading
     int n_records = 0;
     uint16_t last_v = (level == 1 ? ~FULL_MASK : FULL_MASK);
     record[n_records] = (struct record_t){.t = (uint16_t)-1, .v = last_v};
@@ -288,7 +291,7 @@ int main(void)
   HAL_GPIO_Init(BTN_OUT_PORT, &gpio_init);
   HAL_GPIO_WritePin(BTN_OUT_PORT, BTN_OUT_PIN, 0);
 
-  // For the electrodes, refer to `cap_elecrodes_setup()`
+  // For the electrodes, refer to `pull_electrodes()`
 
   // ======== SPI ========
   // PB5 AF0 SPI1_MOSI
