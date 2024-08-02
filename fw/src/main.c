@@ -19,9 +19,9 @@
 // #define INSPECT_ONLY // Output sensed values to debugger, disable sound output
 // #define INSPECT      // Output sensed values to debugger
 
-#define TOUCH_HARD_ON_THR 120
-#define TOUCH_SOFT_ON_THR  50
-#define TOUCH_OFF_THR      30
+#define TOUCH_HARD_ON_THR  60
+#define TOUCH_SOFT_ON_THR  30
+#define TOUCH_OFF_THR      20
 /*
 Values for reference without conformal coating:
 #define TOUCH_HARD_ON_THR 400
@@ -152,7 +152,7 @@ static inline void cap_sense()
     record[n_records] = (struct record_t){.t = (uint16_t)-1, .v = last_v};
     __disable_irq();
     HAL_GPIO_WritePin(BTN_OUT_PORT, BTN_OUT_PIN, level);
-    for (int i = 0; i < 200; i++) {
+    for (int i = 0; i < 100; i++) {
       uint32_t a = GPIOA->IDR;
       uint32_t f = GPIOF->IDR;
       uint16_t combined_v = a | (f << 6);
