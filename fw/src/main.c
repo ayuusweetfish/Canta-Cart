@@ -14,21 +14,20 @@
 #define max(_a, _b) ((_a) > (_b) ? (_a) : (_b))
 
 // To re-flash after a release build, pull PF4 (BTN_OUT) high before power-on
-// #define RELEASE
+#define RELEASE
 // #define PD_BTN_1     // Pull down button 1 to provide a ground probe clip
 // #define INSPECT_ONLY // Output sensed values to debugger, disable sound output
 // #define INSPECT      // Output sensed values to debugger
-#define CONFORMAL_COATING
 
-#ifdef CONFORMAL_COATING
 #define TOUCH_HARD_ON_THR 120
 #define TOUCH_SOFT_ON_THR  50
 #define TOUCH_OFF_THR      30
-#else
+/*
+Values for reference without conformal coating:
 #define TOUCH_HARD_ON_THR 400
 #define TOUCH_SOFT_ON_THR 150
 #define TOUCH_OFF_THR     100
-#endif
+*/
 
 #define BTN_OUT_PORT GPIOF
 #define BTN_OUT_PIN  GPIO_PIN_4
@@ -180,9 +179,9 @@ static inline void cap_sense()
   }
 
   // Maintain a base value for each of the buttons
-  // (all calculations assuming iteration interval is 1 ms)
 
-  static const uint32_t BASE_MULT = 1024; // Increases by 1 every second
+  // The base value increases by 1 every 1000 iterations (a few seconds)
+  static const uint32_t BASE_MULT = 1024;
   static uint32_t base[12] = { UINT32_MAX };
   if (base[0] == UINT32_MAX) {
     for (int j = 0; j < 12; j++) base[j] = cap_sum[j] * BASE_MULT;
@@ -197,9 +196,6 @@ static inline void cap_sense()
 
   // A button is considered turned-on, if its sensed value exceeds `TOUCH_HARD_ON_THR`
   // or exceeds the larger of the nearby buttons' by `TOUCH_SOFT_ON_THR`
-
-  // Furthermore, each button state change should be followed by a cooldown of 50 ms
-  // with 4x tolerance, i.e. a fast double-tap is allowed
 
   static bool btns[12] = { false };
   for (int j = 0; j < 12; j++) {
