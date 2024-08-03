@@ -22,12 +22,6 @@
 #define TOUCH_HARD_ON_THR  60
 #define TOUCH_SOFT_ON_THR  30
 #define TOUCH_OFF_THR      20
-/*
-Values for reference without conformal coating:
-#define TOUCH_HARD_ON_THR 400
-#define TOUCH_SOFT_ON_THR 150
-#define TOUCH_OFF_THR     100
-*/
 
 #define BTN_OUT_PORT GPIOF
 #define BTN_OUT_PIN  GPIO_PIN_4
