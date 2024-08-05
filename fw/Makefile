@@ -213,6 +213,11 @@ else
 	@echo "FLASH_PROGRM is invalid\n"
 endif
 
+print-uid:
+ifeq ($(FLASH_PROGRM),pyocd)
+	$(PYOCD_EXE) cmd -c 'read8 0x1fff0e00 16' -t py32f003x8 --config ./debug/pyocd.yaml
+endif
+
 debug:
 ifeq ($(FLASH_PROGRM),pyocd)
 	$(PYOCD_EXE) gdb --elf $(BDIR)/$(PROJECT).elf -t py32f003x8 --config $(TOP)/debug/pyocd.yaml --persist
