@@ -15,6 +15,9 @@
 // Clean:
 // rm a.out libs.o web/canta-cart.{js,wasm}
 
+// Generate image binary header file:
+// xxd -i silkscreen.png > silkscreen.png.h
+
 // ============ Libraries ============
 // Define NO_LIBS_IMPL for a statically linked (rather than amalgamated) build
 #ifndef NO_LIBS_IMPL
@@ -142,11 +145,6 @@ static inline bool pt_in_btn(int i, float x, float y)
 }
 static inline void pts_event(const struct pointer *pts, int n_pts)
 {
-/*
-  printf("n=%d", n_pts);
-  for (int i = 0; i < n_pts; i++) printf(" (%d %d)", (int)pts[i].x, (int)pts[i].y);
-  putchar('\n');
-*/
   for (int j = 0; j < 12; j++) {
     buttons[j] = false;
     for (int i = 0; i < n_pts; i++)
