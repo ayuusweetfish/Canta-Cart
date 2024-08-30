@@ -215,10 +215,10 @@ endif
 
 print-uid:
 ifeq ($(FLASH_PROGRM),pyocd)
-	$(PYOCD_EXE) cmd -c 'read8 0x1fff0e00 16' -t py32f003x8 --config ./debug/pyocd.yaml
+	$(PYOCD_EXE) cmd -c 'read8 0x1fff0e00 16' -t $(PYOCD_DEVICE) --config ./debug/pyocd.yaml
 endif
 
 debug:
 ifeq ($(FLASH_PROGRM),pyocd)
-	$(PYOCD_EXE) gdb --elf $(BDIR)/$(PROJECT).elf -t py32f003x8 --config $(TOP)/debug/pyocd.yaml --persist
+	$(PYOCD_EXE) gdb --elf $(BDIR)/$(PROJECT).elf -t $(PYOCD_DEVICE) --config $(TOP)/debug/pyocd.yaml --persist
 endif
