@@ -27,7 +27,7 @@
 #define BTN_OUT_PIN  GPIO_PIN_4
 
 #ifndef RELEASE
-static uint8_t swv_buf[256];
+static uint8_t swv_buf[64];
 static size_t swv_buf_ptr = 0;
 __attribute__ ((noinline, used))
 void swv_trap_line()
@@ -47,7 +47,7 @@ static inline void swv_putchar(uint8_t c)
 }
 static void swv_printf(const char *restrict fmt, ...)
 {
-  char s[256];
+  static char s[32];
   va_list args;
   va_start(args, fmt);
   int r = vsnprintf(s, sizeof s, fmt, args);
