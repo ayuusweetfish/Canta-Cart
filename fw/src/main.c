@@ -484,7 +484,8 @@ int main(void)
   uint32_t last_tick = HAL_GetTick();
   while (1) {
     uint32_t cur_tick;
-    while ((cur_tick = HAL_GetTick()) - last_tick < 1) { }
+    while ((cur_tick = HAL_GetTick()) - last_tick < 1)
+      HAL_PWR_EnterSLEEPMode(PWR_SLEEPENTRY_WFI);
     last_tick = cur_tick;
     cap_sense();
     // swv_printf("%lu\n", HAL_GetTick() - cur_tick);
