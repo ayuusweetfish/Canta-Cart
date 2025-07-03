@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "CHXXX")(type "Altium")(uri "${KIPRJMOD}/libs/WCH/CHXXX.schlib")(options "")(descr ""))
+)
