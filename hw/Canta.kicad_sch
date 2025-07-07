@@ -262,8 +262,8 @@
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "U"
-				(at 76.708 0 0)
+			(property "Reference" "U1"
+				(at 67.31 -14.5348 0)
 				(effects
 					(font
 						(size 1.8288 1.8288)
@@ -271,15 +271,14 @@
 				)
 			)
 			(property "Value" "CH591F"
-				(at 76.708 -2.54 0)
+				(at 67.31 -18.3448 0)
 				(effects
 					(font
 						(size 1.8288 1.8288)
 					)
-					(justify left bottom)
 				)
 			)
-			(property "Footprint" "QFN28_4X4"
+			(property "Footprint" "QFN-28-P0.4-EP2.7:QFN-28-1EP_4x4mm_P0.4mm_EP2.7x2.7mm"
 				(at 0 0 0)
 				(effects
 					(font
@@ -464,7 +463,7 @@
 							)
 						)
 					)
-					(number "0"
+					(number "29"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -843,6 +842,244 @@
 						)
 					)
 					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "Canta_symbols:R_Network04_Split"
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "RN"
+				(at 2.032 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "R_Network04_Split"
+				(at 0 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0402"
+				(at -2.032 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "4 resistor network, split"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "R network"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "R?Array?SIP*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "R_Network04_Split_0_1"
+				(rectangle
+					(start -1.016 2.54)
+					(end 1.016 -2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_Network04_Split_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "R1.1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "R1.2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "R_Network04_Split_2_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "R2.1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "R2.2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "R_Network04_Split_3_0"
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "R3.2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "R_Network04_Split_3_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "R3.1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "R_Network04_Split_4_0"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "R4.1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "R4.2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1482,6 +1719,119 @@
 						)
 					)
 					(number "B6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "Connector_Generic:Conn_01x01"
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at 0 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Conn_01x01"
+				(at 0 -2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Generic connector, single row, 01x01, script generated (kicad-library-utils/schlib/autogen/connector/)"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "connector"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Connector*:*_1x??_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "Conn_01x01_1_1"
+				(rectangle
+					(start -1.27 1.27)
+					(end 1.27 -1.27)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(rectangle
+					(start -1.27 0.127)
+					(end 0 -0.127)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at -5.08 0 0)
+					(length 3.81)
+					(name "Pin_1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -3545,10 +3895,46 @@
 		(uuid "37980de4-c051-4d7a-8b08-05800d2658dd")
 	)
 	(junction
+		(at 289.56 137.16)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "12039f59-4337-43f2-8906-29a0c4110819")
+	)
+	(junction
+		(at 289.56 76.2)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "17125fac-74ca-4285-8d7b-6b003e17d317")
+	)
+	(junction
+		(at 289.56 147.32)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "1712fa90-14eb-461b-bcc0-87a213bf41e7")
+	)
+	(junction
 		(at 182.88 124.46)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "194c7e86-5609-4e7b-8309-c9ad2c6d46c5")
+	)
+	(junction
+		(at 289.56 106.68)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "25c3850e-5d4f-47cb-8f83-0838bd62e923")
+	)
+	(junction
+		(at 289.56 96.52)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "2626b161-afaf-46aa-aabb-b048a0b5edaa")
+	)
+	(junction
+		(at 289.56 45.72)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "34b1c7b5-fee2-4481-a5bb-06897f48065f")
 	)
 	(junction
 		(at 179.07 124.46)
@@ -3573,6 +3959,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "4a5a0b16-f98b-4c87-87ae-64b34db777c0")
+	)
+	(junction
+		(at 289.56 66.04)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "4d9a0fa7-6817-45f5-8ce1-479fa7ec3cee")
 	)
 	(junction
 		(at 58.42 30.48)
@@ -3605,10 +3997,40 @@
 		(uuid "af365729-80f7-40cd-b368-d73139ac1bfa")
 	)
 	(junction
+		(at 289.56 116.84)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "b059e76b-cc2d-4761-9d55-0c19c3a3ffb9")
+	)
+	(junction
 		(at 78.74 91.44)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b3aae6e4-05e6-4fdb-a1e6-116ac43fa86c")
+	)
+	(junction
+		(at 289.56 127)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "d05de49a-d6a7-41cc-909a-def628e2ea47")
+	)
+	(junction
+		(at 289.56 55.88)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ed50d289-f362-4225-9d2a-ee892e97ed57")
+	)
+	(junction
+		(at 289.56 35.56)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f18f70a6-837e-4a07-a13d-a3c922a28da8")
+	)
+	(junction
+		(at 289.56 86.36)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f92b5727-9943-4de3-b167-0ba95617eb19")
 	)
 	(junction
 		(at 54.61 49.53)
@@ -3702,6 +4124,36 @@
 	)
 	(wire
 		(pts
+			(xy 288.29 100.33) (xy 289.56 100.33)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "088a0e8b-4271-4904-b940-a8bb6daa6e01")
+	)
+	(wire
+		(pts
+			(xy 288.29 80.01) (xy 289.56 80.01)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0b3255e1-e6fa-4e13-8ae0-158f43e7b2c3")
+	)
+	(wire
+		(pts
+			(xy 289.56 140.97) (xy 289.56 137.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0c5c695b-b9b0-43d9-90cc-a6d4bee9287b")
+	)
+	(wire
+		(pts
 			(xy 57.15 44.45) (xy 57.15 49.53)
 		)
 		(stroke
@@ -3712,6 +4164,16 @@
 	)
 	(wire
 		(pts
+			(xy 276.86 147.32) (xy 289.56 147.32)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "10a88431-2c97-4413-8131-b721bd4d06fe")
+	)
+	(wire
+		(pts
 			(xy 172.72 36.83) (xy 172.72 35.56)
 		)
 		(stroke
@@ -3719,6 +4181,16 @@
 			(type default)
 		)
 		(uuid "1298ad3a-0261-4ded-b810-a14f3093ffee")
+	)
+	(wire
+		(pts
+			(xy 288.29 39.37) (xy 289.56 39.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "12d390ad-0d5c-4a6b-94a9-145e75b63441")
 	)
 	(wire
 		(pts
@@ -3772,6 +4244,46 @@
 	)
 	(wire
 		(pts
+			(xy 264.16 106.68) (xy 269.24 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "27112663-0dc3-4afc-839b-3256733d5581")
+	)
+	(wire
+		(pts
+			(xy 289.56 90.17) (xy 289.56 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "273b2f0f-4945-4141-b134-406bf77fe17d")
+	)
+	(wire
+		(pts
+			(xy 264.16 76.2) (xy 269.24 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2887b5e3-71ed-4543-9f2c-2ee7e0f6fc33")
+	)
+	(wire
+		(pts
+			(xy 289.56 127) (xy 292.1 127)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2d47c7db-5689-41ad-bc2d-8ec14ebc232a")
+	)
+	(wire
+		(pts
 			(xy 54.61 44.45) (xy 57.15 44.45)
 		)
 		(stroke
@@ -3779,6 +4291,16 @@
 			(type default)
 		)
 		(uuid "2ff3009e-2a63-42b9-91a8-535cd5144e9c")
+	)
+	(wire
+		(pts
+			(xy 289.56 120.65) (xy 289.56 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "312c0385-5ef9-485a-bb26-60430abc4b77")
 	)
 	(wire
 		(pts
@@ -3792,6 +4314,26 @@
 	)
 	(wire
 		(pts
+			(xy 264.16 116.84) (xy 269.24 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "38af0bd6-9cd1-4c20-9415-39ba6d02ada9")
+	)
+	(wire
+		(pts
+			(xy 288.29 120.65) (xy 289.56 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3f08195b-08a3-4d3a-9591-bb3db0be8be8")
+	)
+	(wire
+		(pts
 			(xy 54.61 48.26) (xy 54.61 49.53)
 		)
 		(stroke
@@ -3799,6 +4341,16 @@
 			(type default)
 		)
 		(uuid "42a781ca-3bfc-46e1-a9db-f83c226ed51c")
+	)
+	(wire
+		(pts
+			(xy 288.29 140.97) (xy 289.56 140.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "439d1c1d-2d59-4f3d-91f8-56b15c3ade2b")
 	)
 	(wire
 		(pts
@@ -3812,6 +4364,46 @@
 	)
 	(wire
 		(pts
+			(xy 289.56 80.01) (xy 289.56 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4a26b7a1-7c7b-4ef2-b646-fc88757f5926")
+	)
+	(wire
+		(pts
+			(xy 264.16 96.52) (xy 269.24 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4b9d5341-65ca-41e1-aad1-ec9742fe11bf")
+	)
+	(wire
+		(pts
+			(xy 289.56 96.52) (xy 292.1 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4e0761c5-3fc9-41aa-97ac-c27c60f0b8bc")
+	)
+	(wire
+		(pts
+			(xy 276.86 66.04) (xy 289.56 66.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4e090cb8-fc55-4728-84d0-4d2776955f4a")
+	)
+	(wire
+		(pts
 			(xy 182.88 35.56) (xy 182.88 38.1)
 		)
 		(stroke
@@ -3819,6 +4411,36 @@
 			(type default)
 		)
 		(uuid "51232ea5-3ef9-4b2c-9eb0-41dd6c1276ae")
+	)
+	(wire
+		(pts
+			(xy 289.56 100.33) (xy 289.56 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "524127d9-4f97-4646-a0c9-8f72b2fe76fa")
+	)
+	(wire
+		(pts
+			(xy 264.16 127) (xy 269.24 127)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "53d35bb6-79c3-41df-9bdc-a75dcd53bf13")
+	)
+	(wire
+		(pts
+			(xy 289.56 45.72) (xy 292.1 45.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5553b581-8067-4ad6-be3b-ea6bebeda1fa")
 	)
 	(wire
 		(pts
@@ -3892,6 +4514,16 @@
 	)
 	(wire
 		(pts
+			(xy 288.29 59.69) (xy 289.56 59.69)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7363b930-a5b4-4378-a66b-fd4a84c1e0f2")
+	)
+	(wire
+		(pts
 			(xy 119.38 31.75) (xy 120.65 31.75)
 		)
 		(stroke
@@ -3899,6 +4531,36 @@
 			(type default)
 		)
 		(uuid "7b4f74d4-0e2f-4fe6-9502-db48caece3d5")
+	)
+	(wire
+		(pts
+			(xy 276.86 55.88) (xy 289.56 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7b5b3ccc-0013-4e9f-a8cc-0322e72b3925")
+	)
+	(wire
+		(pts
+			(xy 289.56 137.16) (xy 292.1 137.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "811daa4b-8a28-46b1-85ac-3470c281a37a")
+	)
+	(wire
+		(pts
+			(xy 264.16 55.88) (xy 269.24 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8389d4f5-f119-4eb9-8f15-c08464201bbd")
 	)
 	(wire
 		(pts
@@ -3912,6 +4574,36 @@
 	)
 	(wire
 		(pts
+			(xy 289.56 66.04) (xy 292.1 66.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "87b46fbb-9647-4bc7-8917-200061c82fdf")
+	)
+	(wire
+		(pts
+			(xy 288.29 151.13) (xy 289.56 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8af1cdbc-7176-45d9-8eaf-d28384ddb856")
+	)
+	(wire
+		(pts
+			(xy 276.86 137.16) (xy 289.56 137.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8d424ad6-6d66-41ce-9a17-b22e65f2bf9a")
+	)
+	(wire
+		(pts
 			(xy 187.96 36.83) (xy 187.96 38.1)
 		)
 		(stroke
@@ -3919,6 +4611,46 @@
 			(type default)
 		)
 		(uuid "91f6e549-2554-40eb-816b-526806747960")
+	)
+	(wire
+		(pts
+			(xy 276.86 45.72) (xy 289.56 45.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "92c785eb-1b25-45f0-a149-bcd2b700b53c")
+	)
+	(wire
+		(pts
+			(xy 289.56 147.32) (xy 292.1 147.32)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9312c127-36ef-4995-a653-2ab5854f6c3b")
+	)
+	(wire
+		(pts
+			(xy 264.16 86.36) (xy 269.24 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "936f9299-d009-4763-ae15-129658dbde76")
+	)
+	(wire
+		(pts
+			(xy 264.16 147.32) (xy 269.24 147.32)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9760066d-c2ae-4d42-9cda-9acbad8b3715")
 	)
 	(wire
 		(pts
@@ -3962,6 +4694,16 @@
 	)
 	(wire
 		(pts
+			(xy 264.16 45.72) (xy 269.24 45.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9fe1637d-ff73-439f-a3b9-c1b367d4eea3")
+	)
+	(wire
+		(pts
 			(xy 175.26 36.83) (xy 180.34 36.83)
 		)
 		(stroke
@@ -3969,6 +4711,36 @@
 			(type default)
 		)
 		(uuid "a10b5d49-84b3-4e2d-a6f2-7e1c1d5ef8b5")
+	)
+	(wire
+		(pts
+			(xy 289.56 130.81) (xy 289.56 127)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a254682d-4035-4426-9cb1-cd92a356681b")
+	)
+	(wire
+		(pts
+			(xy 289.56 59.69) (xy 289.56 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a28b904d-1010-4a89-b174-61e3209dbd26")
+	)
+	(wire
+		(pts
+			(xy 264.16 137.16) (xy 269.24 137.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a2956804-36cf-44e0-8fef-dc9d746ec2ee")
 	)
 	(wire
 		(pts
@@ -4002,6 +4774,46 @@
 	)
 	(wire
 		(pts
+			(xy 289.56 110.49) (xy 289.56 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a9d85022-e6f3-4369-9b38-1170c94677a5")
+	)
+	(wire
+		(pts
+			(xy 276.86 116.84) (xy 289.56 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b22ab1e7-6148-4857-8480-b08c5c8ab4db")
+	)
+	(wire
+		(pts
+			(xy 289.56 106.68) (xy 292.1 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b4bb40d8-3666-42b4-961b-499e583d9386")
+	)
+	(wire
+		(pts
+			(xy 289.56 86.36) (xy 292.1 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b4cae736-7e16-4392-8a96-67cb8568bd22")
+	)
+	(wire
+		(pts
 			(xy 50.8 91.44) (xy 57.15 91.44)
 		)
 		(stroke
@@ -4009,6 +4821,16 @@
 			(type default)
 		)
 		(uuid "b812a609-b20e-45e1-a32c-6e2ebdcee3ce")
+	)
+	(wire
+		(pts
+			(xy 289.56 35.56) (xy 292.1 35.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b9fac297-819b-427f-bcf7-7fc9646750eb")
 	)
 	(wire
 		(pts
@@ -4022,6 +4844,46 @@
 	)
 	(wire
 		(pts
+			(xy 289.56 76.2) (xy 292.1 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bcbafa30-1d44-4777-9b53-4d051f8a1217")
+	)
+	(wire
+		(pts
+			(xy 288.29 110.49) (xy 289.56 110.49)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bf58a0fd-d74e-41b3-87e6-b7e9368a69d3")
+	)
+	(wire
+		(pts
+			(xy 289.56 55.88) (xy 292.1 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c072e2ef-e405-4db7-9102-801cacc2a5a2")
+	)
+	(wire
+		(pts
+			(xy 276.86 127) (xy 289.56 127)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c1784051-2216-48af-a846-bff71394e533")
+	)
+	(wire
+		(pts
 			(xy 187.96 124.46) (xy 187.96 114.3)
 		)
 		(stroke
@@ -4029,6 +4891,26 @@
 			(type default)
 		)
 		(uuid "c1c99ec4-1d83-4273-8067-085187a192a1")
+	)
+	(wire
+		(pts
+			(xy 288.29 130.81) (xy 289.56 130.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c1d80830-338b-4063-87a6-2c56c2883816")
+	)
+	(wire
+		(pts
+			(xy 264.16 66.04) (xy 269.24 66.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c2a11e06-e7b1-46d6-b593-85003068fa9f")
 	)
 	(wire
 		(pts
@@ -4072,6 +4954,16 @@
 	)
 	(wire
 		(pts
+			(xy 264.16 35.56) (xy 269.24 35.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cd64bb3d-6668-4109-8b5c-c69d2b34f4fd")
+	)
+	(wire
+		(pts
 			(xy 54.61 38.1) (xy 92.71 38.1)
 		)
 		(stroke
@@ -4082,6 +4974,16 @@
 	)
 	(wire
 		(pts
+			(xy 276.86 35.56) (xy 289.56 35.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ce68a06e-6a80-4bf1-b624-c196543bf38d")
+	)
+	(wire
+		(pts
 			(xy 182.88 114.3) (xy 182.88 124.46)
 		)
 		(stroke
@@ -4089,6 +4991,16 @@
 			(type default)
 		)
 		(uuid "d2b92b28-a1dd-4556-a83e-0687d065af00")
+	)
+	(wire
+		(pts
+			(xy 276.86 106.68) (xy 289.56 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d2c234ae-e33e-4eba-9725-2b6a80e7ba9a")
 	)
 	(wire
 		(pts
@@ -4122,6 +5034,26 @@
 	)
 	(wire
 		(pts
+			(xy 289.56 151.13) (xy 289.56 147.32)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "df835dea-838b-4a8b-9c24-ca5f74b399a4")
+	)
+	(wire
+		(pts
+			(xy 276.86 96.52) (xy 289.56 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e3217d82-7c61-47ec-a5fe-59bc6f60bf1e")
+	)
+	(wire
+		(pts
 			(xy 146.05 68.58) (xy 147.32 68.58)
 		)
 		(stroke
@@ -4129,6 +5061,16 @@
 			(type default)
 		)
 		(uuid "e5a90956-c609-4d9b-b0c4-f5d4d2212139")
+	)
+	(wire
+		(pts
+			(xy 289.56 49.53) (xy 289.56 45.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e658d1f0-c4ee-43a9-8763-155234136941")
 	)
 	(wire
 		(pts
@@ -4142,6 +5084,86 @@
 	)
 	(wire
 		(pts
+			(xy 288.29 69.85) (xy 289.56 69.85)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e8e8d329-4942-4644-86d9-8604b7c4231f")
+	)
+	(wire
+		(pts
+			(xy 288.29 49.53) (xy 289.56 49.53)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "eada4455-a8ae-4486-925c-dd544171e6f1")
+	)
+	(wire
+		(pts
+			(xy 289.56 69.85) (xy 289.56 66.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "eb999050-a98b-484f-b0a7-90ca03373cbc")
+	)
+	(wire
+		(pts
+			(xy 276.86 86.36) (xy 289.56 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ec86145a-7e56-4473-8d48-edba19d700b9")
+	)
+	(wire
+		(pts
+			(xy 276.86 76.2) (xy 289.56 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f0c6c026-246d-468b-b5a1-ae6c5387dea9")
+	)
+	(wire
+		(pts
+			(xy 289.56 39.37) (xy 289.56 35.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f1956a10-f1bc-4155-91b2-8f00d1a6e66e")
+	)
+	(wire
+		(pts
+			(xy 288.29 90.17) (xy 289.56 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f3002bf7-0820-4c60-ae08-7e9807b77369")
+	)
+	(wire
+		(pts
+			(xy 289.56 116.84) (xy 292.1 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f4106aa2-d17f-4f2c-962b-b4924f620681")
+	)
+	(wire
+		(pts
 			(xy 224.79 71.12) (xy 223.52 71.12)
 		)
 		(stroke
@@ -4149,6 +5171,46 @@
 			(type default)
 		)
 		(uuid "fc45b580-d40b-4b65-a504-f60d44bd3293")
+	)
+	(label "CAP_09"
+		(at 288.29 120.65 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "01492383-7779-4134-a8f7-9bc258b51a28")
+	)
+	(label "CAP_05"
+		(at 288.29 80.01 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "04e6ba70-0c4a-4168-8420-cc2e657e2381")
+	)
+	(label "CAP_01"
+		(at 288.29 39.37 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "09aa2a0b-cc78-4721-bfad-83bdeab220f6")
+	)
+	(label "CAP_OUT"
+		(at 264.16 147.32 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "170c4a6a-389f-40f7-8a72-0d1d7399ab1f")
 	)
 	(label "I2S_BCK"
 		(at 147.32 81.28 180)
@@ -4169,6 +5231,36 @@
 			(justify left bottom)
 		)
 		(uuid "33af8cb3-c940-4b5d-a06e-7b8bf1f85a44")
+	)
+	(label "CAP_OUT"
+		(at 264.16 127 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "33d137df-cf93-44ed-be95-25c4b9136e59")
+	)
+	(label "CAP_OUT"
+		(at 264.16 55.88 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "34fbcf81-a9d4-4e34-bb29-a06ecfceb9e3")
+	)
+	(label "CAP_OUT"
+		(at 264.16 86.36 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "372ed7dc-e87a-45c9-8b3b-07e9d16b14b9")
 	)
 	(label "I2S_DATA"
 		(at 91.44 119.38 180)
@@ -4210,6 +5302,16 @@
 		)
 		(uuid "5b5b7a04-f7d9-495d-a8a8-0983f3d303c1")
 	)
+	(label "CAP_11"
+		(at 288.29 140.97 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "5c6b6fb9-f2b7-450d-8ea3-02e5fe443615")
+	)
 	(label "USB_D-"
 		(at 78.74 49.53 0)
 		(effects
@@ -4229,6 +5331,26 @@
 			(justify left bottom)
 		)
 		(uuid "70721131-fda6-410a-b63f-fbce09759c60")
+	)
+	(label "CAP_OUT"
+		(at 264.16 66.04 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "71d13fea-9416-48fb-8504-ecadbfa610a0")
+	)
+	(label "CAP_OUT"
+		(at 264.16 96.52 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "75f26a4c-5f22-4224-93a9-4224ec643575")
 	)
 	(label "USB_D+"
 		(at 78.74 52.07 0)
@@ -4250,6 +5372,16 @@
 		)
 		(uuid "77f9ed23-c868-4fc1-9c5e-5cb2c92ed139")
 	)
+	(label "CAP_03"
+		(at 288.29 59.69 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "7ebd63a4-5ba7-4ddb-b481-2a40b86fb360")
+	)
 	(label "I2S_WS"
 		(at 177.8 114.3 180)
 		(effects
@@ -4260,6 +5392,96 @@
 		)
 		(uuid "857127c5-698d-4f89-9a1d-8b031eb503aa")
 	)
+	(label "CAP_06"
+		(at 288.29 90.17 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "895edb5e-e6e9-4cc6-9d75-50c11e14353d")
+	)
+	(label "CAP_OUT"
+		(at 264.16 116.84 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "98764f6b-d727-4122-8bb4-f0f619d86ded")
+	)
+	(label "CAP_OUT"
+		(at 264.16 137.16 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "a09b3a63-79bf-4dd2-8764-f82fd85fe044")
+	)
+	(label "CAP_OUT"
+		(at 264.16 45.72 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "a5b60744-0231-43c2-aef3-8a5a9ba0cfa4")
+	)
+	(label "CAP_OUT"
+		(at 264.16 35.56 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "b00e7457-6310-412c-8c56-273510321fc1")
+	)
+	(label "CAP_10"
+		(at 288.29 130.81 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "b4d2889c-f99f-410f-9573-88540ae470cf")
+	)
+	(label "CAP_OUT"
+		(at 264.16 76.2 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "b5346fa4-c14d-4b89-b67f-b0a4c501a328")
+	)
+	(label "CAP_12"
+		(at 288.29 151.13 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "be6bc90c-e86f-4acb-8993-f5657bf1fdf4")
+	)
+	(label "CAP_08"
+		(at 288.29 110.49 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "c1372ca9-e88f-4bd4-b722-d85adb976fd9")
+	)
 	(label "I2S_DATA"
 		(at 147.32 78.74 180)
 		(effects
@@ -4269,6 +5491,36 @@
 			(justify right bottom)
 		)
 		(uuid "cc7a1c69-5703-42ad-9f4e-669a77f6077d")
+	)
+	(label "CAP_02"
+		(at 288.29 49.53 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "d0410e19-5246-4092-9f8e-2deb6823d435")
+	)
+	(label "CAP_07"
+		(at 288.29 100.33 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "d6f771a8-b751-4ba0-9df4-40b411518f25")
+	)
+	(label "CAP_04"
+		(at 288.29 69.85 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "d99c09e9-2cb8-44b1-887a-04333be181f8")
 	)
 	(label "BOOT"
 		(at 187.96 36.83 90)
@@ -4289,6 +5541,184 @@
 			(justify right bottom)
 		)
 		(uuid "f5516642-5db8-48e8-a4da-3678a4a11371")
+	)
+	(label "CAP_OUT"
+		(at 264.16 106.68 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "fe4b82d4-c528-41b0-88f8-6375c3be98c8")
+	)
+	(symbol
+		(lib_id "Canta_symbols:R_Network04_Split")
+		(at 273.05 45.72 90)
+		(unit 3)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "01b4c41a-907c-4c98-b8fa-78f226ae9ffe")
+		(property "Reference" "RN1"
+			(at 270.51 42.545 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1M"
+			(at 276.225 42.545 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0402"
+			(at 273.05 47.752 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 273.05 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 273.05 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "3"
+			(uuid "7c605eec-b292-4a7a-871a-4a6e3048fa7b")
+		)
+		(pin "8"
+			(uuid "c49a01b1-f73f-4ff7-bdf4-ab82bc604dc2")
+		)
+		(pin "5"
+			(uuid "029ddc7c-98e1-4f0f-9822-884527e14df8")
+		)
+		(pin "2"
+			(uuid "2929a39a-4483-4c6f-885c-b177f0d72983")
+		)
+		(pin "7"
+			(uuid "51a1bc24-9dfc-4f2b-9f54-c44ba8702ec0")
+		)
+		(pin "4"
+			(uuid "d61b7f7b-9b6b-41ca-a047-6018eec7f9d1")
+		)
+		(pin "6"
+			(uuid "6938fe7f-c593-42c5-ae8d-e9a7122821d2")
+		)
+		(pin "1"
+			(uuid "3fdd2180-2909-43e7-b8bd-d36eb42901d9")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "RN1")
+					(unit 3)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Canta_symbols:R_Network04_Split")
+		(at 273.05 116.84 90)
+		(unit 2)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "0274fde7-bd98-4ce7-ac75-a72718824643")
+		(property "Reference" "RN3"
+			(at 270.51 113.665 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1M"
+			(at 276.225 113.665 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0402"
+			(at 273.05 118.872 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 273.05 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 273.05 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "3"
+			(uuid "ebe129e9-488e-4e92-b710-d340f1c426ec")
+		)
+		(pin "8"
+			(uuid "c49a01b1-f73f-4ff7-bdf4-ab82bc604dc4")
+		)
+		(pin "5"
+			(uuid "029ddc7c-98e1-4f0f-9822-884527e14dfa")
+		)
+		(pin "2"
+			(uuid "2929a39a-4483-4c6f-885c-b177f0d72985")
+		)
+		(pin "7"
+			(uuid "51a1bc24-9dfc-4f2b-9f54-c44ba8702ec2")
+		)
+		(pin "4"
+			(uuid "e45840b9-1bb8-42db-9c63-522a71bf9e05")
+		)
+		(pin "6"
+			(uuid "6938fe7f-c593-42c5-ae8d-e9a7122821d4")
+		)
+		(pin "1"
+			(uuid "3fdd2180-2909-43e7-b8bd-d36eb42901db")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "RN3")
+					(unit 2)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "Power_Protection:USBLC6-2SC6")
@@ -4637,7 +6067,7 @@
 		(pin "1"
 			(uuid "9a3d59ae-eb93-4800-ad21-ef20315fd55f")
 		)
-		(pin "0"
+		(pin "29"
 			(uuid "c30190ee-1375-4ef3-a1e8-30e778c4b848")
 		)
 		(pin "12"
@@ -4653,6 +6083,138 @@
 			(project ""
 				(path "/694a0583-3845-4206-a711-da3cae00987c"
 					(reference "U1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 297.18 86.36 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "188df2a3-22fe-4b1d-ac0e-21c6f4e6a764")
+		(property "Reference" "E06"
+			(at 300.355 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 300.355 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Canta_footprints:TouchPad_Keyboard"
+			(at 297.18 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 297.18 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 297.18 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "d653b92f-3e48-4346-a437-888601c64109")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "E06")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 297.18 127 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1a730f37-966e-40d5-a241-2c64b8b71c15")
+		(property "Reference" "E10"
+			(at 300.355 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 300.355 128.27 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Canta_footprints:TouchPad_Keyboard"
+			(at 297.18 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 297.18 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 297.18 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "d9bc5f97-f83a-4a06-851a-334f5d47083b")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "E10")
 					(unit 1)
 				)
 			)
@@ -4795,6 +6357,72 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 297.18 35.56 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "327291c6-6f18-45c2-8434-35d0f520a62c")
+		(property "Reference" "E01"
+			(at 300.355 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 300.355 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Canta_footprints:TouchPad_Keyboard"
+			(at 297.18 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 297.18 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 297.18 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "a25bb6f5-de90-42cb-9a96-a7f7c61129cb")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "E01")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 78.74 99.06 0)
 		(unit 1)
@@ -4929,6 +6557,90 @@
 		)
 	)
 	(symbol
+		(lib_id "Canta_symbols:R_Network04_Split")
+		(at 273.05 96.52 90)
+		(unit 4)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "41b4a157-199c-42b2-ab81-b63a8cae3646")
+		(property "Reference" "RN2"
+			(at 270.51 93.345 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1M"
+			(at 276.225 93.345 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0402"
+			(at 273.05 98.552 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 273.05 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 273.05 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "3"
+			(uuid "7c605eec-b292-4a7a-871a-4a6e3048fa7e")
+		)
+		(pin "8"
+			(uuid "5ae6035d-ff74-4902-b6f7-3eba80e50f5b")
+		)
+		(pin "5"
+			(uuid "029ddc7c-98e1-4f0f-9822-884527e14dfb")
+		)
+		(pin "2"
+			(uuid "2929a39a-4483-4c6f-885c-b177f0d72986")
+		)
+		(pin "7"
+			(uuid "8d8e4d8a-b5ff-4cc9-946f-676224d36277")
+		)
+		(pin "4"
+			(uuid "d61b7f7b-9b6b-41ca-a047-6018eec7f9d4")
+		)
+		(pin "6"
+			(uuid "6938fe7f-c593-42c5-ae8d-e9a7122821d5")
+		)
+		(pin "1"
+			(uuid "3fdd2180-2909-43e7-b8bd-d36eb42901dc")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "RN2")
+					(unit 4)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Switch:SW_SPST")
 		(at 125.73 31.75 0)
 		(unit 1)
@@ -4954,7 +6666,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Canta_footprints:TestPoints_1x02_P1.50"
 			(at 125.73 31.75 0)
 			(effects
 				(font
@@ -5193,6 +6905,258 @@
 			(project "Canta"
 				(path "/694a0583-3845-4206-a711-da3cae00987c"
 					(reference "#PWR014")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Canta_symbols:R_Network04_Split")
+		(at 273.05 35.56 90)
+		(unit 2)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "51b1f2de-1207-4b1c-9870-4773ef61636d")
+		(property "Reference" "RN1"
+			(at 270.51 32.385 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1M"
+			(at 276.225 32.385 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0402"
+			(at 273.05 37.592 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 273.05 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 273.05 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "3"
+			(uuid "7c605eec-b292-4a7a-871a-4a6e3048fa7c")
+		)
+		(pin "8"
+			(uuid "c49a01b1-f73f-4ff7-bdf4-ab82bc604dc3")
+		)
+		(pin "5"
+			(uuid "029ddc7c-98e1-4f0f-9822-884527e14df9")
+		)
+		(pin "2"
+			(uuid "2929a39a-4483-4c6f-885c-b177f0d72984")
+		)
+		(pin "7"
+			(uuid "51a1bc24-9dfc-4f2b-9f54-c44ba8702ec1")
+		)
+		(pin "4"
+			(uuid "d61b7f7b-9b6b-41ca-a047-6018eec7f9d2")
+		)
+		(pin "6"
+			(uuid "6938fe7f-c593-42c5-ae8d-e9a7122821d3")
+		)
+		(pin "1"
+			(uuid "3fdd2180-2909-43e7-b8bd-d36eb42901da")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "RN1")
+					(unit 2)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Canta_symbols:R_Network04_Split")
+		(at 273.05 127 90)
+		(unit 3)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "55b94c41-285e-43f8-b357-5035d4a8561e")
+		(property "Reference" "RN3"
+			(at 270.51 123.825 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1M"
+			(at 276.225 123.825 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0402"
+			(at 273.05 129.032 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 273.05 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 273.05 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "3"
+			(uuid "7c605eec-b292-4a7a-871a-4a6e3048fa7d")
+		)
+		(pin "8"
+			(uuid "c49a01b1-f73f-4ff7-bdf4-ab82bc604dc5")
+		)
+		(pin "5"
+			(uuid "7eed95ea-0652-42c3-b0ef-f0fc598c41eb")
+		)
+		(pin "2"
+			(uuid "2929a39a-4483-4c6f-885c-b177f0d72987")
+		)
+		(pin "7"
+			(uuid "51a1bc24-9dfc-4f2b-9f54-c44ba8702ec3")
+		)
+		(pin "4"
+			(uuid "d61b7f7b-9b6b-41ca-a047-6018eec7f9d3")
+		)
+		(pin "6"
+			(uuid "69056db2-628e-412a-87dc-62db642cfdd7")
+		)
+		(pin "1"
+			(uuid "3fdd2180-2909-43e7-b8bd-d36eb42901dd")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "RN3")
+					(unit 3)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Canta_symbols:R_Network04_Split")
+		(at 273.05 106.68 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "59929269-8ee4-4e4d-886c-04c66ef11162")
+		(property "Reference" "RN3"
+			(at 270.51 103.505 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1M"
+			(at 276.225 103.505 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0402"
+			(at 273.05 108.712 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 273.05 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 273.05 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "3"
+			(uuid "7c605eec-b292-4a7a-871a-4a6e3048fa7f")
+		)
+		(pin "8"
+			(uuid "c49a01b1-f73f-4ff7-bdf4-ab82bc604dc6")
+		)
+		(pin "5"
+			(uuid "029ddc7c-98e1-4f0f-9822-884527e14dfc")
+		)
+		(pin "2"
+			(uuid "4ac55227-3999-4306-972c-ee0910194712")
+		)
+		(pin "7"
+			(uuid "51a1bc24-9dfc-4f2b-9f54-c44ba8702ec4")
+		)
+		(pin "4"
+			(uuid "d61b7f7b-9b6b-41ca-a047-6018eec7f9d5")
+		)
+		(pin "6"
+			(uuid "6938fe7f-c593-42c5-ae8d-e9a7122821d6")
+		)
+		(pin "1"
+			(uuid "0014a09e-db25-4764-9b99-9d96ab8b5415")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "RN3")
 					(unit 1)
 				)
 			)
@@ -5603,6 +7567,156 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 297.18 45.72 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "6ab0a4df-be1a-42b2-b820-9d32dbfcf22c")
+		(property "Reference" "E02"
+			(at 300.355 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 300.355 46.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Canta_footprints:TouchPad_Keyboard"
+			(at 297.18 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 297.18 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 297.18 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "a3ed67c2-6334-4406-9ae0-c6b742878a7b")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "E02")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Canta_symbols:R_Network04_Split")
+		(at 273.05 147.32 90)
+		(unit 4)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "75be57c5-2e2b-4ebd-b317-37d2ed7350db")
+		(property "Reference" "RN3"
+			(at 270.51 144.145 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1M"
+			(at 276.225 144.145 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0402"
+			(at 273.05 149.352 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 273.05 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 273.05 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "3"
+			(uuid "7c605eec-b292-4a7a-871a-4a6e3048fa80")
+		)
+		(pin "8"
+			(uuid "761c6699-9ee6-4a86-b7eb-29ac4851a915")
+		)
+		(pin "5"
+			(uuid "029ddc7c-98e1-4f0f-9822-884527e14dfd")
+		)
+		(pin "2"
+			(uuid "2929a39a-4483-4c6f-885c-b177f0d72988")
+		)
+		(pin "7"
+			(uuid "f3c7fe3a-c961-4e8a-bad8-fba27e624327")
+		)
+		(pin "4"
+			(uuid "d61b7f7b-9b6b-41ca-a047-6018eec7f9d6")
+		)
+		(pin "6"
+			(uuid "6938fe7f-c593-42c5-ae8d-e9a7122821d7")
+		)
+		(pin "1"
+			(uuid "3fdd2180-2909-43e7-b8bd-d36eb42901de")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "RN3")
+					(unit 4)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C")
 		(at 138.43 68.58 90)
 		(unit 1)
@@ -5804,6 +7918,156 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 297.18 137.16 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "81753c49-e758-4b34-ae24-83340154e1f2")
+		(property "Reference" "E11"
+			(at 300.355 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 300.355 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Canta_footprints:TouchPad_Transpose"
+			(at 297.18 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 297.18 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 297.18 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "1260287e-fb55-4046-92ae-243551967b91")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "E11")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Canta_symbols:R_Network04_Split")
+		(at 273.05 137.16 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "82a47036-43b7-46f1-bcdc-1beef04ddd3f")
+		(property "Reference" "RN1"
+			(at 270.51 133.985 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1M"
+			(at 276.225 133.985 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0402"
+			(at 273.05 139.192 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 273.05 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 273.05 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "3"
+			(uuid "7c605eec-b292-4a7a-871a-4a6e3048fa81")
+		)
+		(pin "8"
+			(uuid "c49a01b1-f73f-4ff7-bdf4-ab82bc604dc7")
+		)
+		(pin "5"
+			(uuid "029ddc7c-98e1-4f0f-9822-884527e14dfe")
+		)
+		(pin "2"
+			(uuid "2929a39a-4483-4c6f-885c-b177f0d72989")
+		)
+		(pin "7"
+			(uuid "51a1bc24-9dfc-4f2b-9f54-c44ba8702ec5")
+		)
+		(pin "4"
+			(uuid "d61b7f7b-9b6b-41ca-a047-6018eec7f9d7")
+		)
+		(pin "6"
+			(uuid "6938fe7f-c593-42c5-ae8d-e9a7122821d8")
+		)
+		(pin "1"
+			(uuid "3fdd2180-2909-43e7-b8bd-d36eb42901df")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "RN1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_name "GND_1")
 		(lib_id "power:GND")
 		(at 73.66 57.15 0)
@@ -5899,7 +8163,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Misc_Pads:Pads_P2.0"
+		(property "Footprint" ""
 			(at 123.19 124.46 0)
 			(effects
 				(font
@@ -5936,6 +8200,72 @@
 			(project "Canta"
 				(path "/694a0583-3845-4206-a711-da3cae00987c"
 					(reference "LS1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 297.18 55.88 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "90d9f251-89b9-46df-848c-dff4d3327cb3")
+		(property "Reference" "E03"
+			(at 300.355 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 300.355 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Canta_footprints:TouchPad_Keyboard"
+			(at 297.18 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 297.18 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 297.18 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "6baddf46-12ae-4e38-a612-c6086898e789")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "E03")
 					(unit 1)
 				)
 			)
@@ -6076,6 +8406,90 @@
 		)
 	)
 	(symbol
+		(lib_id "Canta_symbols:R_Network04_Split")
+		(at 273.05 55.88 90)
+		(unit 4)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "98f1668b-8a00-4e77-a1cb-1fdd204e2a56")
+		(property "Reference" "RN1"
+			(at 270.51 52.705 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1M"
+			(at 276.225 52.705 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0402"
+			(at 273.05 57.912 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 273.05 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 273.05 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "3"
+			(uuid "7c605eec-b292-4a7a-871a-4a6e3048fa82")
+		)
+		(pin "8"
+			(uuid "c49a01b1-f73f-4ff7-bdf4-ab82bc604dc8")
+		)
+		(pin "5"
+			(uuid "029ddc7c-98e1-4f0f-9822-884527e14dff")
+		)
+		(pin "2"
+			(uuid "2929a39a-4483-4c6f-885c-b177f0d7298a")
+		)
+		(pin "7"
+			(uuid "51a1bc24-9dfc-4f2b-9f54-c44ba8702ec6")
+		)
+		(pin "4"
+			(uuid "d61b7f7b-9b6b-41ca-a047-6018eec7f9d8")
+		)
+		(pin "6"
+			(uuid "6938fe7f-c593-42c5-ae8d-e9a7122821d9")
+		)
+		(pin "1"
+			(uuid "3fdd2180-2909-43e7-b8bd-d36eb42901e0")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "RN1")
+					(unit 4)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 119.38 31.75 0)
 		(unit 1)
@@ -6204,6 +8618,72 @@
 			(project "Canta"
 				(path "/694a0583-3845-4206-a711-da3cae00987c"
 					(reference "#PWR06")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 297.18 96.52 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a1c64c5a-b591-4d6b-a33b-b7813103d78e")
+		(property "Reference" "E07"
+			(at 300.355 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 300.355 97.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Canta_footprints:TouchPad_Keyboard"
+			(at 297.18 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 297.18 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 297.18 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "302e2765-430e-483e-b86e-c88c826ca298")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "E07")
 					(unit 1)
 				)
 			)
@@ -6483,6 +8963,90 @@
 		)
 	)
 	(symbol
+		(lib_id "Canta_symbols:R_Network04_Split")
+		(at 273.05 86.36 90)
+		(unit 3)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b473441f-407c-4b71-a807-83df6a8dbe95")
+		(property "Reference" "RN2"
+			(at 270.51 83.185 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1M"
+			(at 276.225 83.185 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0402"
+			(at 273.05 88.392 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 273.05 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 273.05 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "3"
+			(uuid "7c605eec-b292-4a7a-871a-4a6e3048fa83")
+		)
+		(pin "8"
+			(uuid "c49a01b1-f73f-4ff7-bdf4-ab82bc604dc9")
+		)
+		(pin "5"
+			(uuid "0a95a8cc-e43d-4650-9f79-69899cfa67f7")
+		)
+		(pin "2"
+			(uuid "2929a39a-4483-4c6f-885c-b177f0d7298b")
+		)
+		(pin "7"
+			(uuid "51a1bc24-9dfc-4f2b-9f54-c44ba8702ec7")
+		)
+		(pin "4"
+			(uuid "d61b7f7b-9b6b-41ca-a047-6018eec7f9d9")
+		)
+		(pin "6"
+			(uuid "183d8252-a634-4dca-b4f4-c9724fe629e9")
+		)
+		(pin "1"
+			(uuid "3fdd2180-2909-43e7-b8bd-d36eb42901e1")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "RN2")
+					(unit 3)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 181.61 21.59 180)
 		(unit 1)
@@ -6544,6 +9108,72 @@
 			(project "Canta"
 				(path "/694a0583-3845-4206-a711-da3cae00987c"
 					(reference "#PWR07")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 297.18 147.32 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b74cfee1-2733-4edb-8e15-dad9a4ab02ed")
+		(property "Reference" "E12"
+			(at 300.355 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 300.355 148.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Canta_footprints:TouchPad_Transpose"
+			(at 297.18 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 297.18 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 297.18 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "76bfc9ea-b9bf-41f7-9fc1-61bc32f445c5")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "E12")
 					(unit 1)
 				)
 			)
@@ -6679,6 +9309,240 @@
 			(project "Canta"
 				(path "/694a0583-3845-4206-a711-da3cae00987c"
 					(reference "C3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Canta_symbols:R_Network04_Split")
+		(at 273.05 76.2 90)
+		(unit 2)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c8e4dd0a-bd49-40a3-9596-e62af9374560")
+		(property "Reference" "RN2"
+			(at 270.51 73.025 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1M"
+			(at 276.225 73.025 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0402"
+			(at 273.05 78.232 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 273.05 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 273.05 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "3"
+			(uuid "2646dba2-eab9-439d-a96b-2ffe5b9028e5")
+		)
+		(pin "8"
+			(uuid "c49a01b1-f73f-4ff7-bdf4-ab82bc604dca")
+		)
+		(pin "5"
+			(uuid "029ddc7c-98e1-4f0f-9822-884527e14e00")
+		)
+		(pin "2"
+			(uuid "2929a39a-4483-4c6f-885c-b177f0d7298c")
+		)
+		(pin "7"
+			(uuid "51a1bc24-9dfc-4f2b-9f54-c44ba8702ec8")
+		)
+		(pin "4"
+			(uuid "06bf1c55-5401-472d-a261-8810e4146c41")
+		)
+		(pin "6"
+			(uuid "6938fe7f-c593-42c5-ae8d-e9a7122821da")
+		)
+		(pin "1"
+			(uuid "3fdd2180-2909-43e7-b8bd-d36eb42901e2")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "RN2")
+					(unit 2)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 297.18 76.2 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "cb87f592-e641-49c2-81ff-1cb976735bba")
+		(property "Reference" "E05"
+			(at 300.355 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 300.355 77.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Canta_footprints:TouchPad_Keyboard"
+			(at 297.18 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 297.18 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 297.18 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "f80ec64c-13ef-4d78-a566-9cb00cd9d47f")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "E05")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Canta_symbols:R_Network04_Split")
+		(at 273.05 66.04 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "d4475fae-9f8a-470b-8c70-0d72299aea20")
+		(property "Reference" "RN2"
+			(at 270.51 62.865 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1M"
+			(at 276.225 62.865 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0402"
+			(at 273.05 68.072 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 273.05 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 273.05 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "3"
+			(uuid "7c605eec-b292-4a7a-871a-4a6e3048fa84")
+		)
+		(pin "8"
+			(uuid "c49a01b1-f73f-4ff7-bdf4-ab82bc604dcb")
+		)
+		(pin "5"
+			(uuid "029ddc7c-98e1-4f0f-9822-884527e14e01")
+		)
+		(pin "2"
+			(uuid "342be661-cb17-4503-997d-bb6936c28ae5")
+		)
+		(pin "7"
+			(uuid "51a1bc24-9dfc-4f2b-9f54-c44ba8702ec9")
+		)
+		(pin "4"
+			(uuid "d61b7f7b-9b6b-41ca-a047-6018eec7f9da")
+		)
+		(pin "6"
+			(uuid "6938fe7f-c593-42c5-ae8d-e9a7122821db")
+		)
+		(pin "1"
+			(uuid "26a7f3c2-9199-49df-9e5b-33e1e752cb05")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "RN2")
 					(unit 1)
 				)
 			)
@@ -7127,6 +9991,72 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 297.18 66.04 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e65e093f-019d-4e87-85e9-56f92756b4ef")
+		(property "Reference" "E04"
+			(at 300.355 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 300.355 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Canta_footprints:TouchPad_Keyboard"
+			(at 297.18 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 297.18 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 297.18 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "8c12772e-3464-4337-8994-681922adf779")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "E04")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_name "VBUS_1")
 		(lib_id "power:VBUS")
 		(at 73.66 44.45 0)
@@ -7303,6 +10233,138 @@
 			(project "Canta"
 				(path "/694a0583-3845-4206-a711-da3cae00987c"
 					(reference "J2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 297.18 106.68 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "eb281a19-8475-48cc-a293-8d5433888b93")
+		(property "Reference" "E08"
+			(at 300.355 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 300.355 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Canta_footprints:TouchPad_Keyboard"
+			(at 297.18 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 297.18 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 297.18 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "f6edfbdd-197a-4d4e-b501-9868f610b51d")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "E08")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 297.18 116.84 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ed19cc2b-3e00-4365-a474-48c92f5b2685")
+		(property "Reference" "E09"
+			(at 300.355 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 300.355 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Canta_footprints:TouchPad_Keyboard"
+			(at 297.18 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 297.18 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 297.18 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "3a6c1eb2-cf1a-4149-9b70-3618ef7f8bfd")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "E09")
 					(unit 1)
 				)
 			)
