@@ -4244,6 +4244,10 @@
 		(uuid "3e120a17-1a17-4cd7-85a8-ce799c9c1875")
 	)
 	(no_connect
+		(at 147.32 83.82)
+		(uuid "7abd7c32-86de-4e0b-885c-008f45c7a2a9")
+	)
+	(no_connect
 		(at 193.04 38.1)
 		(uuid "86d2cb21-efa1-4a4c-8d44-d23bf5e6d383")
 	)
@@ -5423,16 +5427,6 @@
 		)
 		(uuid "04e6ba70-0c4a-4168-8420-cc2e657e2381")
 	)
-	(label "ACT_LED"
-		(at 153.67 143.51 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "077ad0b2-7c74-468a-a9c6-158cbe3b53e6")
-	)
 	(label "CAP_01"
 		(at 288.29 39.37 180)
 		(effects
@@ -5452,16 +5446,6 @@
 			(justify right bottom)
 		)
 		(uuid "170c4a6a-389f-40f7-8a72-0d1d7399ab1f")
-	)
-	(label "ACT_LED"
-		(at 147.32 83.82 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "19ad07cd-3539-468e-ab46-ff9e1a022223")
 	)
 	(label "I2S_BCK"
 		(at 147.32 81.28 180)
@@ -5522,6 +5506,16 @@
 			(justify right bottom)
 		)
 		(uuid "3d35b313-ed4e-435c-9618-fc1b2e7e6cff")
+	)
+	(label "BOOT_ACT"
+		(at 189.23 143.51 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "47eca1bb-9a01-4f6e-8634-ca0c4fada9bb")
 	)
 	(label "BOOT"
 		(at 132.08 31.75 0)
@@ -5783,7 +5777,7 @@
 		)
 		(uuid "d99c09e9-2cb8-44b1-887a-04333be181f8")
 	)
-	(label "BOOT"
+	(label "BOOT_ACT"
 		(at 187.96 36.83 90)
 		(effects
 			(font
@@ -6907,8 +6901,8 @@
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
-		(on_board yes)
-		(dnp no)
+		(on_board no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "43725e54-1334-4e4d-8ad9-978813eee2de")
 		(property "Reference" "SW1"
@@ -6964,73 +6958,6 @@
 			(project ""
 				(path "/694a0583-3845-4206-a711-da3cae00987c"
 					(reference "SW1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 189.23 143.51 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "447cfed0-8f73-4b9d-ba8f-acf53771c477")
-		(property "Reference" "#PWR012"
-			(at 189.23 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 189.23 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" ""
-			(at 189.23 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 189.23 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 189.23 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "cd865def-64c6-4114-a1a5-2e76cec6df99")
-		)
-		(instances
-			(project "Canta"
-				(path "/694a0583-3845-4206-a711-da3cae00987c"
-					(reference "#PWR012")
 					(unit 1)
 				)
 			)
@@ -9779,6 +9706,71 @@
 			(project "Canta"
 				(path "/694a0583-3845-4206-a711-da3cae00987c"
 					(reference "#PWR044")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VDD")
+		(at 153.67 143.51 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c57131e3-5b80-4949-a527-ef33d230d3c1")
+		(property "Reference" "#PWR019"
+			(at 153.67 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "VDD"
+			(at 153.67 139.192 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 153.67 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 153.67 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VDD\""
+			(at 153.67 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "47be4521-99b4-417b-80ad-c6b9b94f3f8a")
+		)
+		(instances
+			(project "Canta"
+				(path "/694a0583-3845-4206-a711-da3cae00987c"
+					(reference "#PWR019")
 					(unit 1)
 				)
 			)
