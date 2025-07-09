@@ -8567,7 +8567,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Canta_footprints:Speaker_Pads_P2.00"
 			(at 123.19 124.46 0)
 			(effects
 				(font

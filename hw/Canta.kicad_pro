@@ -241,7 +241,20 @@
     "equivalence_files": []
   },
   "erc": {
-    "erc_exclusions": [],
+    "erc_exclusions": [
+      [
+        "footprint_link_issues|1574800|330200|afb70863-2668-4e71-9c57-140501f5635d|00000000-0000-0000-0000-000000000000|||",
+        "Unused antenna"
+      ],
+      [
+        "lib_symbol_mismatch|1054100|1270000|df1ef4c8-f29e-4c20-b0a3-46dca8d56f40|00000000-0000-0000-0000-000000000000|||",
+        "Changed pin numbering to match WLCSP package"
+      ],
+      [
+        "lib_symbol_mismatch|1549400|457200|182d91ac-a051-4204-8ef1-005feb619190|00000000-0000-0000-0000-000000000000|||",
+        "Changed pad pin number 0 -> 29"
+      ]
+    ],
     "meta": {
       "version": 0
     },
