@@ -1,0 +1,8 @@
+/backups/
+
+/hw/fp-info-cache
+/hw/Canta-backups/
+
+/fw/*.o
+/fw/main.elf
+/fw/main.bin
