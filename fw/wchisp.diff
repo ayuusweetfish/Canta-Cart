@@ -1,0 +1,13 @@
+diff --git a/devices/0x22-CH59x.yaml b/devices/0x22-CH59x.yaml
+index 9a32440..05d1804 100644
+--- a/devices/0x22-CH59x.yaml
++++ b/devices/0x22-CH59x.yaml
+@@ -31,7 +31,7 @@ config_registers:
+   - offset: 0x08
+     name: USER_CFG
+     description: User config register
+-    reset: 0x4FFF0FD5
++    reset: 0x4FFF0F45
+     type: u32
+     fields:
+       - bit_range: [2, 0]

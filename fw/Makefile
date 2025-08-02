@@ -1,7 +1,7 @@
 CH573_EXAM_PATH ?= ~/Downloads/CH573EVT/EXAM
 TOOLCHAIN_ROOT ?= ~/tools/xpack-riscv-none-elf-gcc-14.2.0-3
 TOOL_PREFIX ?= $(TOOLCHAIN_ROOT)/bin/riscv-none-elf-
-WCHISP ?= ~/Downloads/wchisp-macos-x64/wchisp
+WCHISP ?= ~/tools/wchisp/target/release/wchisp
 ISP55E0 ?= ~/Downloads/isp55e0/isp55e0
 
 CC := $(TOOL_PREFIX)gcc
