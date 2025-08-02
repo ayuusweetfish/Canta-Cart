@@ -175,6 +175,12 @@ print(','.join('%d' % (4000 * math.sin(i/66. * math.pi * 2)) for i in range(66))
     a[i * 4 + 0] = a[i * 4 + 2] = (uint8_t)((sample >> 8) & 0xff);
     a[i * 4 + 1] = a[i * 4 + 3] = (uint8_t)((sample >> 0) & 0xff);
   }
+
+  static int count = 0;
+  if (++count == 29296 / (AUDIO_BUF_N_BYTES / 2)) {
+    printf("!\n");
+    count = 0;
+  }
 }
 
 // interrupt(WCH-Interrupt-fast") in standard toolchain
@@ -205,7 +211,9 @@ void TMR0_IRQHandler_actual()
 }
 
 __attribute__((section(".highcode")))
-void TMR0_IRQHandler() { TMR0_IRQHandler_actual(); }
+void TMR0_IRQHandler() {
+  TMR0_IRQHandler_actual();
+}
 
 static void i2s_init()
 {
@@ -258,8 +266,7 @@ void synchronized_enable()
   TMR0_TimerInit(64 * 16 * 1000);
   TMR0_ITCfg(ENABLE, TMR0_3_IT_CYC_END);
   PFIC_EnableIRQ(TMR0_IRQn);
-  // TODO: Use SetVTFIRQ()?
-  // PFIC_FastINT0CFG(TMR0_IRQn, (uint32_t)(uintptr_t)&TMR0_IRQHandler_);
+  SetVTFIRQ((uint32_t)(uintptr_t)&TMR0_IRQHandler_, TMR0_IRQn, 0, ENABLE);
 }
 
 int main()
