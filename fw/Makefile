@@ -1,4 +1,4 @@
-CH573_EXAM_PATH ?= ~/Downloads/CH573EVT/EXAM
+CH592_EXAM_PATH ?= ~/Downloads/CH592EVT/EXAM
 TOOLCHAIN_ROOT ?= ~/tools/xpack-riscv-none-elf-gcc-14.2.0-3
 TOOL_PREFIX ?= $(TOOLCHAIN_ROOT)/bin/riscv-none-elf-
 WCHISP ?= ~/tools/wchisp/target/release/wchisp
@@ -22,22 +22,22 @@ endif
 # https://www.eevblog.com/forum/microcontrollers/warning-to-users-of-xpack-risc-v-gcc-distribution/?wap2
 
 override CFLAGS := \
-  -I $(CH573_EXAM_PATH)/SRC/StdPeriphDriver/inc \
-  -I $(CH573_EXAM_PATH)/SRC/RVMSIS \
-  -I $(CH573_EXAM_PATH)/BLE/LIB \
+  -I $(CH592_EXAM_PATH)/SRC/StdPeriphDriver/inc \
+  -I $(CH592_EXAM_PATH)/SRC/RVMSIS \
+  -I $(CH592_EXAM_PATH)/BLE/LIB \
   -march=rv32imac_zifencei_zicsr -mabi=ilp32 -std=gnu11 -fdata-sections -ffunction-sections -O2 \
   $(DEBUG_FLAGS) \
   $(CFLAGS)
 
 override LDFLAGS := \
-  -T $(CH573_EXAM_PATH)/SRC/Ld/Link.ld --gc-sections $(LDFLAGS)
+  -T $(CH592_EXAM_PATH)/SRC/Ld/Link.ld --gc-sections $(LDFLAGS)
 CRT_LIBS = \
   $(addprefix $(TOOLCHAIN_ROOT)/lib/gcc/riscv-none-elf/14.2.0/rv32imc/ilp32/, crtbegin.o crtend.o crti.o crtn.o libgcc.a) \
   $(TOOLCHAIN_ROOT)/riscv-none-elf/lib/rv32imc/ilp32/libc.a
 
 SRCS_C = $(wildcard *.c)
-LIB_SRCS_C = $(wildcard $(CH573_EXAM_PATH)/SRC/StdPeriphDriver/*.c)
-LIB_SRCS_S = $(CH573_EXAM_PATH)/SRC/Startup/startup_CH573.S
+LIB_SRCS_C = $(wildcard $(CH592_EXAM_PATH)/SRC/StdPeriphDriver/*.c)
+LIB_SRCS_S = $(CH592_EXAM_PATH)/SRC/Startup/startup_CH592.S
 
 OBJS = $(addsuffix .o, $(notdir $(basename $(wildcard $(LIB_SRCS_C))))) \
        $(addsuffix .o, $(notdir $(basename $(wildcard $(LIB_SRCS_S))))) \
@@ -45,9 +45,9 @@ OBJS = $(addsuffix .o, $(notdir $(basename $(wildcard $(LIB_SRCS_C))))) \
 
 all: main.elf main.bin
 
-%.o: $(CH573_EXAM_PATH)/SRC/StdPeriphDriver/%.c
+%.o: $(CH592_EXAM_PATH)/SRC/StdPeriphDriver/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
-%.o: $(CH573_EXAM_PATH)/SRC/Startup/%.S
+%.o: $(CH592_EXAM_PATH)/SRC/Startup/%.S
 	$(CC) $(CFLAGS) -c $< -o $@
 
 %.o: %.c
@@ -55,8 +55,8 @@ all: main.elf main.bin
 
 main.elf: $(OBJS)
 	$(LD) -o $@ $^ $(LDFLAGS) \
-	  $(CH573_EXAM_PATH)/SRC/StdPeriphDriver/libISP573.a \
-	  $(CH573_EXAM_PATH)/BLE/LIB/libCH57xBLE.a \
+	  $(CH592_EXAM_PATH)/SRC/StdPeriphDriver/libISP592.a \
+	  $(CH592_EXAM_PATH)/BLE/LIB/libCH59xBLE.a \
 	  $(CRT_LIBS)
 
 main.bin: main.elf

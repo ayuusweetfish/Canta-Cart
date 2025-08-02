@@ -1,4 +1,4 @@
-#include "CH57x_common.h"
+#include "CH59x_common.h"
 #include "printf.h"
 #include <stdint.h>
 #include <stdlib.h>
@@ -23,8 +23,9 @@ int main()
   GPIOA_ModeCfg(GPIO_Pin_All, GPIO_ModeIN_Floating);
   GPIOB_ModeCfg(GPIO_Pin_All, GPIO_ModeIN_Floating);
 
+  // Debug usage. Monitor serial output at PA9 = TXD1 = bottom-left touch pad
   GPIOA_SetBits(GPIO_Pin_9);
-  GPIOA_ModeCfg(GPIO_Pin_8, GPIO_ModeIN_PU);
+  // GPIOA_ModeCfg(GPIO_Pin_8, GPIO_ModeIN_PU); // Probably no need
   GPIOA_ModeCfg(GPIO_Pin_9, GPIO_ModeOut_PP_5mA);
   UART1_DefInit();
   printf("CHIP_ID = %02x\n", R8_CHIP_ID);
