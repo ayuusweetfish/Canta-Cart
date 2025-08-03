@@ -170,8 +170,8 @@ print(','.join('%d' % (4000 * math.sin(i/66. * math.pi * 2)) for i in range(66))
     0,380,757,1126,1486,1832,2162,2472,2760,3022,3258,3464,3638,3780,3887,3959,3995,3995,3959,3887,3780,3638,3464,3258,3022,2760,2472,2162,1832,1486,1126,757,380,0,-380,-757,-1126,-1486,-1832,-2162,-2472,-2760,-3022,-3258,-3464,-3638,-3780,-3887,-3959,-3995,-3995,-3959,-3887,-3780,-3638,-3464,-3258,-3022,-2760,-2472,-2162,-1832,-1486,-1126,-757,-380
   };
   for (int i = 0; i < (AUDIO_BUF_N_BYTES / 8); i++) {
-    // int16_t sample = sine_table[phase];
-    int16_t sample = 0x0105;
+    int16_t sample = sine_table[phase] * 4;
+    // int16_t sample = 0x0105;
     if ((phase += 3) >= sizeof sine_table / sizeof sine_table[0]) phase = 0;
     a[i * 4 + 0] = a[i * 4 + 2] = (uint8_t)((sample >> 8) & 0xff);
     a[i * 4 + 1] = a[i * 4 + 3] = (uint8_t)((sample >> 0) & 0xff);
@@ -220,33 +220,37 @@ static void i2s_init()
 {
   // ============ Audio ============ //
 
-if (0) {
+if (1) {
+  // WS: PA11 TMR2
   GPIOA_ResetBits(GPIO_Pin_11);
   GPIOA_ModeCfg(GPIO_Pin_11, GPIO_ModeOut_PP_5mA);
+  GPIOPinRemap(DISABLE, RB_PIN_TMR2);
 } else {
   // WS: PB23 TMR0_
   GPIOB_ResetBits(GPIO_Pin_23);
   GPIOB_ModeCfg(GPIO_Pin_23, GPIO_ModeOut_PP_5mA);
-}
   GPIOPinRemap(ENABLE, RB_PIN_TMR0);
-  // TMR0_PWMInit(High_Level, PWM_Times_1);
-  R8_TMR0_CTRL_MOD = RB_TMR_OUT_EN | (High_Level << 4) | (PWM_Times_1 << 6);
+}
+  R8_TMR2_CTRL_MOD = RB_TMR_OUT_EN | (High_Level << 4) | (PWM_Times_1 << 6);
   // Fsys = 60 MHz, prescale = 64, bit depth = 16 (2 channels)
   // -> Fsample = 29.296 kHz
   int half_period = 64 * 16 + 4;
     // SCK appears actually 4 SysClock cycles slower, accomodate
-  TMR0_PWMCycleCfg(half_period * 2);
-  TMR0_PWMActDataWidth(half_period);
-  // R8_TMR0_CTRL_MOD |= RB_TMR_OUT_EN | RB_TMR_COUNT_EN;
-  // TMR0_PWMEnable();
-  // TMR0_Enable();
+  TMR2_PWMCycleCfg(half_period * 2);
+  TMR2_PWMActDataWidth(half_period);
 
   // Data output by SPI
+if (1) {
   // BCK: PA13 SCK0
   // DATA: PA14 MOSI
+  GPIOA_ResetBits(GPIO_Pin_13 | GPIO_Pin_14);
+  GPIOA_ModeCfg(GPIO_Pin_13 | GPIO_Pin_14, GPIO_ModeOut_PP_5mA);
+  GPIOPinRemap(DISABLE, RB_PIN_SPI0);
+} else {
   GPIOB_ResetBits(GPIO_Pin_13 | GPIO_Pin_14);
   GPIOB_ModeCfg(GPIO_Pin_13 | GPIO_Pin_14, GPIO_ModeOut_PP_5mA);
   GPIOPinRemap(ENABLE, RB_PIN_SPI0);
+}
   SPI0_MasterDefInit();
   SPI0_CLKCfg(64);
   R8_SPI0_CTRL_CFG |= RB_SPI_DMA_LOOP;
@@ -260,7 +264,7 @@ __attribute__((noinline))
 void synchronized_enable()
 {
   __asm__ volatile ("" ::: "memory");
-  R8_TMR0_CTRL_MOD |= RB_TMR_COUNT_EN;  // TMR0_Enable();
+  R8_TMR2_CTRL_MOD |= RB_TMR_COUNT_EN;
   __asm__ volatile ("" ::: "memory");
   __asm__ volatile (
     "nop\n nop\n nop\n nop\n"  "nop\n nop\n nop\n nop\n"
