@@ -170,14 +170,15 @@ print(','.join('%d' % (4000 * math.sin(i/66. * math.pi * 2)) for i in range(66))
     0,380,757,1126,1486,1832,2162,2472,2760,3022,3258,3464,3638,3780,3887,3959,3995,3995,3959,3887,3780,3638,3464,3258,3022,2760,2472,2162,1832,1486,1126,757,380,0,-380,-757,-1126,-1486,-1832,-2162,-2472,-2760,-3022,-3258,-3464,-3638,-3780,-3887,-3959,-3995,-3995,-3959,-3887,-3780,-3638,-3464,-3258,-3022,-2760,-2472,-2162,-1832,-1486,-1126,-757,-380
   };
   for (int i = 0; i < (AUDIO_BUF_N_BYTES / 8); i++) {
-    int16_t sample = sine_table[phase];
+    // int16_t sample = sine_table[phase];
+    int16_t sample = 0x0105;
     if ((phase += 3) >= sizeof sine_table / sizeof sine_table[0]) phase = 0;
     a[i * 4 + 0] = a[i * 4 + 2] = (uint8_t)((sample >> 8) & 0xff);
     a[i * 4 + 1] = a[i * 4 + 3] = (uint8_t)((sample >> 0) & 0xff);
   }
 
   static int count = 0;
-  if (++count == 29296 / (AUDIO_BUF_N_BYTES / 2)) {
+  if (++count == 29296 / (AUDIO_BUF_N_BYTES / 2 / 2)) {
     printf("!\n");
     count = 0;
   }
@@ -187,15 +188,15 @@ print(','.join('%d' % (4000 * math.sin(i/66. * math.pi * 2)) for i in range(66))
 // https://github.com/riscv/riscv-fast-interrupt/issues/329
 __attribute__((section(".highcode")))
 __attribute__((naked))
-void TMR0_IRQHandler_(void)
+void TMR1_IRQHandler_(void)
 {
-  asm volatile ("call TMR0_IRQHandler_actual; mret");
+  asm volatile ("call TMR1_IRQHandler_actual; mret");
 }
 
 __attribute__((section(".highcode")))
-void TMR0_IRQHandler_actual()
+void TMR1_IRQHandler_actual()
 {
-  TMR0_ClearITFlag(TMR0_3_IT_CYC_END);
+  TMR1_ClearITFlag(TMR0_3_IT_CYC_END);
   uint16_t dma_start_addr = (uint16_t)(uintptr_t)audio_buf & ((1 << 14) - 1);
   uint16_t dma_pos = R16_SPI0_DMA_NOW - dma_start_addr;
 
@@ -211,33 +212,41 @@ void TMR0_IRQHandler_actual()
 }
 
 __attribute__((section(".highcode")))
-void TMR0_IRQHandler() {
-  TMR0_IRQHandler_actual();
+void TMR1_IRQHandler() {
+  TMR1_IRQHandler_actual();
 }
 
 static void i2s_init()
 {
   // ============ Audio ============ //
 
-  // WS: PA11 TMR2
+if (0) {
   GPIOA_ResetBits(GPIO_Pin_11);
   GPIOA_ModeCfg(GPIO_Pin_11, GPIO_ModeOut_PP_5mA);
-  GPIOPinRemap(DISABLE, RB_PIN_TMR2);
-  // TMR2_PWMInit(High_Level, PWM_Times_1);
-  R8_TMR2_CTRL_MOD = RB_TMR_OUT_EN | (High_Level << 4) | (PWM_Times_1 << 6);
+} else {
+  // WS: PB23 TMR0_
+  GPIOB_ResetBits(GPIO_Pin_23);
+  GPIOB_ModeCfg(GPIO_Pin_23, GPIO_ModeOut_PP_5mA);
+}
+  GPIOPinRemap(ENABLE, RB_PIN_TMR0);
+  // TMR0_PWMInit(High_Level, PWM_Times_1);
+  R8_TMR0_CTRL_MOD = RB_TMR_OUT_EN | (High_Level << 4) | (PWM_Times_1 << 6);
   // Fsys = 60 MHz, prescale = 64, bit depth = 16 (2 channels)
   // -> Fsample = 29.296 kHz
   int half_period = 64 * 16 + 4;
     // SCK appears actually 4 SysClock cycles slower, accomodate
-  TMR2_PWMCycleCfg(half_period * 2);
-  TMR2_PWMActDataWidth(half_period);
+  TMR0_PWMCycleCfg(half_period * 2);
+  TMR0_PWMActDataWidth(half_period);
+  // R8_TMR0_CTRL_MOD |= RB_TMR_OUT_EN | RB_TMR_COUNT_EN;
+  // TMR0_PWMEnable();
+  // TMR0_Enable();
 
   // Data output by SPI
   // BCK: PA13 SCK0
   // DATA: PA14 MOSI
-  GPIOA_ResetBits(GPIO_Pin_13 | GPIO_Pin_14);
-  GPIOA_ModeCfg(GPIO_Pin_13 | GPIO_Pin_14, GPIO_ModeOut_PP_5mA);
-  GPIOPinRemap(DISABLE, RB_PIN_SPI0);
+  GPIOB_ResetBits(GPIO_Pin_13 | GPIO_Pin_14);
+  GPIOB_ModeCfg(GPIO_Pin_13 | GPIO_Pin_14, GPIO_ModeOut_PP_5mA);
+  GPIOPinRemap(ENABLE, RB_PIN_SPI0);
   SPI0_MasterDefInit();
   SPI0_CLKCfg(64);
   R8_SPI0_CTRL_CFG |= RB_SPI_DMA_LOOP;
@@ -251,10 +260,11 @@ __attribute__((noinline))
 void synchronized_enable()
 {
   __asm__ volatile ("" ::: "memory");
-  R8_TMR2_CTRL_MOD |= RB_TMR_COUNT_EN;  // TMR2_Enable();
+  R8_TMR0_CTRL_MOD |= RB_TMR_COUNT_EN;  // TMR0_Enable();
   __asm__ volatile ("" ::: "memory");
   __asm__ volatile (
-    "nop\n nop\n nop\n nop\n nop\n nop\n nop\n nop\n"
+    "nop\n nop\n nop\n nop\n"  "nop\n nop\n nop\n nop\n"
+    "nop\n nop\n nop\n nop\n"
   );
   __asm__ volatile ("" ::: "memory");
   R8_SPI0_CTRL_CFG |= RB_SPI_DMA_ENABLE;
@@ -263,10 +273,10 @@ void synchronized_enable()
 
   synchronized_enable();
 
-  TMR0_TimerInit(64 * 16 * 1000);
-  TMR0_ITCfg(ENABLE, TMR0_3_IT_CYC_END);
-  PFIC_EnableIRQ(TMR0_IRQn);
-  SetVTFIRQ((uint32_t)(uintptr_t)&TMR0_IRQHandler_, TMR0_IRQn, 0, ENABLE);
+  TMR1_TimerInit(64 * 16 * 1000);
+  TMR1_ITCfg(ENABLE, TMR0_3_IT_CYC_END);
+  PFIC_EnableIRQ(TMR1_IRQn);
+  SetVTFIRQ((uint32_t)(uintptr_t)&TMR1_IRQHandler_, TMR1_IRQn, 0, ENABLE);
 }
 
 int main()
@@ -292,19 +302,24 @@ int main()
 
   i2s_init();
 
+  int i = 0;
+
+if (0) {
   // CAP_OUT
   GPIOA_ModeCfg(GPIO_Pin_10, GPIO_ModeOut_PP_5mA);
 
-  int i = 0;
   while (1) {
     cap_sense();
     DelayMs(50);
     if (++i == 10) { R32_PB_OUT ^= (1 << 22); i = 0; }
   }
+}
 
   while (1) {
     if (i != 0) DelayMs(500); GPIOB_SetBits(GPIO_Pin_22);
+    GPIOB_SetBits(GPIO_Pin_23);
     DelayMs(500); GPIOB_ResetBits(GPIO_Pin_22);
+    GPIOB_ResetBits(GPIO_Pin_23);
     printf("tick\n");
     i = 1;
   }
