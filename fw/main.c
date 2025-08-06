@@ -160,6 +160,7 @@ static uint8_t audio_buf[AUDIO_BUF_N_BYTES];
 static void refill_audio(int half)
 {
   uint8_t *a = audio_buf + half * (AUDIO_BUF_N_BYTES / 2);
+  int n = AUDIO_BUF_N_BYTES / 8;  // 2-byte samples, 2 channels, half
 
   static int phase = 0;
   static const int16_t sine_table[] = {
@@ -169,15 +170,15 @@ print(','.join('%d' % (4000 * math.sin(i/66. * math.pi * 2)) for i in range(66))
 */
     0,380,757,1126,1486,1832,2162,2472,2760,3022,3258,3464,3638,3780,3887,3959,3995,3995,3959,3887,3780,3638,3464,3258,3022,2760,2472,2162,1832,1486,1126,757,380,0,-380,-757,-1126,-1486,-1832,-2162,-2472,-2760,-3022,-3258,-3464,-3638,-3780,-3887,-3959,-3995,-3995,-3959,-3887,-3780,-3638,-3464,-3258,-3022,-2760,-2472,-2162,-1832,-1486,-1126,-757,-380
   };
-  for (int i = 0; i < (AUDIO_BUF_N_BYTES / 8); i++) {
-    // int16_t sample = sine_table[phase] * 4;
+  for (int i = 0; i < n; i++) {
+    int16_t sample = sine_table[phase];
     // int16_t sample = 0x0105;
-    static uint32_t seed = 202508;
-    seed = seed * 1103515245 + 12345;
-    int16_t sample = ((int16_t)(seed >> 7) >> 2);
+    // static uint32_t seed = 202508;
+    // seed = seed * 1103515245 + 12345;
+    // int16_t sample = ((int16_t)(seed >> 7) >> 2);
     if ((phase += 3) >= sizeof sine_table / sizeof sine_table[0]) phase = 0;
-    a[i * 4 + 0] = a[i * 4 + 2] = (uint8_t)((sample >> 8) & 0xff);
-    a[i * 4 + 1] = a[i * 4 + 3] = (uint8_t)((sample >> 0) & 0xff);
+    a[i * 4 + 0] = (uint8_t)((sample >> 8) & 0xff);
+    a[i * 4 + 1] = (uint8_t)((sample >> 0) & 0xff);
   }
 
   static int count = 0;
@@ -244,7 +245,7 @@ static void i2s_init()
   GPIOB_ModeCfg(GPIO_Pin_23, GPIO_ModeOut_PP_5mA);
   GPIOPinRemap(ENABLE, RB_PIN_TMR0);
 #endif
-  R8_TMR2_CTRL_MOD = RB_TMR_OUT_EN | (High_Level << 4) | (PWM_Times_1 << 6);
+  R8_TMR2_CTRL_MOD = RB_TMR_OUT_EN | (Low_Level << 4) | (PWM_Times_1 << 6);
   // Fsys = 60 MHz, prescale = 64, bit depth = 16 (2 channels)
   // -> Fsample = 29.296 kHz
   int half_period = 64 * 16 + 4;
@@ -323,14 +324,14 @@ int main()
 
   int i = 0;
 
-if (0) {
+if (1) {
   // CAP_OUT
   GPIOA_ModeCfg(GPIO_Pin_10, GPIO_ModeOut_PP_5mA);
 
   while (1) {
     cap_sense();
-    DelayMs(50);
-    if (++i == 10) { R32_PB_OUT ^= (1 << 22); i = 0; }
+    DelayMs(5);
+    if (++i == 100) { R32_PB_OUT ^= (1 << 22); i = 0; }
   }
 }
 
