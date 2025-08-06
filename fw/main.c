@@ -14,6 +14,13 @@ void _putchar(char character)
   R8_UART1_THR = character;
 }
 
+// ============ Synthesizer algorithm ============ //
+
+#define SYNTH_SAMPLE_RATE 29296.875
+#define SYNTH_EXTRA_SHIFT 0
+#define SYNTH_STEREO
+#include "canta_synth.h"
+
 // ============ Touch ============ //
 
 #define TOUCH_HARD_ON_THR 120
@@ -149,18 +156,27 @@ static inline void cap_sense()
     }
   }
 
-  for (int j = 0; j < 12; j++) printf("%3d%c%c", min(999, cap_sum[j]), btns[j] ? '*' : '.', j == 11 ? '\n' : ' ');
+  // for (int j = 0; j < 12; j++) printf("%3d%c%c", min(999, cap_sum[j]), btns[j] ? '*' : '.', j == 11 ? '\n' : ' ');
+  disable_irq();
+  synth_buttons(btns);
+  enable_irq();
 }
 
 // ============ Audio ============ //
 
-#define AUDIO_BUF_N_BYTES 4000
-static uint8_t audio_buf[AUDIO_BUF_N_BYTES];
+#define AUDIO_BUF_N_BYTES 6000
+static uint8_t audio_buf[AUDIO_BUF_N_BYTES] __attribute__((aligned(2)));
 
 static void refill_audio(int half)
 {
   uint8_t *a = audio_buf + half * (AUDIO_BUF_N_BYTES / 2);
-  int n = AUDIO_BUF_N_BYTES / 8;  // 2-byte samples, 2 channels, half
+  int n = AUDIO_BUF_N_BYTES / 4;  // 2-byte samples, half buffer
+
+  int16_t *A = (int16_t *)a;
+  synth_audio(A, n);
+  for (int i = 0; i < n; i += 2) A[i] = __builtin_bswap16(A[i]);
+  // if (a[0] != 0) printf("%02x %02x %02x %02x-%02x %02x %02x %02x\n", (int)a[0], (int)a[1], (int)a[2], (int)a[3], (int)a[4], (int)a[5], (int)a[6], (int)a[7]);
+  return;
 
   static int phase = 0;
   static const int16_t sine_table[] = {
@@ -170,7 +186,7 @@ print(','.join('%d' % (4000 * math.sin(i/66. * math.pi * 2)) for i in range(66))
 */
     0,380,757,1126,1486,1832,2162,2472,2760,3022,3258,3464,3638,3780,3887,3959,3995,3995,3959,3887,3780,3638,3464,3258,3022,2760,2472,2162,1832,1486,1126,757,380,0,-380,-757,-1126,-1486,-1832,-2162,-2472,-2760,-3022,-3258,-3464,-3638,-3780,-3887,-3959,-3995,-3995,-3959,-3887,-3780,-3638,-3464,-3258,-3022,-2760,-2472,-2162,-1832,-1486,-1126,-757,-380
   };
-  for (int i = 0; i < n; i++) {
+  for (int i = 0; i < n / 2; i++) {
     int16_t sample = sine_table[phase];
     // int16_t sample = 0x0105;
     // static uint32_t seed = 202508;
