@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define DEBUG 0
 #if DEBUG
 void _putchar(char character)
 {
@@ -45,7 +46,7 @@ static inline void pull_electrodes_port(int port, uint32_t pins, bool level)
 static inline void pull_electrodes(bool level)
 {
   pull_electrodes_port(
-    GPIOA, (1 << 4) | (1 << 5) | (0 << 8) | (0 << 9) | (1 << 15),
+    GPIOA, (1 << 4) | (1 << 5) | (1 << 8) | ((!DEBUG) << 9) | (1 << 15),
     level);
   pull_electrodes_port(
     GPIOB, (1 << 4) | (1 << 7) | (1 << 12) | (1 << 13) | (1 << 14) | (1 << 15) | (1 << 23),
@@ -102,7 +103,7 @@ static inline void cap_sense()
     for (int i = 0; i < 100; i++) {
       uint32_t a = (R32_PA_PIN);
       uint32_t b = (R32_PB_PIN);
-      const uint32_t a_mask = (1 << 4) | (1 << 5) | (0 << 8) | (0 << 9) | (1 << 15);
+      const uint32_t a_mask = (1 << 4) | (1 << 5) | (1 << 8) | ((!DEBUG) << 9) | (1 << 15);
       uint32_t combined_v = ((a << 1) & (a_mask << 1)) | (b & ~(a_mask << 1));
       uint32_t cur_v = (level == 1 ? (combined_v | last_v) : (combined_v & last_v));
       if (last_v != cur_v) n_records++;
