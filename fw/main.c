@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#if DEBUG
 void _putchar(char character)
 {
   if (character == '\n') {
@@ -13,6 +14,10 @@ void _putchar(char character)
   while (R8_UART1_TFC == UART_FIFO_SIZE) { }
   R8_UART1_THR = character;
 }
+#else
+#undef printf
+#define printf(...)
+#endif
 
 // ============ Synthesizer algorithm ============ //
 
@@ -164,44 +169,20 @@ static inline void cap_sense()
 
 // ============ Audio ============ //
 
-#define AUDIO_BUF_N_BYTES 6000
-static uint8_t audio_buf[AUDIO_BUF_N_BYTES] __attribute__((aligned(2)));
+#define AUDIO_BUF_MAX 2048
+// 2-byte samples, 2 channels (1 unused), double buffer
+static uint8_t audio_buf[AUDIO_BUF_MAX * 8] __attribute__((aligned(2)));
+
+#define AUDIO_BUF_BLOCK 800
 
 static void refill_audio(int half)
 {
-  uint8_t *a = audio_buf + half * (AUDIO_BUF_N_BYTES / 2);
-  int n = AUDIO_BUF_N_BYTES / 4;  // 2-byte samples, half buffer
+  uint8_t *a = audio_buf + half * (AUDIO_BUF_BLOCK * 4);
+  int n = AUDIO_BUF_BLOCK;
 
   int16_t *A = (int16_t *)a;
-  synth_audio(A, n);
-  for (int i = 0; i < n; i += 2) A[i] = __builtin_bswap16(A[i]);
-  // if (a[0] != 0) printf("%02x %02x %02x %02x-%02x %02x %02x %02x\n", (int)a[0], (int)a[1], (int)a[2], (int)a[3], (int)a[4], (int)a[5], (int)a[6], (int)a[7]);
-  return;
-
-  static int phase = 0;
-  static const int16_t sine_table[] = {
-/*
-import math
-print(','.join('%d' % (4000 * math.sin(i/66. * math.pi * 2)) for i in range(66)))
-*/
-    0,380,757,1126,1486,1832,2162,2472,2760,3022,3258,3464,3638,3780,3887,3959,3995,3995,3959,3887,3780,3638,3464,3258,3022,2760,2472,2162,1832,1486,1126,757,380,0,-380,-757,-1126,-1486,-1832,-2162,-2472,-2760,-3022,-3258,-3464,-3638,-3780,-3887,-3959,-3995,-3995,-3959,-3887,-3780,-3638,-3464,-3258,-3022,-2760,-2472,-2162,-1832,-1486,-1126,-757,-380
-  };
-  for (int i = 0; i < n / 2; i++) {
-    int16_t sample = sine_table[phase];
-    // int16_t sample = 0x0105;
-    // static uint32_t seed = 202508;
-    // seed = seed * 1103515245 + 12345;
-    // int16_t sample = ((int16_t)(seed >> 7) >> 2);
-    if ((phase += 3) >= sizeof sine_table / sizeof sine_table[0]) phase = 0;
-    a[i * 4 + 0] = (uint8_t)((sample >> 8) & 0xff);
-    a[i * 4 + 1] = (uint8_t)((sample >> 0) & 0xff);
-  }
-
-  static int count = 0;
-  if (++count == 29296 / (AUDIO_BUF_N_BYTES / 2 / 2)) {
-    printf("!\n");
-    count = 0;
-  }
+  synth_audio(A, n * 2);
+  for (int i = 0; i < n * 2; i += 2) A[i] = __builtin_bswap16(A[i]);
 }
 
 // interrupt(WCH-Interrupt-fast") in standard toolchain
@@ -222,7 +203,7 @@ void TMR1_IRQHandler_actual()
 
   // Refill?
   static int last_half = 0;
-  int cur_half = (dma_pos >= AUDIO_BUF_N_BYTES / 2);
+  int cur_half = (dma_pos >= AUDIO_BUF_BLOCK * 4);
   if (last_half != cur_half) {
     refill_audio(last_half);
     last_half = cur_half;
@@ -289,7 +270,8 @@ static void i2s_init()
 
   R8_SPI0_CTRL_MOD &= ~RB_SPI_FIFO_DIR;
   R16_SPI0_DMA_BEG = (uint32_t)audio_buf;
-  R16_SPI0_DMA_END = (uint32_t)(audio_buf + AUDIO_BUF_N_BYTES);
+  R16_SPI0_DMA_END = (uint32_t)(audio_buf + AUDIO_BUF_BLOCK * 8);
+    // 2-byte samples, 2 channels, double buffer
   R16_SPI0_TOTAL_CNT = 4095;  // Lowest 12 bits effective
 
 __attribute__((noinline))
@@ -325,12 +307,14 @@ int main()
   GPIOA_ModeCfg(GPIO_Pin_All, GPIO_ModeIN_Floating);
   GPIOB_ModeCfg(GPIO_Pin_All, GPIO_ModeIN_Floating);
 
+#if DEBUG
   // Debug usage. Monitor serial output at PA9 = TXD1 = bottom-left touch pad
   GPIOA_SetBits(GPIO_Pin_9);
   // GPIOA_ModeCfg(GPIO_Pin_8, GPIO_ModeIN_PU); // Probably no need
   GPIOA_ModeCfg(GPIO_Pin_9, GPIO_ModeOut_PP_5mA);
   UART1_DefInit();
   printf("CHIP_ID = %02x\n", R8_CHIP_ID);
+#endif
 
   // ACT LED
   GPIOB_SetBits(GPIO_Pin_22);
@@ -340,7 +324,6 @@ int main()
 
   int i = 0;
 
-if (1) {
   // CAP_OUT
   GPIOA_ModeCfg(GPIO_Pin_10, GPIO_ModeOut_PP_5mA);
 
@@ -348,13 +331,5 @@ if (1) {
     cap_sense();
     DelayMs(5);
     if (++i == 100) { R32_PB_OUT ^= (1 << 22); i = 0; }
-  }
-}
-
-  while (1) {
-    if (i != 0) DelayMs(500); GPIOB_SetBits(GPIO_Pin_22);
-    DelayMs(500); GPIOB_ResetBits(GPIO_Pin_22);
-    printf("tick\n");
-    i = 1;
   }
 }
