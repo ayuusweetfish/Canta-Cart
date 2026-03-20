@@ -1,0 +1,6 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "QFN-28-P0.4-EP2.7")(type "KiCad")(uri "${KIPRJMOD}/libs/QFN-28-P0.4-EP2.7.pretty")(options "")(descr ""))
+  (lib (name "TestPoints_P2.00")(type "KiCad")(uri "${KIPRJMOD}/libs/TestPoints_P2.00.pretty")(options "")(descr ""))
+  (lib (name "WCH_Ant")(type "KiCad")(uri "${KIPRJMOD}/libs/WCH_Ant.pretty")(options "")(descr ""))
+)
