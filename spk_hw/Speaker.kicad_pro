@@ -447,8 +447,16 @@
     }
   },
   "libraries": {
-    "pinned_footprint_libs": [],
-    "pinned_symbol_libs": []
+    "pinned_footprint_libs": [
+      "QFN-28-P0.4-EP2.7",
+      "WCH_Ant",
+      "TestPoints_P2.00",
+      "XS3A1T3157"
+    ],
+    "pinned_symbol_libs": [
+      "CHXXX",
+      "XS3A1T3157"
+    ]
   },
   "meta": {
     "filename": "Speaker.kicad_pro",
