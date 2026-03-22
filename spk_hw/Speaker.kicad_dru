@@ -1,0 +1,5 @@
+(version 1)
+(rule "GND - ANT clearance"
+    (constraint clearance (min 0.12mm))
+    (condition "A.NetName == 'GND' && B.NetName == 'Net-(U1-ANT)'")
+)

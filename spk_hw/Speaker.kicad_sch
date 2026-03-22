@@ -4506,6 +4506,10 @@
 		(uuid "41aa2fab-2100-408d-9965-b5972397765f")
 	)
 	(no_connect
+		(at 189.23 114.3)
+		(uuid "484ea5a9-c482-4b45-aee5-038b3277f07d")
+	)
+	(no_connect
 		(at 158.75 76.2)
 		(uuid "49f6588d-47e3-4a2c-a393-2128879761d1")
 	)
@@ -4540,10 +4544,6 @@
 	(no_connect
 		(at 158.75 71.12)
 		(uuid "e26f29d0-9f2e-4cf5-98d3-9c41563332f6")
-	)
-	(no_connect
-		(at 234.95 73.66)
-		(uuid "e56db8d7-f845-46f7-8061-af6bab42c1ea")
 	)
 	(no_connect
 		(at 234.95 68.58)
@@ -5280,12 +5280,12 @@
 		(uuid "0744786d-b7ba-4132-ad4a-ac8082851c63")
 	)
 	(label "I2S_BCK"
-		(at 158.75 81.28 180)
+		(at 234.95 78.74 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right bottom)
+			(justify left bottom)
 		)
 		(uuid "21906c6e-4b35-4cb9-9192-951f9daf2cd9")
 	)
@@ -5330,12 +5330,12 @@
 		(uuid "47eca1bb-9a01-4f6e-8634-ca0c4fada9bb")
 	)
 	(label "PWR_LATCH"
-		(at 234.95 78.74 0)
+		(at 158.75 78.74 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left bottom)
+			(justify right bottom)
 		)
 		(uuid "4f4bd13c-0c61-4c20-b5d3-55df2d2cf77a")
 	)
@@ -5350,12 +5350,12 @@
 		(uuid "554b473e-6ce2-4f86-a376-37c24a589059")
 	)
 	(label "I2S_WS"
-		(at 189.23 114.3 180)
+		(at 234.95 73.66 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right bottom)
+			(justify left bottom)
 		)
 		(uuid "857127c5-698d-4f89-9a1d-8b031eb503aa")
 	)
@@ -5380,12 +5380,12 @@
 		(uuid "a44300bb-01f9-4156-a0c3-655a0dab3a2e")
 	)
 	(label "BTN"
-		(at 234.95 81.28 0)
+		(at 158.75 81.28 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left bottom)
+			(justify right bottom)
 		)
 		(uuid "aa9d084c-d5bd-4260-9a7a-b3be76587357")
 	)
@@ -5400,12 +5400,12 @@
 		(uuid "cbea222e-8125-4cb5-a37c-1789a9cf216a")
 	)
 	(label "I2S_DATA"
-		(at 158.75 78.74 180)
+		(at 234.95 81.28 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right bottom)
+			(justify left bottom)
 		)
 		(uuid "cc7a1c69-5703-42ad-9f4e-669a77f6077d")
 	)
@@ -6575,7 +6575,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 98.7552 31.75 0)
 			(effects
 				(font
@@ -6770,7 +6770,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "VBAT_SW"
+		(property "Value" "VBAT_ON"
 			(at 76.2 98.552 0)
 			(effects
 				(font
@@ -6835,7 +6835,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "VBAT_SW"
+		(property "Value" "VBAT_ON"
 			(at 27.94 98.552 0)
 			(effects
 				(font
@@ -7181,7 +7181,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 43.4848 29.21 0)
 			(effects
 				(font
@@ -8411,7 +8411,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "VBAT_SW"
+		(property "Value" "VBAT_ON"
 			(at 74.93 72.39 90)
 			(effects
 				(font
@@ -11975,7 +11975,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 88.5952 31.75 0)
 			(effects
 				(font
