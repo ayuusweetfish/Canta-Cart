@@ -4546,7 +4546,7 @@
 		(uuid "e26f29d0-9f2e-4cf5-98d3-9c41563332f6")
 	)
 	(no_connect
-		(at 234.95 68.58)
+		(at 158.75 81.28)
 		(uuid "ef324487-e847-4512-a008-e187e7d79a8a")
 	)
 	(wire
@@ -5380,12 +5380,12 @@
 		(uuid "a44300bb-01f9-4156-a0c3-655a0dab3a2e")
 	)
 	(label "BTN"
-		(at 158.75 81.28 180)
+		(at 234.95 68.58 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right bottom)
+			(justify left bottom)
 		)
 		(uuid "aa9d084c-d5bd-4260-9a7a-b3be76587357")
 	)
