@@ -10,7 +10,7 @@ Additionally, the total BOM cost of CN¥5 / US$0.7 makes it an ideal greeting gi
 - ["Pigeons and a Boy"](https://vimeo.com/970898009)
 
 🕹️ [**Try in the browser**](https://ayuusweetfish.github.io/Canta-Cart/synth/)  
-🌟 [Personal wiki page](https://ayu.land/canta-cart)  
+🌟 [Personal wiki page](https://ayu.land/canta)  
 ⚙️ [Hackaday project page](https://hackaday.io/project/196643-canta-cart)
 
 ![A stack of card-sized electronic devices](misc/Cover.jpg)
